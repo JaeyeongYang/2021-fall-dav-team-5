@@ -1,4 +1,6 @@
 # FDYF: Find Dished from Your Fridge
 
-* Backend (`/backend`): Express + SQLite3
-* Frontend (`/frontend`): React + Bootstrap 5
+* Backend (`/backend`):
+  * Python + Django + DjangoRestFramework
+* Frontend (`/frontend`):
+  * NodeJS + React + TypeScript + Bootstrap 5

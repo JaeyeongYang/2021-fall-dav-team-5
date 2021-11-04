@@ -11,7 +11,7 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 
 import "./SearchHeader.css";
 
-const SearchHeader = function ({}) {
+const SearchHeader = function () {
   return (
     <>
       <header className="search-header">

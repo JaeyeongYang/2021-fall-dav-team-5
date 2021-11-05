@@ -2,17 +2,18 @@ from django.db import models
 
 
 class Menu(models.Model):
+    id = models.BigAutoField(verbose_name="Menu ID", primary_key=True)
+
     name = models.CharField(max_length=200, verbose_name='메뉴명')
     way = models.CharField(max_length=100, verbose_name='조리방법')
     pat = models.CharField(max_length=100, verbose_name='조리종류')
 
-    weight = models.PositiveSmallIntegerField(verbose_name='1인당 중량')
-    energy = models.PositiveSmallIntegerField(verbose_name='열량')
+    energy = models.FloatField(verbose_name='열량')
 
-    carb = models.PositiveSmallIntegerField(verbose_name='탄수화물')
-    protein = models.PositiveSmallIntegerField(verbose_name='단백질')
-    fat = models.PositiveSmallIntegerField(verbose_name='지방')
-    na = models.PositiveSmallIntegerField(verbose_name='나트륨')
+    carb = models.FloatField(verbose_name='탄수화물')
+    protein = models.FloatField(verbose_name='단백질')
+    fat = models.FloatField(verbose_name='지방')
+    na = models.FloatField(verbose_name='나트륨')
 
     hashtag = models.CharField(max_length=100, verbose_name='해시태그')
 
@@ -23,8 +24,8 @@ class Menu(models.Model):
 
 
 class Recipe(models.Model):
-    menu = models.ForeignKey(Menu, on_delete=models.CASCADE,
-                             verbose_name='조리메뉴')
+    id = models.BigAutoField(verbose_name="Recipe ID", primary_key=True)
+    menu = models.ForeignKey(Menu, related_name="menu", on_delete=models.CASCADE, verbose_name='조리메뉴', db_column="menu_id")
     order = models.PositiveSmallIntegerField(verbose_name='순서')
     text = models.TextField(verbose_name='만드는 법')
     img = models.URLField(verbose_name='이미지경로')

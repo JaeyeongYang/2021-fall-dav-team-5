@@ -49,7 +49,7 @@
 
 ### `/menus/<id>/`
 
-* **Return**: a detailed information for the given menu with following fields:
+* **Return**: details for the given menu with following fields:
   * `id` (integer): 메뉴 id
   * `name` (string): 메뉴명
   * `way` (string): 조리방법

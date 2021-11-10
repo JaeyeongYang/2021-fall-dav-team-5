@@ -1,23 +1,32 @@
-from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
 from .models import Menu, Recipe
 
 
-class MenuSerializer(serializers.HyperlinkedModelSerializer):
+class SimpleMenuSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Menu
         fields = [
-            'name', 'way', 'pat', 'weight', 'energy',
+            'id', 'name', 'way', 'pat', 'energy',
             'carb', 'protein', 'fat', 'na',
             'hashtag', 'img_small', 'img_large',
-            'ingredients',
         ]
 
 
-class RecipeSerializer(serializers.HyperlinkedModelSerializer):
+class RecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
+        fields = ['order', 'text', 'img']
+
+
+class DetailedMenuSerializer(serializers.ModelSerializer):
+    recipes = RecipeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Menu
         fields = [
-            'menu', 'order', 'text', 'img',
+            'id', 'name', 'way', 'pat', 'energy',
+            'carb', 'protein', 'fat', 'na',
+            'hashtag', 'img_small', 'img_large',
+            'ingredients', 'recipes',
         ]

@@ -6,8 +6,14 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 
 import SearchHeader from "./components/SearchHeader";
-
+import PopupWindow from "./components/PopupWindow";
+import {getMenus, getAMenu} from "./api";
+import {Menu} from "./Menu";
+  
 function App() {
+  const menus = getMenus(); 
+  const menu = getAMenu(1); // id: 1
+
   return (
     <div className="App">
       <Navbar bg="dark" variant="dark" sticky="top">
@@ -22,6 +28,7 @@ function App() {
         </Container>
       </Navbar>
       <SearchHeader></SearchHeader>
+      <PopupWindow text="Pie Chart"></PopupWindow>
     </div>
   );
 }

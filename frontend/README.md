@@ -19,6 +19,10 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
+*cf. useful links for fixing errors when running **yarn** in **Windows**.*
+- [yarn 스크립트 보안 오류 about_Execution_Policies UnauthorizedAccess](https://velog.io/@soyi47/yarn%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EC%8B%A4%ED%96%89%EC%98%A4%EB%A5%98)
+- [react-scripts 은(는) 내부 또는 외부 명령 실행할 수 있는 프로그램 또는 배치 파일이 아닙니다](https://thespoiler.tistory.com/21)
+
 ### `yarn test`
 
 Launches the test runner in the interactive watch mode.\

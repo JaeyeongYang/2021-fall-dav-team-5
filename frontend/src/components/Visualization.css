@@ -1,0 +1,10 @@
+.vis-div {
+    background-color: pink;    
+    min-height: calc(100vh - 50px - 10px - 15vh);
+}
+
+.scatter-plot-menu-div {
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+}

@@ -1,0 +1,7 @@
+.layout {  
+    padding-top: 50px;    
+  }
+  
+.main {  
+  max-height: calc(100vh - 50px);
+}

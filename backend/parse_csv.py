@@ -15,10 +15,8 @@ def value_or_none(x):
     return x if x and x != '' else None
 
 
+# TODO: implement this function
 def parse_ingredients(ingredient_text):
-    """
-    TODO: implement this function
-    """
     ret = list()
     return ret  # list of ingredients names
 
@@ -58,7 +56,10 @@ with open(CSV_PATH, newline='', encoding='utf-8') as csvfile:
         if True:
             continue
 
+        # Parse the raw ingredient text into a list of ingredient strings
+        # TODO: implement parse_ingredients
         ingredients = parse_ingredients(row['RCP_PARTS_DTLS'])
+
         for ing in ingredients:
             ing = Ingredient.objects.get_or_create(name=ing)
             ing.menus.add(menu)

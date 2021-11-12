@@ -5,8 +5,11 @@ from django.views.decorators.cache import cache_page
 from rest_framework import viewsets
 from rest_framework.response import Response
 
-from .models import Menu
-from .serializers import SimpleMenuSerializer, DetailedMenuSerializer
+from .models import Menu, Ingredient
+from .serializers import (
+    SimpleMenuSerializer, DetailedMenuSerializer,
+    SimpleIngredientSerializer, DetailedIngredientSerializer,
+)
 
 
 def filter_contains(queryset, request, field_name, param_name=None):
@@ -30,7 +33,8 @@ def filter_multiple_contains(queryset, request, field_name, param_name=None):
     if values is not None:
         for value in values.split(','):
             if value != '':
-                queryset = queryset.filter(**{f'{field_name}__contains': value})
+                queryset = queryset.filter(
+                    **{f'{field_name}__contains': value})
 
     return queryset
 
@@ -75,14 +79,30 @@ class MainViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
+class IngredientViewSet(viewsets.ViewSet):
+    @method_decorator(cache_page(100))
+    def list(self, request):
+        queryset = Ingredient.objects.all()
+        serializer = SimpleIngredientSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @method_decorator(cache_page(100))
+    def retrieve(self, request, pk=None):
+        queryset = Ingredient.objects.all()
+        ing = get_object_or_404(queryset, pk=pk)
+        serializer = DetailedIngredientSerializer(ing)
+        return Response(serializer.data)
+
+
 class OptionViewSet(viewsets.ViewSet):
-    @method_decorator(cache_page(5))
+    @method_decorator(cache_page(100))
     def list(self, request):
         queryset = Menu.objects.all()
 
         ways = queryset.values_list('way').annotate(count=Count('way'))
         pats = queryset.values_list('pat').annotate(count=Count('pat'))
-        hashtags = queryset.values_list('hashtag').annotate(count=Count('hashtag'))
+        hashtags = queryset.values_list(
+            'hashtag').annotate(count=Count('hashtag'))
         # ingredients = queryset.values_list('ingredients', flat=True)
 
         return Response({

@@ -2,10 +2,10 @@ from django.db import models
 
 
 class Menu(models.Model):
-    id = models.BigAutoField(verbose_name="Menu ID", primary_key=True)
+    id = models.BigAutoField(verbose_name='Menu ID', primary_key=True)
 
     name = models.CharField(max_length=200, verbose_name='메뉴명',
-                            null=True, blank=False)
+                            null=False, blank=False)
     way = models.CharField(max_length=100, verbose_name='조리방법',
                            null=True, blank=False)
     pat = models.CharField(max_length=100, verbose_name='조리종류',
@@ -25,13 +25,43 @@ class Menu(models.Model):
     img_large = models.URLField(verbose_name='이미지경로(대)')
 
     ingredients = models.TextField(verbose_name='재료정보')
+    # ingredients_set as ManyToManyField
+    ingredients_count = models.PositiveIntegerField(
+        verbose_name='메뉴 카운트', editable=False, default=0,
+    )
+
+    def save(self, *args, **kwargs):
+        self.ingredients_count = self.ingredients_set.count()
+        super().save(*args, **kwargs)
 
 
 class Recipe(models.Model):
-    id = models.BigAutoField(verbose_name="Recipe ID", primary_key=True)
+    id = models.BigAutoField(verbose_name='Recipe ID', primary_key=True)
 
-    menu = models.ForeignKey(Menu, related_name="recipes", on_delete=models.CASCADE,
-                             verbose_name='조리메뉴')
+    menu = models.ForeignKey(
+        Menu, verbose_name='조리메뉴',
+        related_name='recipes',
+        on_delete=models.CASCADE,
+    )
     order = models.PositiveSmallIntegerField(verbose_name='순서')
     text = models.TextField(verbose_name='만드는 법')
     img = models.URLField(verbose_name='이미지경로')
+
+
+class Ingredient(models.Model):
+    id = models.BigAutoField(verbose_name='Ingredients ID', primary_key=True)
+    name = models.CharField(
+        max_length=200, verbose_name='재료명',
+        null=False, blank=False, unique=True,
+    )
+    menus = models.ManyToManyField(Menu, related_name='ingredients_set')
+    count = models.PositiveIntegerField(
+        verbose_name='메뉴 카운트', editable=False, default=0,
+    )
+
+    class Meta:
+        ordering = ['name']
+
+    def save(self, *args, **kwargs):
+        self.count = self.menus.count()
+        super().save(*args, **kwargs)

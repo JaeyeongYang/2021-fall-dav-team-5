@@ -27,11 +27,15 @@ class Menu(models.Model):
     ingredients = models.TextField(verbose_name='재료정보')
     # ingredients_set as ManyToManyField
     ingredients_count = models.PositiveIntegerField(
-        verbose_name='메뉴 카운트', editable=False, default=0,
+        verbose_name='메뉴 카운트', editable=False, default=None,
     )
 
     def save(self, *args, **kwargs):
-        self.ingredients_count = self.ingredients_set.count()
+        if self.ingredients_count is None:
+            self.ingredients_count = 0
+        else:
+            self.ingredients_count = self.ingredients_set.count()
+
         super().save(*args, **kwargs)
 
 
@@ -56,12 +60,16 @@ class Ingredient(models.Model):
     )
     menus = models.ManyToManyField(Menu, related_name='ingredients_set')
     count = models.PositiveIntegerField(
-        verbose_name='메뉴 카운트', editable=False, default=0,
+        verbose_name='메뉴 카운트', editable=False, default=None,
     )
 
     class Meta:
         ordering = ['name']
 
     def save(self, *args, **kwargs):
-        self.count = self.menus.count()
+        if self.count is None:
+            self.count = 0
+        else:
+            self.count = self.menus.count()
+
         super().save(*args, **kwargs)

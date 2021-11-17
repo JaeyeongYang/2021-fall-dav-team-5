@@ -6,18 +6,31 @@ import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
+import Badge from "react-bootstrap/Badge";
 
+import { InputTags } from 'react-bootstrap-tagsinput';
+import 'react-bootstrap-tagsinput/dist/index.css';
+
+import './ThreeToggleButtons';
 import "./Search.css";
+import ThreeToggleButtons from "./ThreeToggleButtons";
 
 const Search = function () {    
 
     const [ingredient, setIngredient] = useState('');    
     const [ingredient_list, setIngredientList] = useState('');
 
-    const editIngredientList = () => {
+    const [state, setState] = useState<string[]>([]);
+
+    const editIngredientList = (e: any) => {
         console.log(ingredient);
-        ingredientListSetter(ingredient);        
-    }    
+        ingredientListSetter(ingredient);
+        e.target.value = '';
+    }
+    
+    const initIngredientList = () => {
+        setIngredientList('')
+    }
 
     const ingredientListSetter = (s:string)  => {
         if(ingredient_list == ''){
@@ -27,41 +40,39 @@ const Search = function () {
         }
     }
 
-    return (        
+    return (                                        
+
         <section className="search-section">
         <Container className="search-section-container">
             <Row>
-                <Col md="10">                
+                <Col md="9">                
                     <InputGroup className="mb-3">
                         <FormControl
-                        placeholder="Ingredient..."
+                        placeholder="Ingredient or Menu..."
                         aria-label="Ingredient"
                         aria-describedby="basic-addon2"
                         onChange={(e) => setIngredient(e.target.value)}
-                        onKeyPress={ (e) => { if(e.key=='Enter') {editIngredientList()}}}
+                        onKeyPress={ (e) => { if(e.key=='Enter') {editIngredientList(e)}}}
                         />
-                        <Button variant="outline-secondary" id="button-addon2" onClick={editIngredientList}>
-                        Search
+                        <Button variant="outline-secondary" id="button-addon2" onClick={initIngredientList}>
+                        Delete All
                         </Button>
                     </InputGroup>
                 </Col>
-                <Col md="1">                                
-                    <Button className="include-button" variant="primary" size="sm">
-                        Include
-                    </Button>                
-                </Col>
-                <Col md="1">                                
-                    <Button className="exclude-button" variant="primary" size="sm">
-                        Exclude
-                    </Button>                
-                </Col>                                
+                
+                <Col md="3">
+                <div className="d-grid">
+                <ThreeToggleButtons/>
+                </div>
+                </Col>                
             </Row>
 
             <Row>
                 <div>
-                    <p>
-                        {ingredient_list}
-                    </p>
+                    <p> {ingredient_list} </p>
+                    {/* <Badge pill bg="primary">                        
+                        참외 <Button onClick={initIngredientList}>X</Button>
+                    </Badge>{' '} */}
                 </div>
             </Row>
         </Container>

@@ -1,18 +1,6 @@
 .search-section{  
   height: 15vh;
-  margin-top: 10px;
-}
-
-.include-button {
-  /* border-radius: 50% !important; */
-  background-color: coral !important;
-  /* padding: 0.5px !important; */
-  margin-top: 5px !important;
-}
-
-.exclude-button {
-  /* border-radius: 50% !important; */
-  background-color: darkolivegreen !important;
-  /* padding: 0.5px !important; */
-  margin-top: 5px !important;
+  /* margin-top: 10px; */
+  padding-top: 10px;
+  background-color: antiquewhite;
 }

@@ -1,4 +1,19 @@
 from django.db import models
+from django.dispatch import receiver
+
+
+class Ingredient(models.Model):
+    id = models.BigAutoField(verbose_name='Ingredients ID', primary_key=True)
+    name = models.CharField(
+        max_length=200, verbose_name='재료명',
+        null=False, blank=False, unique=True,
+    )
+    count = models.PositiveIntegerField(
+        verbose_name='메뉴 수', default=0, editable=False,
+    )
+
+    class Meta:
+        ordering = ['name']
 
 
 class Menu(models.Model):
@@ -25,18 +40,23 @@ class Menu(models.Model):
     img_large = models.URLField(verbose_name='이미지경로(대)')
 
     ingredients = models.TextField(verbose_name='재료정보')
-    # ingredients_set as ManyToManyField
+    ingredients_parsed = models.TextField(
+        verbose_name='파싱된 재료정보', null=False, blank=True, default='',
+    )
+    ingredients_set = models.ManyToManyField(
+        Ingredient,
+        related_name='menus',
+        through='Requirement',
+        through_fields=('menu', 'ingredient'),
+    )
     ingredients_count = models.PositiveIntegerField(
-        verbose_name='메뉴 카운트', editable=False, default=None,
+        verbose_name='재료 수', default=0, editable=False,
     )
 
-    def save(self, *args, **kwargs):
-        if self.ingredients_count is None:
-            self.ingredients_count = 0
-        else:
-            self.ingredients_count = self.ingredients_set.count()
 
-        super().save(*args, **kwargs)
+class Requirement(models.Model):
+    menu = models.ForeignKey(Menu, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
 
 
 class Recipe(models.Model):
@@ -52,24 +72,23 @@ class Recipe(models.Model):
     img = models.URLField(verbose_name='이미지경로')
 
 
-class Ingredient(models.Model):
-    id = models.BigAutoField(verbose_name='Ingredients ID', primary_key=True)
-    name = models.CharField(
-        max_length=200, verbose_name='재료명',
-        null=False, blank=False, unique=True,
-    )
-    menus = models.ManyToManyField(Menu, related_name='ingredients_set')
-    count = models.PositiveIntegerField(
-        verbose_name='메뉴 카운트', editable=False, default=None,
-    )
+@receiver(models.signals.post_init, sender=Requirement)
+def increment_count(sender, instance, **kwargs):
+    menu = instance.menu
+    menu.ingredients_count += 1
+    menu.save()
 
-    class Meta:
-        ordering = ['name']
+    ing = instance.ingredient
+    ing.count += 1
+    ing.save()
 
-    def save(self, *args, **kwargs):
-        if self.count is None:
-            self.count = 0
-        else:
-            self.count = self.menus.count()
 
-        super().save(*args, **kwargs)
+@receiver(models.signals.pre_delete, sender=Requirement)
+def increment_count(sender, instance, **kwargs):
+    menu = instance.menu
+    menu.ingredients_count -= 1
+    menu.save()
+
+    ing = instance.ingredient
+    ing.count -= 1
+    ing.save()

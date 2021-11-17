@@ -38,7 +38,7 @@ class DetailedMenuSerializer(serializers.ModelSerializer):
             'carb', 'protein', 'fat', 'na',
             'hashtag', 'img_small', 'img_large',
             'ingredients', 'ingredients_set',
-            'recipes',
+            'ingredients_count', 'recipes',
         ]
 
 

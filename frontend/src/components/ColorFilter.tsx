@@ -13,46 +13,20 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
 
-function ColorSelector(){    
-    const [bubbleColorValue, setBubbleColorValue] = useState('10');
-  
-    const bubbleColors = [
-      { name: 'Menu Category', value: '10', color: 'outline-info'},
-      { name: 'How to Cook', value: '11', color: 'outline-info'},      
-    ]; 
 
+function ColorFilter(){    
 
     return (
-        <div className="d-grid">
-            {/* <ButtonGroup> */}
-            <ToggleButtonGroup name='toggle-two' type='radio' defaultValue='10'>          
-                {bubbleColors.map((bubbleColor, idx) => (            
-                    <ToggleButton
-                    key={idx}
-                    id={`bubble-color-${idx}`}
-                    type="radio"
-                    variant={bubbleColor.color}                
-                    name="radio"
-                    value={bubbleColor.value}
-                    checked={bubbleColor.value == bubbleColorValue}
-                    onChange={(e) => setBubbleColorValue(e.currentTarget.value)}
-                    >
-                    {bubbleColor.name}                
-                    </ToggleButton>
-                ))}
-            </ToggleButtonGroup>
-                                
-                {/* <Dropdown>                                                
-                    <Dropdown.Toggle variant="outline-primary" title="" style={{width: '100%'}}></Dropdown.Toggle>                                            
-                    <Dropdown.Menu>
-                        <Dropdown.Item href="#"><span>●</span> 밥</Dropdown.Item>                                
-                        <Dropdown.Item href="#">● 찌개</Dropdown.Item>
-                        <Dropdown.Item href="#">● 반찬</Dropdown.Item>
-                        <Dropdown.Item href="#">● 후식</Dropdown.Item>                                                            
-                    </Dropdown.Menu>                        
-                </Dropdown> */}
-                
-            {/* </ButtonGroup> */}
+        <div className="d-grid">                                            
+            <Dropdown>                                                
+                <Dropdown.Toggle variant="outline-info" size="sm" style={{width: '100%'}}></Dropdown.Toggle>                                            
+                <Dropdown.Menu>
+                    <Dropdown.Item href="#"><span>●</span> 밥</Dropdown.Item>                                
+                    <Dropdown.Item href="#">● 찌개</Dropdown.Item>
+                    <Dropdown.Item href="#">● 반찬</Dropdown.Item>
+                    <Dropdown.Item href="#">● 후식</Dropdown.Item>                                                            
+                </Dropdown.Menu>                        
+            </Dropdown>                
         </div>
 
         // <section>
@@ -89,4 +63,4 @@ function ColorSelector(){
     )
 }
 
-export default ColorSelector;
+export default ColorFilter;

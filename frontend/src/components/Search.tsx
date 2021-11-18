@@ -14,6 +14,8 @@ import 'react-bootstrap-tagsinput/dist/index.css';
 import './ThreeToggleButtons';
 import "./Search.css";
 import ThreeToggleButtons from "./ThreeToggleButtons";
+import ColorSelector from "./ColorSelector";
+import ColorFilter from "./ColorFilter";
 
 const Search = function () {    
 
@@ -45,7 +47,7 @@ const Search = function () {
         <section className="search-section">
         <Container className="search-section-container">
             <Row>
-                <Col md="9">                
+                <Col md="8">                
                     <InputGroup className="mb-3">
                         <FormControl
                         placeholder="Ingredient or Menu..."
@@ -60,20 +62,35 @@ const Search = function () {
                     </InputGroup>
                 </Col>
                 
-                <Col md="3">
-                <div className="d-grid">
-                <ThreeToggleButtons/>
-                </div>
+                <Col md="4">                
+                    <ThreeToggleButtons/>
                 </Col>                
             </Row>
 
             <Row>
-                <div>
-                    <p> {ingredient_list} </p>
+                <Col md="8">                
+                     <p> {ingredient_list} </p>
                     {/* <Badge pill bg="primary">                        
                         참외 <Button onClick={initIngredientList}>X</Button>
                     </Badge>{' '} */}
-                </div>
+                </Col>
+                
+                <Col md="4">
+                    <Row>                    
+                        <ColorSelector/>
+                    </Row>
+
+                    <Row>
+                        <ColorFilter/>
+                    </Row>
+                </Col>     
+                
+                {/* <div>
+                    <p> {ingredient_list} </p>
+                    <Badge pill bg="primary">                        
+                        참외 <Button onClick={initIngredientList}>X</Button>
+                    </Badge>{' '}
+                </div> */}
             </Row>
         </Container>
         </section>        

@@ -14,9 +14,9 @@ const Visualization = function () {
     
     return (                
         <div className='vis-div'>
-            <div className='color-selector-div'>                
+            {/* <div className='color-selector-div'>                
                 <ColorSelector></ColorSelector>
-            </div>
+            </div> */}
             
             <div> 
                 {/* 채: 여기서 작업하시면 됩니다. */}

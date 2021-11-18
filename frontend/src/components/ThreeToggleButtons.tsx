@@ -2,8 +2,7 @@ import React, {useState} from "react";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
 
-function ThreeToggleButtons() {
-    const [checked, setChecked] = useState(false);
+function ThreeToggleButtons() {    
     const [radioValue, setRadioValue] = useState('1');
   
     const radios = [
@@ -13,24 +12,24 @@ function ThreeToggleButtons() {
     ];    
 
     return (
-      <>                                
-        <ToggleButtonGroup name='toggle-three' type='radio'>          
+      <div className="d-grid">                                
+        <ToggleButtonGroup name='toggle-three' type='radio' defaultValue='1'>          
           {radios.map((radio, idx) => (            
             <ToggleButton
               key={idx}
               id={`radio-${idx}`}
-              // type="radio"
+              type="radio"
               variant={radio.color}                
               name="radio"
               value={radio.value}
-              checked={radioValue === radio.value}
+              checked={radio.value == radioValue}
               onChange={(e) => setRadioValue(e.currentTarget.value)}
             >
               {radio.name}
             </ToggleButton>
           ))}
         </ToggleButtonGroup>
-      </>
+      </div>
     );
   }
 

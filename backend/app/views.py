@@ -90,13 +90,15 @@ def filter_ingredient_inc_exc(queryset, request, field_name='ingredients_set', p
     if param_name is None:
         param_name = field_name
 
-    id_inc = [int(x) for x in request.query_params.get(f'{param_name}_inc').split(',')]
-    id_exc = [int(x) for x in request.query_params.get(f'{param_name}_exc').split(',')]
+    values_inc = request.query_params.get(f'{param_name}_inc')
+    values_exc = request.query_params.get(f'{param_name}_exc')
 
-    if len(id_inc) > 0:
+    if values_inc is not None and values_inc != '':
+        id_inc = [int(x) for x in values_inc.split(',')]
         queryset = queryset.filter(ingredients_set__in=id_inc)
 
-    if len(id_exc) > 0:
+    if values_exc is not None and values_exc != '':
+        id_exc = [int(x) for x in values_exc.split(',')]
         queryset = queryset.exclude(ingredients_set__in=id_exc)
 
     return queryset

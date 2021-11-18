@@ -2,14 +2,22 @@ import React, {useState} from "react";
 import ToggleButtonGroup from "react-bootstrap/ToggleButtonGroup";
 import ToggleButton from "react-bootstrap/ToggleButton";
 
+
+let exportRadioValue:string = '1';
+
 function ThreeToggleButtons() {    
     const [radioValue, setRadioValue] = useState('1');
-  
+
     const radios = [
-      { name: 'Include', value: '1', color: 'outline-primary'},
-      { name: 'Exclude', value: '2', color: 'outline-success'},
-      { name: 'Menu', value: '3', color: 'outline-danger' },
-    ];    
+      { name: 'Have it', value: '1', color: 'outline-primary'},
+      { name: "Don't have", value: '2', color: 'outline-danger'},
+      { name: 'Menu', value: '3', color: 'outline-success' },
+    ];
+    
+    const setToggleValue = (s:string) => {
+      setRadioValue(s);
+      exportRadioValue = s;
+    }
 
     return (
       <div className="d-grid">                                
@@ -23,7 +31,7 @@ function ThreeToggleButtons() {
               name="radio"
               value={radio.value}
               checked={radio.value == radioValue}
-              onChange={(e) => setRadioValue(e.currentTarget.value)}
+              onChange={(e) => setToggleValue(e.currentTarget.value)}
             >
               {radio.name}
             </ToggleButton>
@@ -34,7 +42,7 @@ function ThreeToggleButtons() {
   }
 
 export default ThreeToggleButtons;
-
+export { exportRadioValue };
 
 {/* <ToggleButtonGroup type="checkbox">
             <ToggleButton value={1}>Include</ToggleButton>

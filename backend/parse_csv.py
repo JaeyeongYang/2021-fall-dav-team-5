@@ -70,7 +70,7 @@ def parse_ingredients_regex(ingredient_text):
     p_misc = re.compile(r'(([ㄱ-ㅎ가-힣a-zA-Z0-9]*?재료)|strong|span|br)')
     text = p_misc.sub('', text)
 
-    p_adverb = re.compile(r'약간|큰|작은|가는|간|갠|채친|채썬|다진|부순|삶은|갈은|데친|데쳐서|같은것|것')
+    p_adverb = re.compile(r'약간|큰|작은|가는|간|갠|채친|채썬|다진|부순|삶은|갈은|데친|데쳐서|적당량|같은것|것')
     text = p_adverb.sub('', text)
 
     # '건 ' / '말린' / '말린 ' -> '건'

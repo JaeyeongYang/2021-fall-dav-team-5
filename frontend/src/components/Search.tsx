@@ -8,48 +8,30 @@ import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import Badge from "react-bootstrap/Badge";
 
-import { InputTags } from 'react-bootstrap-tagsinput';
 import 'react-bootstrap-tagsinput/dist/index.css';
 import "./Search.css";
 import ThreeToggleButtons from "./ThreeToggleButtons";
-import { exportRadioValue } from './ThreeToggleButtons';
 import ColorSelector from "./ColorSelector";
 import ColorFilter from "./ColorFilter";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import { createHeritageClause } from "typescript";
+import { Tag } from "../interfaces";
 
-interface Tag {
-    ingredient_or_menu: string;
-    exportRadioValue: string;    
-}
-
-let tags: any;
-
-const Search = function () {    
-
-    const [ingredient_or_menu, setIngredientOrMenu] = useState('');    
-    const [ingredient_list, setIngredientList] = useState<string[]>([]);
-    const [ingredient_not_list, setIngredientNotList] = useState<string[]>([]);
-    const [menu_list, setMenuList] = useState<string[]>([]);
-    const [all_list, setAllList] = useState<Tag[]>([]);    
-
-    const editLists = (e: any) => {        
-        if (exportRadioValue == '1') {
-            setIngredientList(oldArray => [...oldArray, ingredient_or_menu]);
-            // setIngredientList(ingredient_list);
-        } else if (exportRadioValue == '2') {
-            setIngredientNotList(oldArray => [...oldArray, ingredient_or_menu]);
-        } else {
-            setMenuList(oldArray => [...oldArray, ingredient_or_menu]);                        
-        }
-        
-        setAllList(oldArray => [...oldArray, {
-            ingredient_or_menu: ingredient_or_menu, 
-            exportRadioValue: exportRadioValue}
-        ]);
-        
-        e.target.value = ''; // initialize input bar
-    }    
+const Search = function ({  
+    searchOnKeyPress,
+    searchOnChange,
+    searchInitLists,
+    getAllList,
+  
+    getRadioValue,
+    setThreeToggleValue
+  }:{
+    searchOnKeyPress: (e: any) => void,
+    searchOnChange: (e: any) => void,
+    searchInitLists: () => void,
+    getAllList: () => Tag[],
+  
+    getRadioValue: () => string,
+    setThreeToggleValue: (s: string) => void
+  }) {             
     
     const setTagColor = (s:string) => {
         if (s == '1') {return 'primary'}
@@ -57,31 +39,7 @@ const Search = function () {
         else {return 'success'}
     }
 
-    const createTags = (all_list:Tag[]) => {
-        return all_list.map((tag,idx) => (            
-                <Badge pill bg={setTagColor(tag.exportRadioValue)}>
-                    {tag.ingredient_or_menu}
-                </Badge>                    
-            ));
-    }
-
-    const initLists = () => {
-        setIngredientList([]);        
-        setIngredientNotList([]);        
-        setMenuList([]);        
-        setAllList([]);            
-    }     
-
-    useEffect(()=>{        
-        console.log('=========================')
-        console.log('ingredient_list:', ingredient_list);
-        console.log('ingredient_not_list:', ingredient_not_list);
-        console.log('menu_list:', menu_list);
-        console.log('all_list:', all_list);                
-    }, [ingredient_list, ingredient_not_list, menu_list, all_list]);
-
-    return (                                        
-
+    return (
         <section className="search-section">
         <Container className="search-section-container">
             <Row>
@@ -91,27 +49,28 @@ const Search = function () {
                         placeholder="Ingredient or Menu..."
                         aria-label="Ingredient"
                         aria-describedby="basic-addon2"
-                        onChange={(e) => setIngredientOrMenu(e.target.value)}
-                        onKeyPress={ (e) => { if(e.key=='Enter') { editLists(e) } } }
+                        onChange={(e) => searchOnChange(e)}
+                        onKeyPress={ (e) => searchOnKeyPress(e) }
                         />
-                        <Button variant="outline-secondary" id="button-addon2" onClick={initLists}>
+                        <Button variant="outline-secondary" id="button-addon2" onClick={searchInitLists}>
                         Delete All
                         </Button>
                     </InputGroup>
                 </Col>
                 
                 <Col md="4">                
-                    <ThreeToggleButtons/>
+                    <ThreeToggleButtons
+                        getRadioValue={getRadioValue}
+                        setThreeToggleValue={setThreeToggleValue}
+                    ></ThreeToggleButtons>
                 </Col>                
             </Row>
 
             <Row>
-                <Col md="8">                                                   
-
-                {/* {tags} */}
-                {all_list.map((tag,idx) => (            
-                    <Badge pill bg={setTagColor(tag.exportRadioValue)}>
-                        {tag.ingredient_or_menu}
+                <Col md="8">                                                                   
+                {getAllList().map((tag,idx) => (            
+                    <Badge pill bg={setTagColor(tag.radioValue)}>
+                        {tag.ingredientOrMenu}
                     </Badge>                    
                 ))}                    
                 </Col>
@@ -120,7 +79,7 @@ const Search = function () {
                     <Row>                    
                         <ColorSelector/>
                     </Row>
-
+                    
                     <Row>
                         <ColorFilter/>
                     </Row>

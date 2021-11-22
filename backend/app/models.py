@@ -31,10 +31,10 @@ class Menu(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if self.ingredients_count is None:
-            self.ingredients_count = 0
-        else:
-            self.ingredients_count = self.ingredients_set.count()
+        # if self.ingredients_count is None:
+        #     self.ingredients_count = 0
+        # else:
+        self.ingredients_count = self.ingredients_set.count()
 
         super().save(*args, **kwargs)
 

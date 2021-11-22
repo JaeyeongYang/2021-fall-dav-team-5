@@ -1,15 +1,22 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
+import { Provider as ReduxProvider } from "react-redux";
+import configureAppStore, { getPreloadedState } from "./store/configureStore";
+
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
 // Importing the Bootstrap CSS
 import "bootstrap/dist/css/bootstrap.min.css";
+import "./index.css";
+
+const preloadedState = getPreloadedState();
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ReduxProvider store={configureAppStore(preloadedState)}>
+      <App />
+    </ReduxProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

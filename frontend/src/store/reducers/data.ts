@@ -22,6 +22,10 @@ export interface Menu {
   ingredients_count: number;
 }
 
+export interface ForceMenu{
+  size: number
+}
+
 export interface Ingredient {
   id: number;
   name: string;

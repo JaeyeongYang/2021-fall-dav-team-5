@@ -106,7 +106,7 @@ class BubbleChart extends React.Component<IBubbleChartProps, IBubbleChartState> 
                         style={{ cursor: 'pointer' }}
                         id="circleSvg"
                         r={this.radiusScale((item as unknown as ForceMenu).size)}
-                        fill={this.backgroundColor(props.bubblesData[index])} // 추후 변경 
+                        fill={this.backgroundColor(props.bubblesData[index])} 
                         stroke={'#ffffffff'} //strokeColor
                         strokeWidth="2"
                         />

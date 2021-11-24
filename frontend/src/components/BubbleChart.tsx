@@ -12,6 +12,7 @@ import PopOver from "./PopupWindow";
 
 const uuid = require('react-uuid')
 
+const backgroundColor="#ffffff" 
 
 class BubbleChart extends React.Component<IBubbleChartProps, IBubbleChartState> {
     public forceData: ForceMenu[]
@@ -73,13 +74,30 @@ class BubbleChart extends React.Component<IBubbleChartProps, IBubbleChartState> 
           this.setState({ data })
         })
     }
+
+    backgroundColor = (aMenu: Menu) => {
+      if( aMenu.way === "굽기" || aMenu.pat == "밥"){
+        return "#FFCEC7" // pink
+      }else if( aMenu.way === "끓이기" || aMenu.pat == "국&찌개"){
+        return "#FBDEA2" // yellow 
+      }else if ( aMenu.way === "볶기" || aMenu.pat == "반찬"){
+        return "#B6DEE7" // blue
+      }else if ( aMenu.way === "찌기" || aMenu.pat == "일품"){
+        return "#9ADBC7" // green 
+      }else if ( aMenu.way === "튀기기" || aMenu.pat == "후식"){
+        return "#C9CBE0" // light pink
+      }else{
+        return "#E2E2E2 " // light grey
+      }
+
+    }
   
     renderBubbles = (data: []) => {
       return data.map((item: { v: number; x: number; y: number }, index) => {
         const { props } = this
         const fontSize = this.radiusScale((item as unknown as ForceMenu).size) / 3
         const content = props.bubblesData.length > index ? props.bubblesData[index].name : ''
-        const strokeColor = props.bubblesData.length > index ? 'darkgrey' : this.props.backgroundColor
+        const strokeColor = props.bubblesData.length > index ? 'darkgrey' : this.props.backgroundColor 
         return (
             // <OverlayTrigger trigger="click" placement="top" overlay={PopOver} > //OverlayTrigger 사용해서 popup
                 <g key={`g-${uuid()}`} transform={`translate(${props.width / 2 + item.x - 70}, ${props.height / 2 + item.y})`}>
@@ -88,8 +106,8 @@ class BubbleChart extends React.Component<IBubbleChartProps, IBubbleChartState> 
                         style={{ cursor: 'pointer' }}
                         id="circleSvg"
                         r={this.radiusScale((item as unknown as ForceMenu).size)}
-                        fill={'#00B9EF'} // 추후 변경 
-                        stroke={strokeColor}
+                        fill={this.backgroundColor(props.bubblesData[index])} // 추후 변경 
+                        stroke={'#ffffffff'} //strokeColor
                         strokeWidth="2"
                         />
                     <text
@@ -139,8 +157,8 @@ interface IBubbleChartProps {
   bubblesData: Menu[]
   width: number
   height: number
-  backgroundColor: string
   textFillColor: string
+  backgroundColor: string
   minValue: number
   maxValue: number
   selectedCircle: (content: string) => void

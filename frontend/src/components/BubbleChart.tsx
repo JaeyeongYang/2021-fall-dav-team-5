@@ -98,7 +98,7 @@ class BubbleChart extends React.Component<IBubbleChartProps, IBubbleChartState> 
         const content = props.bubblesData.length > index ? props.bubblesData[index].name : ''
         const strokeColor = props.bubblesData.length > index ? 'darkgrey' : this.props.backgroundColor 
         return (
-            // <OverlayTrigger trigger="click" placement="top" overlay={PopOver} > //OverlayTrigger 사용해서 popup
+            <OverlayTrigger placement="top" overlay={PopOver(content)} > 
                 <g key={`g-${uuid()}`} transform={`translate(${props.width / 2 + item.x - 70}, ${props.height / 2 + item.y})`}>
                     
                         <circle
@@ -124,7 +124,7 @@ class BubbleChart extends React.Component<IBubbleChartProps, IBubbleChartState> 
                     
                     
                 </g>
-            // </OverlayTrigger>
+            </OverlayTrigger>
     
         )
       })

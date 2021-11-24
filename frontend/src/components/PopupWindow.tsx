@@ -10,7 +10,7 @@ const PopOver = function(menuName: string){ //menuId로 변경해서 사용
     <Popover.Body>
       {menuName}
       (나트륨 함량: ) 
-      Pie chart 
+      {/* Pie chart  */}
       재료: {menuName}을/를 만드는 재료 리스트
       만드는 법: {menuName}을/를 만드는 방법
     </Popover.Body>

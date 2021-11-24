@@ -4,15 +4,12 @@ import * as d3 from 'd3'
 import { Simulation, SimulationNodeDatum } from 'd3-force'
 import './BubbleChart.css'
 import Button from "react-bootstrap/Button";
-// import { Button } from '@material-ui/core'
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { Menu, ForceMenu } from 'src/store/reducers/data'
 import PopOver from "./PopupWindow";
 
 
 const uuid = require('react-uuid')
-
-const backgroundColor="#ffffff" 
 
 class BubbleChart extends React.Component<IBubbleChartProps, IBubbleChartState> {
     public forceData: ForceMenu[]
@@ -75,16 +72,18 @@ class BubbleChart extends React.Component<IBubbleChartProps, IBubbleChartState> 
         })
     }
 
-    backgroundColor = (aMenu: Menu) => {
-      if( aMenu.way === "굽기" || aMenu.pat == "밥"){
+    backgroundColor = (aMenu: Menu, value: string) => {
+      const val = value==='way' ? aMenu.way : aMenu.pat
+
+      if( val=== "굽기" || val == "밥"){
         return "#FFCEC7" // pink
-      }else if( aMenu.way === "끓이기" || aMenu.pat == "국&찌개"){
+      }else if( val === "끓이기" || val == "국&찌개"){
         return "#FBDEA2" // yellow 
-      }else if ( aMenu.way === "볶기" || aMenu.pat == "반찬"){
+      }else if ( val === "볶기" || val == "반찬"){
         return "#B6DEE7" // blue
-      }else if ( aMenu.way === "찌기" || aMenu.pat == "일품"){
+      }else if ( val === "찌기" || val == "일품"){
         return "#9ADBC7" // green 
-      }else if ( aMenu.way === "튀기기" || aMenu.pat == "후식"){
+      }else if ( val === "튀기기" || val == "후식"){
         return "#C9CBE0" // light pink
       }else{
         return "#E2E2E2 " // light grey
@@ -106,7 +105,7 @@ class BubbleChart extends React.Component<IBubbleChartProps, IBubbleChartState> 
                         style={{ cursor: 'pointer' }}
                         id="circleSvg"
                         r={this.radiusScale((item as unknown as ForceMenu).size)}
-                        fill={this.backgroundColor(props.bubblesData[index])} 
+                        fill={this.backgroundColor(props.bubblesData[index], "way")} 
                         stroke={'#ffffffff'} //strokeColor
                         strokeWidth="2"
                         />
@@ -117,6 +116,8 @@ class BubbleChart extends React.Component<IBubbleChartProps, IBubbleChartState> 
                     textAnchor="middle"
                     fontSize={`${fontSize}px`}
                     fontWeight="bold"
+                    textLength="50"
+                    lengthAdjust="spacingAndGlyphs" // 더 예쁘게 바꿀 수 있으면 좋겠음 
                     >
                     {content}
                     </text>

@@ -3,10 +3,11 @@ import React from 'react'
 import * as d3 from 'd3'
 import { Simulation, SimulationNodeDatum } from 'd3-force'
 import './BubbleChart.css'
-import { Button } from '@material-ui/core'
+import Button from "react-bootstrap/Button";
+// import { Button } from '@material-ui/core'
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { Menu, ForceMenu } from 'src/store/reducers/data'
-// import PopOver from "../PopupWindow";
+import PopOver from "./PopupWindow";
 
 
 const uuid = require('react-uuid')
@@ -80,14 +81,11 @@ class BubbleChart extends React.Component<IBubbleChartProps, IBubbleChartState> 
         const content = props.bubblesData.length > index ? props.bubblesData[index].name : ''
         const strokeColor = props.bubblesData.length > index ? 'darkgrey' : this.props.backgroundColor
         return (
-            // <OverlayTrigger trigger="click" placement="top" overlay={PopOver}>
+            // <OverlayTrigger trigger="click" placement="top" overlay={PopOver} > //OverlayTrigger 사용해서 popup
                 <g key={`g-${uuid()}`} transform={`translate(${props.width / 2 + item.x - 70}, ${props.height / 2 + item.y})`}>
                     
                         <circle
                         style={{ cursor: 'pointer' }}
-                        // onClick={() => {
-                        //     this.props.selectedCircle(content)
-                        // }}
                         id="circleSvg"
                         r={this.radiusScale((item as unknown as ForceMenu).size)}
                         fill={'#00B9EF'} // 추후 변경 
@@ -95,9 +93,6 @@ class BubbleChart extends React.Component<IBubbleChartProps, IBubbleChartState> 
                         strokeWidth="2"
                         />
                     <text
-                    // onClick={() => {
-                    //     this.props.selectedCircle(content)
-                    // }}
                     dy="6"
                     className="bubbleText"
                     fill={this.props.textFillColor}

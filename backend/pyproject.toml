@@ -10,6 +10,7 @@ Django = "^3.2.9"
 djangorestframework = "^3.12.4"
 django-filter = "^21.1"
 jupyterlab = "^3.2.3"
+django-cors-headers = "^3.10.0"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.6.0"

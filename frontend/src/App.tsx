@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import "./App.css";
 
+import { BACKEND_DOMAIN } from "./globals";
+import { useAppDispatch, useAppSelector } from "./hooks";
+import {
+  DataState,
+  doneLoadingData,
+  loadData,
+  setHashtags,
+  setIngredients,
+  setMenus,
+  setPats,
+  setWays,
+} from "./store/reducers/data";
 import Header from "./components/Header";
 import Body from "./components/Body";
 import { Tag } from "./interfaces";
@@ -8,6 +20,8 @@ import { Tag } from "./interfaces";
 import {Menu} from "./Menu";
 import {getMenus, getAMenu} from "./api";
 
+import "./App.css";
+import axios from "axios";
 
 function App() {
   // Menu.tsx
@@ -78,8 +92,61 @@ function App() {
     console.log('allList:', allList);
   }, [ingredientList, ingredientNotList, menuList, allList]);
 
+            
+  const data: DataState = useAppSelector((state) => state.data);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(loadData);
+
+    axios({
+      url: `${BACKEND_DOMAIN}/ingredients/`,
+      method: "GET",
+    })
+      .then((res) => res.data)
+      .then((data) => {
+        dispatch(setIngredients(data));
+      })
+      .catch(function (error) {
+        console.log("Request failed", error);
+      });
+
+    axios({
+      url: `${BACKEND_DOMAIN}/options/`,
+      method: "GET",
+    })
+      .then((res) => res.data)
+      .then((data) => {
+        dispatch(setWays(data.way));
+        dispatch(setPats(data.pat));
+        dispatch(setHashtags(data.hashtag));
+      })
+      .catch(function (error) {
+        console.log("Request failed", error);
+      });
+  }, [dispatch]);
+
+  // When data.flagLoadData changes
+  useEffect(() => {
+    if (data.flagLoadData) {
+      axios({
+        url: `${BACKEND_DOMAIN}/menus/`,
+        method: "GET",
+      })
+        .then((res) => res.data)
+        .then((data) => {
+          dispatch(setMenus(data));
+        })
+        .catch(function (error) {
+          console.log("Request failed", error);
+        });
+
+      dispatch(doneLoadingData);
+    }
+  }, [data.flagLoadData, dispatch]);
+
   return (
-    <div className="App">
+    <div className="App">      
       <Header></Header>      
       <Body
         menus={menus}
@@ -92,7 +159,7 @@ function App() {
 
         getRadioValue={getRadioValue}
         setThreeToggleValue={setThreeToggleValue}
-      ></Body>      
+      ></Body>
     </div>
   );
 }

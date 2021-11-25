@@ -13,7 +13,9 @@ import "./Search.css";
 import ThreeToggleButtons from "./ThreeToggleButtons";
 import ColorSelector from "./ColorSelector";
 import ColorFilter from "./ColorFilter";
-import { Tag } from "../interfaces";
+import {  
+    Tag
+  } from "../store/reducers/data";
 
 const Search = function ({  
     searchOnKeyPress,

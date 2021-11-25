@@ -1,18 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import "./App.css";
 
+import { BACKEND_DOMAIN } from "./globals";
+import { useAppDispatch, useAppSelector } from "./hooks";
+import {
+  DataState,
+  Tag,
+  doneLoadingMenuDetail,
+  doneLoadingMenus,
+  loadMenus,
+  setHashtags,
+  setIngredients,
+  setMenuDetail,
+  setMenus,
+  setPats,
+  setWays,
+} from "./store/reducers/data";
 import Header from "./components/Header";
 import Body from "./components/Body";
-import { Tag } from "./interfaces";
 
-import {Menu} from "./Menu";
-import {getMenus, getAMenu} from "./api";
+// import {Menu} from "./Menu";
+// import {getMenus, getAMenu} from "./api";
 
+
+import "./App.css";
+import axios from "axios";
 
 function App() {
   // Menu.tsx
-  const menus = getMenus(); 
-  const menu = getAMenu(1); // id: 1
+  // const menus = getMenus(); 
+  // const menu = getAMenu(1); // id: 1
 
   // for Search.tsx
   const [ingredientOrMenu, setIngredientOrMenu] = useState('');    
@@ -78,21 +95,92 @@ function App() {
     console.log('allList:', allList);
   }, [ingredientList, ingredientNotList, menuList, allList]);
 
+  //////////////////
+  const data: DataState = useAppSelector((state) => state.data);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(loadMenus);
+
+    axios({
+      url: `${BACKEND_DOMAIN}/ingredients/`,
+      method: "GET",
+    })
+      .then((res) => res.data)
+      .then((data) => {
+        dispatch(setIngredients(data));
+      })
+      .catch(function (error) {
+        console.log("Request failed", error);
+      });
+
+    axios({
+      url: `${BACKEND_DOMAIN}/options/`,
+      method: "GET",
+    })
+      .then((res) => res.data)
+      .then((data) => {
+        dispatch(setWays(data.way));
+        dispatch(setPats(data.pat));
+        dispatch(setHashtags(data.hashtag));
+      })
+      .catch(function (error) {
+        console.log("Request failed", error);
+      });
+  }, [dispatch]);
+
+  // When data.flagLoadData changes
+  useEffect(() => {
+    if (data.flagLoadMenus) {
+      axios({
+        url: `${BACKEND_DOMAIN}/menus/`,
+        method: "GET",
+      })
+        .then((res) => res.data)
+        .then((data) => {
+          dispatch(setMenus(data));
+        })
+        .catch(function (error) {
+          console.log("Request failed", error);
+        });
+
+      dispatch(doneLoadingMenus);
+    }
+  }, [data.flagLoadMenus, dispatch]);
+
+  useEffect(() => {
+    if (data.flagLoadMenuDetail && data.menuID !== undefined) {
+      const menuID = data.menuID;
+
+      axios({
+        url: `${BACKEND_DOMAIN}/menus/${menuID}`,
+        method: "GET",
+      })
+        .then((res) => res.data)
+        .then((data) => {
+          dispatch(setMenuDetail(data));
+          console.log(`Done loading menu #${menuID}`);
+        })
+        .catch(function (error) {
+          console.log("Request failed", error);
+        });
+
+      dispatch(doneLoadingMenuDetail);
+    }
+  }, [data.flagLoadMenuDetail, data.menuID, dispatch]);
+
   return (
     <div className="App">
-      <Header></Header>      
-      <Body
-        menus={menus}
-        menu={menu}
+      <Header></Header>
+      <Body      
+      searchOnKeyPress={searchOnKeyPress}
+      searchOnChange={searchOnChange}         
+      searchInitLists={searchInitLists}
+      getAllList={getAllList}
 
-        searchOnKeyPress={searchOnKeyPress}
-        searchOnChange={searchOnChange}         
-        searchInitLists={searchInitLists}
-        getAllList={getAllList}
-
-        getRadioValue={getRadioValue}
-        setThreeToggleValue={setThreeToggleValue}
-      ></Body>      
+      getRadioValue={getRadioValue}
+      setThreeToggleValue={setThreeToggleValue}
+    ></Body>
     </div>
   );
 }

@@ -4,10 +4,12 @@ import { BACKEND_DOMAIN } from "./globals";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import {
   DataState,
-  doneLoadingData,
-  loadData,
+  doneLoadingMenuDetail,
+  doneLoadingMenus,
+  loadMenus,
   setHashtags,
   setIngredients,
+  setMenuDetail,
   setMenus,
   setPats,
   setWays,
@@ -23,7 +25,7 @@ function App() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(loadData);
+    dispatch(loadMenus);
 
     axios({
       url: `${BACKEND_DOMAIN}/ingredients/`,
@@ -54,7 +56,7 @@ function App() {
 
   // When data.flagLoadData changes
   useEffect(() => {
-    if (data.flagLoadData) {
+    if (data.flagLoadMenus) {
       axios({
         url: `${BACKEND_DOMAIN}/menus/`,
         method: "GET",
@@ -67,9 +69,30 @@ function App() {
           console.log("Request failed", error);
         });
 
-      dispatch(doneLoadingData);
+      dispatch(doneLoadingMenus);
     }
-  }, [data.flagLoadData, dispatch]);
+  }, [data.flagLoadMenus, dispatch]);
+
+  useEffect(() => {
+    if (data.flagLoadMenuDetail && data.menuID !== undefined) {
+      const menuID = data.menuID;
+
+      axios({
+        url: `${BACKEND_DOMAIN}/menus/${menuID}`,
+        method: "GET",
+      })
+        .then((res) => res.data)
+        .then((data) => {
+          dispatch(setMenuDetail(data));
+          console.log(`Done loading menu #${menuID}`);
+        })
+        .catch(function (error) {
+          console.log("Request failed", error);
+        });
+
+      dispatch(doneLoadingMenuDetail);
+    }
+  }, [data.flagLoadMenuDetail, data.menuID, dispatch]);
 
   return (
     <div className="App">

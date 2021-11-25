@@ -37,10 +37,7 @@ const Body = function ({
         ></Search>
         
         <ExampleComponent />
-        {/* <Visualization
-          menus={menus}
-          menu={menu}  
-        ></Visualization> */}
+        <Visualization></Visualization>
         </div>   
       );
 

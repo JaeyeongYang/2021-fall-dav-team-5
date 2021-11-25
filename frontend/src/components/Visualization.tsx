@@ -12,28 +12,6 @@ import {
   selectMenus
 } from "src/store/reducers/data";
 
-// const Visualization = function ({
-//     menus,
-//     menu
-// }:{
-//     menus: Promise<any>,
-//     menu: Promise<any>
-// }) {    
-    
-//     return (                
-//         <div className='vis-div'>                    
-//             <div> 
-//                 {/* 채: 여기서 작업하시면 됩니다. */}
-//                 <PopupWindow text="Pie Chart"></PopupWindow>
-//                 <p>버블 차트 들어가는 곳</p>
-//             </div>
-            
-//             <div className='scatter-plot-menu-div'>                
-//                 <ScatterPlotMenu></ScatterPlotMenu>
-//             </div>
-//         </div>        
-//     )
-
 const Visualization = function () {
     const menus1 = useAppSelector(selectMenus)!;
     const menus2 = menus1?.slice(1, 600).concat(menus1?.slice(601, 1318));
@@ -53,11 +31,7 @@ const Visualization = function () {
     } else{
         console.log('else selected', selectedMenus)
         return (                
-            <div className='vis-div'>
-                {/* <div className='color-selector-div'>                
-                    <ColorSelector></ColorSelector>
-                </div> */}
-                
+            <div className='vis-div'>                
                 <div> 
                     {/* <PopupWindow text="Pie Chart"></PopupWindow> */}
                     <BubbleChart bubblesData={selectedMenus} width={1300} height={700} textFillColor="drakgrey" backgroundColor="#ffffff" minValue={1} maxValue={300} selectedCircle={selectedKeyHandler} />

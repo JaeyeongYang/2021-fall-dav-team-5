@@ -22,10 +22,6 @@ export interface Menu {
   ingredients_count: number;
 }
 
-export interface ForceMenu{
-  size: number
-}
-
 export interface Ingredient {
   id: number;
   name: string;
@@ -51,8 +47,11 @@ export interface IngredientDetail extends Ingredient {
 export type ValueCountTuple = [string, number];
 
 export interface DataState {
-  flagLoadData?: boolean;
+  flagLoadMenus?: boolean;
+  flagLoadMenuDetail?: boolean;
   menus?: Menu[];
+  menuID?: number;
+  menuDetail?: MenuDetail;
   ingredients?: Ingredient[];
   ways?: ValueCountTuple[];
   pats?: ValueCountTuple[];
@@ -60,7 +59,8 @@ export interface DataState {
 }
 
 export const initialDataState: DataState = {
-  flagLoadData: true,
+  flagLoadMenus: true,
+  flagLoadMenuDetail: false,
 };
 
 export const getPreloadedDataState = (): DataState => {
@@ -73,14 +73,28 @@ const slice = createSlice({
   name: "data",
   initialState: initialDataState,
   reducers: {
-    loadData: (state) => {
-      state.flagLoadData = true;
+    loadMenus: (state) => {
+      state.flagLoadMenus = true;
     },
-    doneLoadingData: (state) => {
-      state.flagLoadData = false;
+    doneLoadingMenus: (state) => {
+      state.flagLoadMenus = false;
+    },
+    loadMenuDetail: (state, action: PayloadAction<number>) => {
+      state.menuID = action.payload;
+      state.flagLoadMenuDetail = true;
+    },
+    doneLoadingMenuDetail: (state) => {
+      state.flagLoadMenuDetail = false;
+    },
+    clearMenuDetail: (state) => {
+      delete state['menuID'];
+      delete state['menuDetail'];
     },
     setMenus: (state, action: PayloadAction<Menu[]>) => {
       state.menus = action.payload;
+    },
+    setMenuDetail: (state, action: PayloadAction<MenuDetail>) => {
+      state.menuDetail = action.payload;
     },
     setIngredients: (state, action: PayloadAction<Ingredient[]>) => {
       state.ingredients = action.payload;
@@ -100,9 +114,13 @@ const slice = createSlice({
 const { reducer } = slice;
 
 export const {
-  loadData,
-  doneLoadingData,
+  loadMenus,
+  doneLoadingMenus,
+  loadMenuDetail,
+  doneLoadingMenuDetail,
+  clearMenuDetail,
   setMenus,
+  setMenuDetail,
   setIngredients,
   setWays,
   setPats,
@@ -112,6 +130,10 @@ export const {
 export const selectMenus = createSelector(
   (state: RootState) => state.data.menus,
   (menus) => menus
+);
+export const selectMenuDetail = createSelector(
+  (state: RootState) => state.data.menuDetail,
+  (menuDetail) => menuDetail
 );
 export const selectIngredients = createSelector(
   (state: RootState) => state.data.ingredients,

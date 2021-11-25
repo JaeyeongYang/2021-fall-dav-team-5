@@ -7,6 +7,7 @@ import Row from "react-bootstrap/Row";
 import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import Badge from "react-bootstrap/Badge";
+import CloseButton from "react-bootstrap/CloseButton"
 
 import 'react-bootstrap-tagsinput/dist/index.css';
 import "./Search.css";
@@ -14,7 +15,8 @@ import ThreeToggleButtons from "./ThreeToggleButtons";
 import ColorSelector from "./ColorSelector";
 import ColorFilter from "./ColorFilter";
 import {  
-    Tag
+    Tag,
+    BubbleColors,
   } from "../store/reducers/data";
 
 const Search = function ({  
@@ -24,7 +26,17 @@ const Search = function ({
     getAllList,
   
     getRadioValue,
-    setThreeToggleValue
+    setThreeToggleValue,
+    deleteIngredientOrMenu,
+
+    bubbleColors,
+    bubbleColorValue,
+    setBubbleColorValue,
+
+    menuCategory,
+    howToCook,
+    setMenuCategory,
+    setHowToCook
   }:{
     searchOnKeyPress: (e: any) => void,
     searchOnChange: (e: any) => void,
@@ -32,7 +44,17 @@ const Search = function ({
     getAllList: () => Tag[],
   
     getRadioValue: () => string,
-    setThreeToggleValue: (s: string) => void
+    setThreeToggleValue: (s: string) => void,
+    deleteIngredientOrMenu: (e: any) => void,
+
+    bubbleColors: BubbleColors[],
+    bubbleColorValue: string,
+    setBubbleColorValue: React.Dispatch<React.SetStateAction<string>>
+
+    menuCategory: string,
+    howToCook: string,
+    setMenuCategory: React.Dispatch<React.SetStateAction<string>>,
+    setHowToCook: React.Dispatch<React.SetStateAction<string>>
   }) {             
     
     const setTagColor = (s:string) => {
@@ -40,6 +62,7 @@ const Search = function ({
         else if (s=='2') {return 'danger'}
         else {return 'success'}
     }
+
 
     return (
         <section className="search-section">
@@ -71,19 +94,39 @@ const Search = function ({
             <Row>
                 <Col md="8">                                                                   
                 {getAllList().map((tag,idx) => (            
-                    <Badge pill bg={setTagColor(tag.radioValue)}>
-                        {tag.ingredientOrMenu}
-                    </Badge>                    
+                    <span>                    
+                    <Badge pill bg={setTagColor(tag.radioValue)} style={{fontSize: 16}}>
+                        {tag.ingredientOrMenu} &nbsp;                                               
+                        <CloseButton name={tag.ingredientOrMenu} id={tag.radioValue} variant="white" style={{fontSize: 12}} 
+                            onClick={deleteIngredientOrMenu}
+                            // onClick={(e)=>{
+                            //     const element = e.target as HTMLButtonElement;
+                            //     console.log(element.id);
+                            //     console.log(element.name);}
+                            //     }
+                        />
+                    </Badge> &nbsp;                     
+                    </span>
                 ))}                    
                 </Col>
                 
                 <Col md="4">
                     <Row>                    
-                        <ColorSelector/>
+                        <ColorSelector
+                            bubbleColors={bubbleColors}
+                            bubbleColorValue={bubbleColorValue}
+                            setBubbleColorValue={setBubbleColorValue}
+                        ></ColorSelector>
                     </Row>
                     
                     <Row>
-                        <ColorFilter/>
+                        <ColorFilter
+                            bubbleColorValue={bubbleColorValue}
+                            menuCategory={menuCategory}
+                            howToCook={howToCook}
+                            setMenuCategory={setMenuCategory}
+                            setHowToCook={setHowToCook}
+                        ></ColorFilter>
                     </Row>
                 </Col>                                 
             </Row>

@@ -3,14 +3,13 @@ import React from 'react'
 import * as d3 from 'd3'
 import { Simulation, SimulationNodeDatum } from 'd3-force'
 import './BubbleChart.css'
-import { Button } from '@material-ui/core'
+import Button from "react-bootstrap/Button";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { Menu, ForceMenu } from 'src/store/reducers/data'
-// import PopOver from "../PopupWindow";
+import PopOver from "./PopupWindow";
 
 
 const uuid = require('react-uuid')
-
 
 class BubbleChart extends React.Component<IBubbleChartProps, IBubbleChartState> {
     public forceData: ForceMenu[]
@@ -72,45 +71,60 @@ class BubbleChart extends React.Component<IBubbleChartProps, IBubbleChartState> 
           this.setState({ data })
         })
     }
+
+    backgroundColor = (aMenu: Menu, value: string) => {
+      const val = value==='way' ? aMenu.way : aMenu.pat
+
+      if( val=== "굽기" || val == "밥"){
+        return "#FFCEC7" // pink
+      }else if( val === "끓이기" || val == "국&찌개"){
+        return "#FBDEA2" // yellow 
+      }else if ( val === "볶기" || val == "반찬"){
+        return "#B6DEE7" // blue
+      }else if ( val === "찌기" || val == "일품"){
+        return "#9ADBC7" // green 
+      }else if ( val === "튀기기" || val == "후식"){
+        return "#C9CBE0" // light pink
+      }else{
+        return "#E2E2E2 " // light grey
+      }
+
+    }
   
     renderBubbles = (data: []) => {
       return data.map((item: { v: number; x: number; y: number }, index) => {
         const { props } = this
         const fontSize = this.radiusScale((item as unknown as ForceMenu).size) / 3
         const content = props.bubblesData.length > index ? props.bubblesData[index].name : ''
-        const strokeColor = props.bubblesData.length > index ? 'darkgrey' : this.props.backgroundColor
+        const strokeColor = props.bubblesData.length > index ? 'darkgrey' : this.props.backgroundColor 
         return (
-            // <OverlayTrigger trigger="click" placement="top" overlay={PopOver}>
+            <OverlayTrigger placement="top" overlay={PopOver(content)} > 
                 <g key={`g-${uuid()}`} transform={`translate(${props.width / 2 + item.x - 70}, ${props.height / 2 + item.y})`}>
                     
                         <circle
                         style={{ cursor: 'pointer' }}
-                        // onClick={() => {
-                        //     this.props.selectedCircle(content)
-                        // }}
                         id="circleSvg"
                         r={this.radiusScale((item as unknown as ForceMenu).size)}
-                        fill={'#00B9EF'} // 추후 변경 
-                        stroke={strokeColor}
+                        fill={this.backgroundColor(props.bubblesData[index], "way")} 
+                        stroke={'#ffffffff'} //strokeColor
                         strokeWidth="2"
                         />
                     <text
-                    // onClick={() => {
-                    //     this.props.selectedCircle(content)
-                    // }}
                     dy="6"
                     className="bubbleText"
                     fill={this.props.textFillColor}
                     textAnchor="middle"
                     fontSize={`${fontSize}px`}
                     fontWeight="bold"
+                    textLength="50"
+                    lengthAdjust="spacingAndGlyphs" // 더 예쁘게 바꿀 수 있으면 좋겠음 
                     >
                     {content}
                     </text>
                     
                     
                 </g>
-            // </OverlayTrigger>
+            </OverlayTrigger>
     
         )
       })
@@ -144,8 +158,8 @@ interface IBubbleChartProps {
   bubblesData: Menu[]
   width: number
   height: number
-  backgroundColor: string
   textFillColor: string
+  backgroundColor: string
   minValue: number
   maxValue: number
   selectedCircle: (content: string) => void

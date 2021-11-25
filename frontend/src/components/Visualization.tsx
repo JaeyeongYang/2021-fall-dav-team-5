@@ -10,43 +10,49 @@ import { Menu } from "../store/reducers/data";
 import './BubbleChart.css'
 import { useAppSelector } from "src/hooks";
 import {
-  selectHashtags,
-  selectIngredients,
-  selectMenus,
-  selectPats,
-  selectWays,
+  selectMenus
 } from "src/store/reducers/data";
 
 
 
+
 const Visualization = function () {
-    const menus = useAppSelector(selectMenus);
-    
+    const menus1 = useAppSelector(selectMenus)!;
+    const menus2 = menus1?.slice(1, 600).concat(menus1?.slice(601, 1318));
+    const shuffled = menus2?.sort(() => Math .random() - 0.5 );
+    const selectedMenus = shuffled?.slice(1, 200);
+
     const selectedKeyHandler = (key: string) => {
         // eslint-disable-next-line no-alert
         alert(key)
       };
-    let selectedMenus: [] = menus?.slice(1, 200) as [];
-    // const selectedMenus = menus?.slice(1, 200);
-    // console.log(menus?.slice(1, 20)); 
-    console.log(menus) 
+    
+    if (typeof selectedMenus === typeof undefined){
+        console.log('if selected', selectedMenus);
+        return (
+            <div></div>
+        )        
+    } else{
+        console.log('else selected', selectedMenus)
+        return (                
+            <div className='vis-div'>
+                {/* <div className='color-selector-div'>                
+                    <ColorSelector></ColorSelector>
+                </div> */}
+                
+                <div> 
+                    {/* <PopupWindow text="Pie Chart"></PopupWindow> */}
+                    <BubbleChart bubblesData={selectedMenus} width={1300} height={700} textFillColor="drakgrey" backgroundColor="#ffffff" minValue={1} maxValue={300} selectedCircle={selectedKeyHandler} />
+                </div>
+                
+                <div className='scatter-plot-menu-div'>                
+                    <ScatterPlotMenu></ScatterPlotMenu>
+                </div>
+            </div>        
+        )
 
-    return (                
-        <div className='vis-div'>
-            {/* <div className='color-selector-div'>                
-                <ColorSelector></ColorSelector>
-            </div> */}
-            
-            <div> 
-                {/* <PopupWindow text="Pie Chart"></PopupWindow> */}
-                <BubbleChart bubblesData={selectedMenus} width={1300} height={700} textFillColor="drakgrey" backgroundColor="#ffffff" minValue={1} maxValue={200} selectedCircle={selectedKeyHandler} />
-            </div>
-            
-            <div className='scatter-plot-menu-div'>                
-                <ScatterPlotMenu></ScatterPlotMenu>
-            </div>
-        </div>        
-    )
+    }
+
 };
 
 export default Visualization;

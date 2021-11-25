@@ -5,28 +5,40 @@ import { BACKEND_DOMAIN } from "./globals";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import {
   DataState,
+<<<<<<< HEAD
   doneLoadingData,
   loadData,
   setHashtags,
   setIngredients,
+=======
+  Tag,
+  doneLoadingMenuDetail,
+  doneLoadingMenus,
+  loadMenus,
+  setHashtags,
+  setIngredients,
+  setMenuDetail,
+>>>>>>> main
   setMenus,
   setPats,
   setWays,
 } from "./store/reducers/data";
 import Header from "./components/Header";
 import Body from "./components/Body";
-import { Tag } from "./interfaces";
 
-import {Menu} from "./Menu";
-import {getMenus, getAMenu} from "./api";
+// import {Menu} from "./Menu";
+// import {getMenus, getAMenu} from "./api";
+
+import "./App.css";
+import axios from "axios";
 
 import "./App.css";
 import axios from "axios";
 
 function App() {
   // Menu.tsx
-  const menus = getMenus(); 
-  const menu = getAMenu(1); // id: 1
+  // const menus = getMenus(); 
+  // const menu = getAMenu(1); // id: 1
 
   // for Search.tsx
   const [ingredientOrMenu, setIngredientOrMenu] = useState('');    
@@ -92,12 +104,20 @@ function App() {
     console.log('allList:', allList);
   }, [ingredientList, ingredientNotList, menuList, allList]);
 
+<<<<<<< HEAD
             
+=======
+  //////////////////
+>>>>>>> main
   const data: DataState = useAppSelector((state) => state.data);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+<<<<<<< HEAD
     dispatch(loadData);
+=======
+    dispatch(loadMenus);
+>>>>>>> main
 
     axios({
       url: `${BACKEND_DOMAIN}/ingredients/`,
@@ -128,7 +148,11 @@ function App() {
 
   // When data.flagLoadData changes
   useEffect(() => {
+<<<<<<< HEAD
     if (data.flagLoadData) {
+=======
+    if (data.flagLoadMenus) {
+>>>>>>> main
       axios({
         url: `${BACKEND_DOMAIN}/menus/`,
         method: "GET",
@@ -141,6 +165,7 @@ function App() {
           console.log("Request failed", error);
         });
 
+<<<<<<< HEAD
       dispatch(doneLoadingData);
     }
   }, [data.flagLoadData, dispatch]);
@@ -160,6 +185,45 @@ function App() {
         getRadioValue={getRadioValue}
         setThreeToggleValue={setThreeToggleValue}
       ></Body>
+=======
+      dispatch(doneLoadingMenus);
+    }
+  }, [data.flagLoadMenus, dispatch]);
+
+  useEffect(() => {
+    if (data.flagLoadMenuDetail && data.menuID !== undefined) {
+      const menuID = data.menuID;
+
+      axios({
+        url: `${BACKEND_DOMAIN}/menus/${menuID}`,
+        method: "GET",
+      })
+        .then((res) => res.data)
+        .then((data) => {
+          dispatch(setMenuDetail(data));
+          console.log(`Done loading menu #${menuID}`);
+        })
+        .catch(function (error) {
+          console.log("Request failed", error);
+        });
+
+      dispatch(doneLoadingMenuDetail);
+    }
+  }, [data.flagLoadMenuDetail, data.menuID, dispatch]);
+
+  return (
+    <div className="App">
+      <Header></Header>
+      <Body      
+      searchOnKeyPress={searchOnKeyPress}
+      searchOnChange={searchOnChange}         
+      searchInitLists={searchInitLists}
+      getAllList={getAllList}
+
+      getRadioValue={getRadioValue}
+      setThreeToggleValue={setThreeToggleValue}
+    ></Body>
+>>>>>>> main
     </div>
   );
 }

@@ -47,16 +47,35 @@ export interface IngredientDetail extends Ingredient {
 export type ValueCountTuple = [string, number];
 
 export interface DataState {
+<<<<<<< HEAD
   flagLoadData?: boolean;
   menus?: Menu[];
+=======
+  flagLoadMenus?: boolean;
+  flagLoadMenuDetail?: boolean;
+  menus?: Menu[];
+  menuID?: number;
+  menuDetail?: MenuDetail;
+>>>>>>> main
   ingredients?: Ingredient[];
   ways?: ValueCountTuple[];
   pats?: ValueCountTuple[];
   hashtags?: ValueCountTuple[];
 }
 
+<<<<<<< HEAD
 export const initialDataState: DataState = {
   flagLoadData: true,
+=======
+export interface Tag {
+  ingredientOrMenu: string;
+  radioValue: string;    
+}
+
+export const initialDataState: DataState = {
+  flagLoadMenus: true,
+  flagLoadMenuDetail: false,
+>>>>>>> main
 };
 
 export const getPreloadedDataState = (): DataState => {
@@ -69,15 +88,40 @@ const slice = createSlice({
   name: "data",
   initialState: initialDataState,
   reducers: {
+<<<<<<< HEAD
     loadData: (state) => {
       state.flagLoadData = true;
     },
     doneLoadingData: (state) => {
       state.flagLoadData = false;
+=======
+    loadMenus: (state) => {
+      state.flagLoadMenus = true;
+    },
+    doneLoadingMenus: (state) => {
+      state.flagLoadMenus = false;
+    },
+    loadMenuDetail: (state, action: PayloadAction<number>) => {
+      state.menuID = action.payload;
+      state.flagLoadMenuDetail = true;
+    },
+    doneLoadingMenuDetail: (state) => {
+      state.flagLoadMenuDetail = false;
+    },
+    clearMenuDetail: (state) => {
+      delete state['menuID'];
+      delete state['menuDetail'];
+>>>>>>> main
     },
     setMenus: (state, action: PayloadAction<Menu[]>) => {
       state.menus = action.payload;
     },
+<<<<<<< HEAD
+=======
+    setMenuDetail: (state, action: PayloadAction<MenuDetail>) => {
+      state.menuDetail = action.payload;
+    },
+>>>>>>> main
     setIngredients: (state, action: PayloadAction<Ingredient[]>) => {
       state.ingredients = action.payload;
     },
@@ -96,9 +140,19 @@ const slice = createSlice({
 const { reducer } = slice;
 
 export const {
+<<<<<<< HEAD
   loadData,
   doneLoadingData,
   setMenus,
+=======
+  loadMenus,
+  doneLoadingMenus,
+  loadMenuDetail,
+  doneLoadingMenuDetail,
+  clearMenuDetail,
+  setMenus,
+  setMenuDetail,
+>>>>>>> main
   setIngredients,
   setWays,
   setPats,
@@ -109,6 +163,13 @@ export const selectMenus = createSelector(
   (state: RootState) => state.data.menus,
   (menus) => menus
 );
+<<<<<<< HEAD
+=======
+export const selectMenuDetail = createSelector(
+  (state: RootState) => state.data.menuDetail,
+  (menuDetail) => menuDetail
+);
+>>>>>>> main
 export const selectIngredients = createSelector(
   (state: RootState) => state.data.ingredients,
   (ingredients) => ingredients

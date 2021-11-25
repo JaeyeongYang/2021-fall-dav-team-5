@@ -1,12 +1,12 @@
 import Search from "./Search";
 import Visualization from "./Visualization";
 import "./Body.css";
-import { Tag } from "../interfaces";
+import {  
+  Tag
+} from "../store/reducers/data";
+import ExampleComponent from "./ExampleComponent";
 
-const Body = function ({  
-  menus,
-  menu,
-  
+const Body = function ({    
   searchOnKeyPress,
   searchOnChange,
   searchInitLists,
@@ -14,10 +14,7 @@ const Body = function ({
 
   getRadioValue,
   setThreeToggleValue
-}:{
-  menus: Promise<any>,
-  menu: Promise<any>,
-
+}:{  
   searchOnKeyPress: (e: any) => void,
   searchOnChange: (e: any) => void,
   searchInitLists: () => void,
@@ -38,16 +35,12 @@ const Body = function ({
           getRadioValue={getRadioValue}
           setThreeToggleValue={setThreeToggleValue}
         ></Search>
-
-
-        <Visualization
-          menus={menus}
-          menu={menu}  
-        ></Visualization>
+        
+        <ExampleComponent />
+        <Visualization></Visualization>
         </div>   
       );
 
 }
 
 export default Body;
-

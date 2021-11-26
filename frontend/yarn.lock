@@ -1837,8 +1837,6 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
-<<<<<<< HEAD
-=======
 "@types/d3-array@*":
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/@types/d3-array/-/d3-array-3.0.2.tgz#71c35bca8366a40d1b8fce9279afa4a77fb0065d"
@@ -2049,7 +2047,6 @@
     "@types/d3-transition" "*"
     "@types/d3-zoom" "*"
 
->>>>>>> main
 "@types/eslint@^7.28.2":
   version "7.29.0"
   resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-7.29.0.tgz#e56ddc8e542815272720bb0b4ccc2aff9c3e1c78"

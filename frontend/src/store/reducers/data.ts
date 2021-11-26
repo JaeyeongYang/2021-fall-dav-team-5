@@ -58,6 +58,17 @@ export interface DataState {
   hashtags?: ValueCountTuple[];
 }
 
+export interface Tag {
+  ingredientOrMenu: string;
+  radioValue: string;    
+}
+
+export interface BubbleColors {
+  name: string,
+  value: string,
+  color: string,
+}
+
 export const initialDataState: DataState = {
   flagLoadMenus: true,
   flagLoadMenuDetail: false,

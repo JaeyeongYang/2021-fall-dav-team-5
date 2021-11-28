@@ -1,14 +1,14 @@
 import "./Body.css";
 import { Tag, BubbleColors } from "src/store/reducers/data";
 
-import Search from "src/components/searchbar/Search";
+import SearchBar from "src/components/searchbar/SearchBar";
 import ExampleComponent from "./ExampleComponent";
 import Visualization from "./Visualization";
 
 const Body = function () {
   return (
     <div className="main">
-      <Search />
+      <SearchBar />
       <ExampleComponent />
       <Visualization></Visualization>
     </div>

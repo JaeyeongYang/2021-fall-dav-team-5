@@ -84,7 +84,7 @@ const SearchInput = (props: any) => {
   const onKeyPress = (e: any) => {
     if (e.key == "Enter") {
       const term = {
-        name: e.target.value,
+        name: e.target.value.trim(),
         type:
           mode == Mode.menu ? SearchTermType.menu : SearchTermType.ingredient,
         isParsed: false,

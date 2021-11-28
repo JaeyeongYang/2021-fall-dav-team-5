@@ -103,12 +103,21 @@ class BubbleChart extends React.Component<
   };
 
   renderBubbles = (data: []) => {
+    if (!(data && data.length > 0)) {
+      return <></>;
+    }
+
     return data.map((item: { v: number; x: number; y: number }, index) => {
       const { props } = this;
+      const d = props.bubblesData[index];
+
+      if (d === undefined) {
+        return <></>;
+      }
+
       const fontSize =
         this.radiusScale((item as unknown as ForceMenu).size) / 3;
-      const content =
-        props.bubblesData.length > index ? props.bubblesData[index].name : "";
+      const content = props.bubblesData.length > index ? d.name : "";
 
       return (
         // <OverlayTrigger placement="top" overlay={PopOver(content)}>
@@ -122,7 +131,7 @@ class BubbleChart extends React.Component<
             style={{ cursor: "pointer" }}
             id="circleSvg"
             r={this.radiusScale((item as unknown as ForceMenu).size)}
-            fill={this.backgroundColor(props.bubblesData[index], "way")}
+            fill={this.backgroundColor(d, "way")}
             stroke={"#ffffffff"} //strokeColor
             strokeWidth="2"
           />

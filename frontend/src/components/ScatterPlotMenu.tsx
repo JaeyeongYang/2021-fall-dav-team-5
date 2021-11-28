@@ -1,95 +1,111 @@
-import React, {useState} from "react";
+import React from "react";
 
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
-import InputGroup from "react-bootstrap/InputGroup";
-import FormControl from "react-bootstrap/FormControl";
 import Dropdown from "react-bootstrap/Dropdown";
-import DropdownButton from "react-bootstrap/DropdownButton";
 
 import "./Footer.css";
 
-function ScatterPlotMenu(){
+const ScatterPlotMenu = function ({
+    xAxis,
+    yAxis,
+    setXAxis,
+    setYAxis,
+    onAlignButtonClick,
+    onResetButtonClick
+}:{
+    xAxis: string,
+    yAxis: string,
+    setXAxis: React.Dispatch<React.SetStateAction<string>>,
+    setYAxis: React.Dispatch<React.SetStateAction<string>>,
+    onAlignButtonClick: (e: any) => void,
+    onResetButtonClick: (e: any) => void
+}){    
+    interface Axis {
+        [key: string]: string;
+    }
 
-    const [x_axis, setXAxis] = useState('');    
-    const [y_axis, setYAXis] = useState('');
+    const nutrition_map_x: Axis = {
+        'x-axis': 'X-axis',        
+        'energy': 'X: Cal',
+        'carb': 'X: Carb',
+        'protein': 'X: Prot',
+        'fat': 'X: Fat',
+        'na': 'X: Salt'
+    }
+    
+    const nutrition_map_y: Axis = {
+        'y-axis': 'Y-axis',        
+        'energy': 'Y: Cal',
+        'carb': 'Y: Carb',
+        'protein': 'Y: Prot',
+        'fat': 'Y: Fat',
+        'na': 'Y: Salt'
+    }
 
     return (
-        <footer className="scatter-plot-menu">          
+        <div className="scatter-plot-menu">          
           <section>
             <Container>            
             <Row>
                 <Col md="8">
                 </Col>
                 <Col md="1">
-                    <DropdownButton variant="outline-secondary" title="X-Axis&nbsp;&nbsp;" drop="up" size="sm" className="scatter-plot-dropdown">
-                        <Dropdown.Item href="#">Calory</Dropdown.Item>
-                        <Dropdown.Divider />
-                        <Dropdown.Item href="#">Carbohydrate</Dropdown.Item>
-                        <Dropdown.Item href="#">Protein</Dropdown.Item>
-                        <Dropdown.Item href="#">Fat</Dropdown.Item>
-                        <Dropdown.Divider />
-                        <Dropdown.Item href="#">Sodium</Dropdown.Item>
-                    </DropdownButton>                    
+                    <Dropdown onSelect={(eventKey)=>setXAxis(eventKey+'')}>
+                        <Dropdown.Toggle variant="outline-secondary" size="sm" style={{width: '100%'}}>
+                            {nutrition_map_x[xAxis]}
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            <Dropdown.Item eventKey="x-axis">Reset</Dropdown.Item>                        
+                            <Dropdown.Divider />
+                            <Dropdown.Item eventKey="energy">Calory</Dropdown.Item>                        
+                            <Dropdown.Item eventKey="carb">Carbohydrate</Dropdown.Item>
+                            <Dropdown.Item eventKey="protein">Protein</Dropdown.Item>
+                            <Dropdown.Item eventKey="fat">Fat</Dropdown.Item>                        
+                            <Dropdown.Item eventKey="na">Salt</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>               
                 </Col>
 
                 <Col md="1">
-                    <DropdownButton variant="outline-secondary" title="Y-Axis&nbsp;&nbsp;" drop="up" size="sm">
-                        <Dropdown.Item href="#">Calory</Dropdown.Item>
-                        <Dropdown.Divider />
-                        <Dropdown.Item href="#">Carbohydrate</Dropdown.Item>
-                        <Dropdown.Item href="#">Protein</Dropdown.Item>
-                        <Dropdown.Item href="#">Fat</Dropdown.Item>
-                        <Dropdown.Divider />
-                        <Dropdown.Item href="#">Sodium</Dropdown.Item>
-                    </DropdownButton>  
+                    <Dropdown onSelect={(eventKey)=>setYAxis(eventKey+'')}>
+                        <Dropdown.Toggle variant="outline-secondary" size="sm" style={{width: '100%'}}>
+                            {nutrition_map_y[yAxis]}
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            <Dropdown.Item eventKey="y-axis">Reset</Dropdown.Item>                        
+                            <Dropdown.Divider />
+                            <Dropdown.Item eventKey="energy">Calory</Dropdown.Item>                        
+                            <Dropdown.Item eventKey="carb">Carbohydrate</Dropdown.Item>
+                            <Dropdown.Item eventKey="protein">Protein</Dropdown.Item>
+                            <Dropdown.Item eventKey="fat">Fat</Dropdown.Item>                        
+                            <Dropdown.Item eventKey="na">Salt</Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>                     
                 </Col>
                 
                 <Col md="2">
                 <div className="d-grid">
                 <ButtonGroup>                
-                    <Button variant="primary" size="sm">
+                    <Button variant="primary" size="sm" onClick={(e) => onAlignButtonClick(e)}>
                         Align
                     </Button>
 
-                    <Button variant="success" size="sm">
+                    <Button variant="success" size="sm" onClick={(e) => onResetButtonClick(e)}>
                         Reset
                     </Button>
                 </ButtonGroup>
                 </div>
-                </Col>
-                {/* <Col md="1">            
-                    <DropdownButton variant="secondary" title="Y-Axis&nbsp;&nbsp;" drop="up" size="sm">
-                        <Dropdown.Item href="#">Calory</Dropdown.Item>
-                        <Dropdown.Divider />
-                        <Dropdown.Item href="#">Carbohydrate</Dropdown.Item>
-                        <Dropdown.Item href="#">Protein</Dropdown.Item>
-                        <Dropdown.Item href="#">Fat</Dropdown.Item>
-                        <Dropdown.Divider />
-                        <Dropdown.Item href="#">Sodium</Dropdown.Item>
-                    </DropdownButton>            
-                </Col>
-                <Col md="1">
-                    <div className="d-grid">
-                    <Button variant="primary" size="sm">
-                        Align
-                    </Button>
-                    </div>
-                </Col>
-                <Col md="1">
-                    <div className="d-grid">
-                    <Button variant="success" size="sm">
-                        Reset
-                    </Button>
-                    </div>
-                </Col>                */}
+                </Col>                
             </Row>
             </Container>
           </section>
-        </footer>
+        </div>
       )
 }
 

@@ -6,6 +6,7 @@ import {
   BubbleColors
 } from "../store/reducers/data";
 import ExampleComponent from "./ExampleComponent";
+import ModalComponent from "./ModalComponent";
 
 const Body = function ({    
   searchOnKeyPress,
@@ -24,7 +25,14 @@ const Body = function ({
   menuCategory,
   howToCook,
   setMenuCategory,
-  setHowToCook
+  setHowToCook,
+  
+  xAxis,
+  yAxis,
+  setXAxis,
+  setYAxis,
+  onAlignButtonClick,
+  onResetButtonClick
 }:{  
   searchOnKeyPress: (e: any) => void,
   searchOnChange: (e: any) => void,
@@ -42,32 +50,52 @@ const Body = function ({
   menuCategory: string,
   howToCook: string,
   setMenuCategory: React.Dispatch<React.SetStateAction<string>>,
-  setHowToCook: React.Dispatch<React.SetStateAction<string>>
+  setHowToCook: React.Dispatch<React.SetStateAction<string>>,
+  
+  xAxis: string,
+  yAxis: string,
+  setXAxis: React.Dispatch<React.SetStateAction<string>>,
+  setYAxis: React.Dispatch<React.SetStateAction<string>>,
+  onAlignButtonClick: (e: any) => void,
+  onResetButtonClick: (e: any) => void
 }){
     return (     
         <div className="main">   
-        <Search
-          searchOnKeyPress={searchOnKeyPress}
-          searchOnChange={searchOnChange}         
-          searchInitLists={searchInitLists}
-          getAllList={getAllList}
+          <Search
+            searchOnKeyPress={searchOnKeyPress}
+            searchOnChange={searchOnChange}         
+            searchInitLists={searchInitLists}
+            getAllList={getAllList}
 
-          getRadioValue={getRadioValue}
-          setThreeToggleValue={setThreeToggleValue}
-          deleteIngredientOrMenu={deleteIngredientOrMenu}
+            getRadioValue={getRadioValue}
+            setThreeToggleValue={setThreeToggleValue}
 
-          bubbleColors={bubbleColors}
-          bubbleColorValue={bubbleColorValue}
-          setBubbleColorValue={setBubbleColorValue}
+            deleteIngredientOrMenu={deleteIngredientOrMenu}
 
-          menuCategory={menuCategory}
-          howToCook={howToCook}
-          setMenuCategory={setMenuCategory}
-          setHowToCook={setHowToCook}
-        ></Search>
+            bubbleColors={bubbleColors}
+            bubbleColorValue={bubbleColorValue}
+            setBubbleColorValue={setBubbleColorValue}
+
+            menuCategory={menuCategory}
+            howToCook={howToCook}
+            setMenuCategory={setMenuCategory}
+            setHowToCook={setHowToCook}          
+          ></Search>
         
-        <ExampleComponent />
-        <Visualization></Visualization>
+          <ExampleComponent></ExampleComponent>
+
+          {/* 모달 있는 곳 */}
+          <ModalComponent></ModalComponent>
+
+          <Visualization            
+            xAxis={xAxis}
+            yAxis={yAxis}
+            setXAxis={setXAxis}
+            setYAxis={setYAxis}
+            onAlignButtonClick={onAlignButtonClick}
+            onResetButtonClick={onResetButtonClick}   
+          >
+          </Visualization>
         </div>   
       );
 

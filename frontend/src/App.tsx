@@ -108,6 +108,18 @@ function App() {
   const [menuCategory, setMenuCategory] = useState('Show All');
   const [howToCook, setHowToCook] = useState('Show All');
 
+  //ScatterPlotMenu.tsx
+  const [xAxis, setXAxis] = useState('x-axis');    
+  const [yAxis, setYAxis] = useState('y-axis');      
+
+  const onAlignButtonClick = (e:any) => {
+    console.log('ScatterPlotMenu.tsx: Align Button Clicked')
+  }
+
+  const onResetButtonClick = (e:any) => {
+    console.log('ScatterPlotMenu.tsx: Reset Button Clicked')
+  }
+
   // monitor changes
   // Search.tsx
   useEffect(()=>{        
@@ -125,6 +137,14 @@ function App() {
     console.log('MenuCategory:', menuCategory);
     console.log('howToCook:', howToCook);
   }, [bubbleColorValue, menuCategory, howToCook]);
+
+  //ScatterPlotMenu.tsx
+  useEffect(()=>{        
+    console.log('===== ScatterPlotMenu.tsx =====')
+    console.log('xAxis:', xAxis);    
+    console.log('yAxis:', yAxis);    
+  }, [xAxis, yAxis]);
+
 
   //////////////////
   const data: DataState = useAppSelector((state) => state.data);
@@ -204,23 +224,32 @@ function App() {
     <div className="App">
       <Header></Header>      
       <Body      
+      // Search.tsx (검색창)
       searchOnKeyPress={searchOnKeyPress}
       searchOnChange={searchOnChange}         
       searchInitLists={searchInitLists}
       getAllList={getAllList}
-
+      // ThreeToggleButton.tsx
       getRadioValue={getRadioValue}
       setThreeToggleValue={setThreeToggleValue}      
+      // Serach.tsx (태그들)
       deleteIngredientOrMenu={deleteIngredientOrMenu}
-
+      // ColorSelector.tsx
       bubbleColors={bubbleColors}
       bubbleColorValue={bubbleColorValue}
       setBubbleColorValue={setBubbleColorValue}
-
+      // ColorFilter.tsx
       menuCategory={menuCategory}
       howToCook={howToCook}
       setMenuCategory={setMenuCategory}
       setHowToCook={setHowToCook}
+      // ScatterPlotMenu.tsx
+      xAxis={xAxis}
+      yAxis={yAxis}
+      setXAxis={setXAxis}
+      setYAxis={setYAxis}
+      onAlignButtonClick={onAlignButtonClick}
+      onResetButtonClick={onResetButtonClick}      
     ></Body>
     </div>
   );

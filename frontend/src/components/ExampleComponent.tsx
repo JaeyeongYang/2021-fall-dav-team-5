@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { Button } from "react-bootstrap";
 
 import { useAppDispatch, useAppSelector } from "src/hooks";
@@ -6,6 +6,7 @@ import {
   clearMenuDetail,
   loadMenuDetail,
   selectMenuDetail,
+
 } from "src/store/reducers/data";
 
 const ExampleComponent = function () {
@@ -20,6 +21,7 @@ const ExampleComponent = function () {
     dispatch(clearMenuDetail());
   };
 
+
   return (
     <div>
       <span>Example component on how to load data state with redux</span>
@@ -29,7 +31,7 @@ const ExampleComponent = function () {
       </div>
       <div>
         <pre>{menuDetail && JSON.stringify(menuDetail)}</pre>
-      </div>
+      </div>      
     </div>
   );
 };

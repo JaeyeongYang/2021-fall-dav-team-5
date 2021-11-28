@@ -5,14 +5,33 @@ import {
 } from "@reduxjs/toolkit";
 import { RootState } from '../configureStore';
 
-export interface IngredientTerm {
+export enum SearchTermType {
+  menu = 'menu',
+  ingredient = 'ingredient',
+}
+
+export interface SearchTerm {
   name: string;
-  isParsed: boolean;
-  excluded: boolean;
+  type: SearchTermType;
+  isParsed?: boolean;
+  excluded?: boolean;
+}
+
+export const isEqualSearchTerm = (x: SearchTerm, y: SearchTerm) => {
+  return (
+    (x.name == y.name) &&
+    (x.type == y.type) &&
+    ((x.type == SearchTermType.ingredient)
+      ? (
+        ((x.isParsed ?? false) == (y.isParsed ?? false)) &&
+        ((x.excluded ?? false) == (y.excluded ?? false))
+      )
+      : (true))
+  )
 }
 
 export interface FilterState {
-  name?: string[];
+  terms?: SearchTerm[];
   way?: string[];
   pat?: string[];
   energy_min?: number;
@@ -26,15 +45,13 @@ export interface FilterState {
   na_min?: number;
   na_max?: number;
   hashtag?: string[];
-  ingredients?: IngredientTerm[];
 }
 
 export const initialFilterState: FilterState = {
-  name: [],
+  terms: [],
   way: [],
   pat: [],
   hashtag: [],
-  ingredients: [],
 };
 
 export const getPreloadedFilterState = (): FilterState => {
@@ -70,6 +87,19 @@ const slice = createSlice({
   name: "filter",
   initialState: initialFilterState,
   reducers: {
+    addSearchTerm: (state, action: PayloadAction<SearchTerm>) => {
+      if (state.terms === undefined) state.terms = [];
+      state.terms.push(action.payload);
+    },
+    removeSearchTerm: (state, action: PayloadAction<SearchTerm>) => {
+      if (state.terms === undefined) state.terms = [];
+      const term = action.payload;
+      const index = (
+        state.terms.map((x) => isEqualSearchTerm(x, term)).indexOf(true)
+      )
+      if (index != -1) state.terms.splice(index, 1);
+    },
+    clearSearchTerm: (state) => _clearFilter(state, 'terms'),
     addNameFilter: (state, action: PayloadAction<string>) => _addFilter(state, action, 'name'),
     removeNameFilter: (state, action: PayloadAction<string>) => _removeFilter(state, action, 'name'),
     clearNameFilter: (state) => _clearFilter(state, 'name'),
@@ -102,25 +132,15 @@ const slice = createSlice({
     addHashtagFilter: (state, action: PayloadAction<string>) => _addFilter(state, action, 'hashtag'),
     removeHashtagFilter: (state, action: PayloadAction<string>) => _removeFilter(state, action, 'hashtag'),
     clearHashtagFilter: (state) => _clearFilter(state, 'hashtag'),
-    addIngredientFilter: (state, action: PayloadAction<IngredientTerm>) => {
-      if (state.ingredients === undefined) state.ingredients = [];
-      state.ingredients.push(action.payload);
-    },
-    removeIngredientFilter: (state, action: PayloadAction<IngredientTerm>) => {
-      if (state.ingredients === undefined) state.ingredients = [];
-      const index = state.ingredients.indexOf(action.payload);
-      if (index != -1) state.ingredients.splice(index, 1)
-    },
-    clearIngredientFilter: (state) => _clearFilter(state, 'ingredients'),
   },
 });
 
 const { reducer } = slice;
 
 export const {
-  addNameFilter,
-  removeNameFilter,
-  clearNameFilter,
+  addSearchTerm,
+  removeSearchTerm,
+  clearSearchTerm,
   addWayFilter,
   removeWayFilter,
   clearWayFilter,
@@ -150,14 +170,15 @@ export const {
   addHashtagFilter,
   removeHashtagFilter,
   clearHashtagFilter,
-  addIngredientFilter,
-  removeIngredientFilter,
-  clearIngredientFilter,
 } = slice.actions;
 
 export const selectMenus = createSelector(
   (state: RootState) => state.filter,
   (filter) => filter
+);
+export const selectSearchTerms = createSelector(
+  (state: RootState) => state.filter.terms,
+  (terms) => terms
 );
 
 export default reducer;

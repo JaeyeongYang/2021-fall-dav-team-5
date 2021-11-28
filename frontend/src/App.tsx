@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import "./App.css";
 
 import { BACKEND_DOMAIN } from "./globals";
@@ -22,40 +22,51 @@ import Body from "./components/Body";
 
 import "./App.css";
 import axios from "axios";
+import { FilterState } from "./store/reducers/filter";
+import parseFilter from "./functions/parseFilter";
+import { showDetailView } from "./store/reducers/UI";
 
 function App() {
+  /*
+   * TODO: remove unnecessary useState usages on App
+   */
   // Search.tsx
-  const [ingredientOrMenu, setIngredientOrMenu] = useState('');    
+  const [ingredientOrMenu, setIngredientOrMenu] = useState("");
   const [ingredientList, setIngredientList] = useState<string[]>([]);
   const [ingredientNotList, setIngredientNotList] = useState<string[]>([]);
   const [menuList, setMenuList] = useState<string[]>([]);
   const [allList, setAllList] = useState<Tag[]>([]);
 
-  const searchOnKeyPress = (e: any) => { 
-    if(e.key=='Enter') { editLists(e) } 
-  }
-
-  const editLists = (e: any) => {        
-    if (radioValue == '1') {
-        setIngredientList(oldArray => [...oldArray, ingredientOrMenu]);
-        // setIngredientList(ingredient_list);
-    } else if (radioValue == '2') {
-        setIngredientNotList(oldArray => [...oldArray, ingredientOrMenu]);
-    } else {
-        setMenuList(oldArray => [...oldArray, ingredientOrMenu]);                        
+  const searchOnKeyPress = (e: any) => {
+    if (e.key == "Enter") {
+      editLists(e);
     }
-    
-    setAllList(oldArray => [...oldArray, {
-        ingredientOrMenu: ingredientOrMenu, 
-        radioValue: radioValue}
+  };
+
+  const editLists = (e: any) => {
+    if (radioValue == "1") {
+      setIngredientList((oldArray) => [...oldArray, ingredientOrMenu]);
+      // setIngredientList(ingredient_list);
+    } else if (radioValue == "2") {
+      setIngredientNotList((oldArray) => [...oldArray, ingredientOrMenu]);
+    } else {
+      setMenuList((oldArray) => [...oldArray, ingredientOrMenu]);
+    }
+
+    setAllList((oldArray) => [
+      ...oldArray,
+      {
+        ingredientOrMenu: ingredientOrMenu,
+        radioValue: radioValue,
+      },
     ]);
-    
-    e.target.value = ''; // initialize input bar
-  } 
-  
+
+    e.target.value = ""; // initialize input bar
+  };
+
   const searchOnChange = (e: any) => {
-    setIngredientOrMenu(e.target.value)
-  }
+    setIngredientOrMenu(e.target.value);
+  };
 
   const deleteIngredientOrMenu = (e: any) => {
     const element = e.target as HTMLButtonElement;
@@ -63,75 +74,63 @@ function App() {
     const ingredientOrMenuElem = element.name;
 
     if (radioValueElem == "1") {
-      setIngredientList(ingredientList.filter(item => item != ingredientOrMenuElem))
-    } else if (radioValueElem == '2') {
-      setIngredientNotList(ingredientNotList.filter(item => item != ingredientOrMenuElem))
+      setIngredientList(
+        ingredientList.filter((item) => item != ingredientOrMenuElem)
+      );
+    } else if (radioValueElem == "2") {
+      setIngredientNotList(
+        ingredientNotList.filter((item) => item != ingredientOrMenuElem)
+      );
     } else {
-      setMenuList(menuList.filter(item => item != ingredientOrMenuElem));                        
+      setMenuList(menuList.filter((item) => item != ingredientOrMenuElem));
     }
 
-    setAllList(allList.filter(item => item.ingredientOrMenu != ingredientOrMenuElem));
-
-  }
+    setAllList(
+      allList.filter((item) => item.ingredientOrMenu != ingredientOrMenuElem)
+    );
+  };
 
   const searchInitLists = () => {
-    setIngredientList([]);        
-    setIngredientNotList([]);        
-    setMenuList([]);        
-    setAllList([]);            
-  }
+    setIngredientList([]);
+    setIngredientNotList([]);
+    setMenuList([]);
+    setAllList([]);
+  };
 
   const getAllList = () => {
-    return allList
-  }
-  
-  // ThreeToggleButtons.tsx
-  const [radioValue, setRadioValue] = useState('1');
+    return allList;
+  };
 
-  const setThreeToggleValue = (s:string) => {
-    setRadioValue(s);    
-  }
+  // ThreeToggleButtons.tsx
+  const [radioValue, setRadioValue] = useState("1");
+
+  const setThreeToggleValue = (s: string) => {
+    setRadioValue(s);
+  };
 
   const getRadioValue = () => {
     return radioValue;
-  }
+  };
 
   // ColorSelector.tsx
-  const [bubbleColorValue, setBubbleColorValue] = useState('10');
-  
-  const bubbleColors : BubbleColors[] = [
-    { name: 'Menu Category', value: '10', color: 'outline-info'},
-    { name: 'How to Cook', value: '11', color: 'outline-info'},      
-  ];
-  
-  // ColorFilter.tsx
-  const [menuCategory, setMenuCategory] = useState('Show All');
-  const [howToCook, setHowToCook] = useState('Show All');
+  const [bubbleColorValue, setBubbleColorValue] = useState("10");
 
-  // monitor changes
-  // Search.tsx
-  useEffect(()=>{        
-    console.log('===== Search.tsx =====')
-    console.log('ingredientList:', ingredientList);
-    console.log('ingredientNotList:', ingredientNotList);
-    console.log('menuList:', menuList);
-    console.log('allList:', allList);    
-  }, [ingredientList, ingredientNotList, menuList, allList]);
-  
-  //ColorSelector.tsx % ColorFilter.tsx
-  useEffect(()=>{        
-    console.log('===== ColorSelector.tsx & ColorFilter.tsx =====')
-    console.log('bubbleColorValue (10: Menu Category, 11: How to Cook):', bubbleColorValue);    
-    console.log('MenuCategory:', menuCategory);
-    console.log('howToCook:', howToCook);
-  }, [bubbleColorValue, menuCategory, howToCook]);
+  const bubbleColors: BubbleColors[] = [
+    { name: "Menu Category", value: "10", color: "outline-info" },
+    { name: "How to Cook", value: "11", color: "outline-info" },
+  ];
+
+  // ColorFilter.tsx
+  const [menuCategory, setMenuCategory] = useState("Show All");
+  const [howToCook, setHowToCook] = useState("Show All");
 
   //////////////////
   const data: DataState = useAppSelector((state) => state.data);
+  const filter: FilterState = useAppSelector((state) => state.filter);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(loadMenus);
+    dispatch(loadMenus());
 
     axios({
       url: `${BACKEND_DOMAIN}/ingredients/`,
@@ -163,11 +162,20 @@ function App() {
   // When data.flagLoadData changes
   useEffect(() => {
     if (data.flagLoadMenus) {
+      const parsedFilter = parseFilter(filter);
+
+      console.log("Filter state", filter);
+      console.log("Parsed filter", parsedFilter);
+
       axios({
         url: `${BACKEND_DOMAIN}/menus/`,
         method: "GET",
+        params: parsedFilter,
       })
-        .then((res) => res.data)
+        .then((res) => {
+          // console.log(res.request);
+          return res.data;
+        })
         .then((data) => {
           dispatch(setMenus(data));
         })
@@ -177,7 +185,7 @@ function App() {
 
       dispatch(doneLoadingMenus);
     }
-  }, [data.flagLoadMenus, dispatch]);
+  }, [data.flagLoadMenus, filter, dispatch]);
 
   useEffect(() => {
     if (data.flagLoadMenuDetail && data.menuID !== undefined) {
@@ -190,6 +198,7 @@ function App() {
         .then((res) => res.data)
         .then((data) => {
           dispatch(setMenuDetail(data));
+          dispatch(showDetailView());
           console.log(`Done loading menu #${menuID}`);
         })
         .catch(function (error) {
@@ -202,26 +211,23 @@ function App() {
 
   return (
     <div className="App">
-      <Header></Header>      
-      <Body      
-      searchOnKeyPress={searchOnKeyPress}
-      searchOnChange={searchOnChange}         
-      searchInitLists={searchInitLists}
-      getAllList={getAllList}
-
-      getRadioValue={getRadioValue}
-      setThreeToggleValue={setThreeToggleValue}      
-      deleteIngredientOrMenu={deleteIngredientOrMenu}
-
-      bubbleColors={bubbleColors}
-      bubbleColorValue={bubbleColorValue}
-      setBubbleColorValue={setBubbleColorValue}
-
-      menuCategory={menuCategory}
-      howToCook={howToCook}
-      setMenuCategory={setMenuCategory}
-      setHowToCook={setHowToCook}
-    ></Body>
+      <Header></Header>
+      <Body
+        searchOnKeyPress={searchOnKeyPress}
+        searchOnChange={searchOnChange}
+        searchInitLists={searchInitLists}
+        getAllList={getAllList}
+        getRadioValue={getRadioValue}
+        setThreeToggleValue={setThreeToggleValue}
+        deleteIngredientOrMenu={deleteIngredientOrMenu}
+        bubbleColors={bubbleColors}
+        bubbleColorValue={bubbleColorValue}
+        setBubbleColorValue={setBubbleColorValue}
+        menuCategory={menuCategory}
+        howToCook={howToCook}
+        setMenuCategory={setMenuCategory}
+        setHowToCook={setHowToCook}
+      ></Body>
     </div>
   );
 }

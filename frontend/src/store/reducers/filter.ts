@@ -46,8 +46,10 @@ export const getPreloadedFilterState = (): FilterState => {
 const _addFilter = (state: FilterState, action: PayloadAction<string>, key: string) => {
   // @ts-ignore
   if (state[key] === undefined) state[key] = [];
-  // @ts-ignore
-  state[key].push(action.payload);
+  if (action.payload != '') {
+    // @ts-ignore
+    state[key].push(action.payload);
+  }
 }
 
 const _removeFilter = (state: FilterState, action: PayloadAction<string>, key: string) => {

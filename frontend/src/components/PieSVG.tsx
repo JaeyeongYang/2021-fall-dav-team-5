@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, useState }  from "react";
 import * as d3 from "d3";
-import { Menu } from "src/store/reducers/data";
+import { Menu, MenuDetail } from "src/store/reducers/data";
 
 
 interface PieProps {
-  data: Menu;
+  data: Menu | MenuDetail;
   width:number;
   height:number;
   innerRadius:number;
@@ -20,7 +20,8 @@ const Pie = function(props:PieProps) {
   const ref = useRef(null);
   const createPie = d3
     .pie<PieDataProps>()
-    .value(d => d.value);  
+    .value(d => d.value)
+    .sort(null);  
   const createArc = d3
     .arc<d3.PieArcDatum<PieDataProps>>() 
     .outerRadius(props.outerRadius)
@@ -39,13 +40,15 @@ const Pie = function(props:PieProps) {
       const data = createPie(vis_data);
       const group = d3.select(ref.current);
       const groupWithData = group.selectAll("g.arc").data(data);
+      const legendgroupWithData = group.selectAll(".legend").data(data);
 
       groupWithData.exit().remove();
+      legendgroupWithData.exit().remove();
 
       const groupWithUpdate = groupWithData
         .enter()
         .append("g")
-        .attr("class", "arc");
+        .attr("class", "arc"); 
 
       const path = groupWithUpdate
         .append("path")
@@ -65,8 +68,37 @@ const Pie = function(props:PieProps) {
         .attr("alignment-baseline", "middle")
         .attr("transform", d => `translate(${createArc.centroid(d)})`)
         .style("fill", "white")
-        .style("font-size", 10)
-        .text(d => format(d.value));
+        .style("font-size", 15)
+        .text(d => d.value?format(d.value)+"g":'');
+
+      // const legendG = legendgroupWithData
+      //   .enter().append("g")
+      //   .attr("class", "legend")   
+      //   .attr("transform", function(d,i){
+      //     return "translate(" + (i * 15 + 20) + "," + (props.height - 110) + ")";
+      //   })
+      
+
+      const legendG = legendgroupWithData
+        .enter().append("g")
+        .attr("class", "legend")   
+        .attr("transform", function(d,i){
+          return "translate(" + (i * 15 + 20) + "," + (props.height - 30) + ")";
+        })
+
+      legendG.append("rect")
+        .attr("width", 10)
+        .attr("height", 10)
+        .attr("fill", (d, i) => colors[i]);
+      
+      legendG.append("text")
+        .text(function(d){
+          return d.value + "  " + d.data.name;
+        })
+        .style("font-size", 12)
+        .attr("y", 10)
+        .attr("x", 11);
+
     },
     [props.data]
   );
@@ -79,8 +111,8 @@ const Pie = function(props:PieProps) {
       transform={`translate(${props.outerRadius} ${props.outerRadius})`}
     />
     
-    <text  transform={`translate(${props.width/2} ${props.height/2})`} >
-      칼로리: {props.data.energy}
+    <text transform={`translate(${props.outerRadius} ${props.outerRadius})`} text-anchor={"middle"} alignment-baseline={"middle"} font-weight={"bold"} font-size={15}>
+      {props.data.energy}kcal
     </text>
     </svg>
   );

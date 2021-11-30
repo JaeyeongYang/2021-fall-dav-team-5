@@ -371,38 +371,29 @@ const ScatterPlot = ({
   }, [data]);
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignContent: "center",
-        justifyContent: "center",
-        border: "1px solid black",
-      }}
-    >
-      <svg ref={svgRef}>
-        <defs>
-          <filter
-            id="label-background"
-            x="-10%"
-            y="-25%"
-            width="120%"
-            height="150%"
-          >
-            <feFlood floodColor="#333333" />
-            <feGaussianBlur stdDeviation="2" />
-            <feComponentTransfer>
-              <feFuncA type="table" tableValues="0 0 0 1" />
-            </feComponentTransfer>
+    <svg ref={svgRef}>
+      <defs>
+        <filter
+          id="label-background"
+          x="-10%"
+          y="-25%"
+          width="120%"
+          height="150%"
+        >
+          <feFlood floodColor="#333333" />
+          <feGaussianBlur stdDeviation="2" />
+          <feComponentTransfer>
+            <feFuncA type="table" tableValues="0 0 0 1" />
+          </feComponentTransfer>
 
-            <feComponentTransfer>
-              <feFuncA type="table" tableValues="0 1 1 1 1 1 1 1" />
-            </feComponentTransfer>
-            <feComposite operator="over" in="SourceGraphic" />
-          </filter>
-        </defs>
-        <Tooltip />
-      </svg>
-    </div>
+          <feComponentTransfer>
+            <feFuncA type="table" tableValues="0 1 1 1 1 1 1 1" />
+          </feComponentTransfer>
+          <feComposite operator="over" in="SourceGraphic" />
+        </filter>
+      </defs>
+      <Tooltip />
+    </svg>
   );
 };
 

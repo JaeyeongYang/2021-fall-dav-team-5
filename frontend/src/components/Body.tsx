@@ -10,7 +10,7 @@ const Body = function () {
   return (
     <div className="main">
       <Search></Search>
-      {/* <Visualization></Visualization> */}
+      <Visualization></Visualization> 
       <ExampleComponent />
     </div>
   );

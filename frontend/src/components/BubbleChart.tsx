@@ -72,7 +72,7 @@ class BubbleChart extends React.Component<
     this.simulation = d3
       .forceSimulation()
       .nodes(data as SimulationNodeDatum[])
-      .velocityDecay(0.05)
+      .velocityDecay(0.2)
       .force("x", d3.forceX().strength(0.04)) // 보이는 방법
       .force("y", d3.forceY().strength(0.04))
       .force(
@@ -111,12 +111,13 @@ class BubbleChart extends React.Component<
         this.radiusScale((item as unknown as ForceMenu).size) / 3;
       const content =
         props.bubblesData.length > index ? props.bubblesData[index].name : "";
+      const content_menu = props.bubblesData[index]; // id 형태로 읽어와서 popup에서 읽는 형태로 변경
       const strokeColor =
         props.bubblesData.length > index
           ? "darkgrey"
           : this.props.backgroundColor;
       return (
-        <OverlayTrigger placement="top" overlay={PopOver(content)}>
+        <OverlayTrigger placement="top" overlay={PopOver(content_menu)}>
           <g
             key={`g-${uuid()}`}
             transform={`translate(${props.width / 2 + item.x - 70}, ${

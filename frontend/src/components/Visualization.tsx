@@ -20,7 +20,7 @@ const Visualization = function () {
     const menus1 = useAppSelector(selectMenus)!;
     const menus2 = menus1?.slice(1, 600).concat(menus1?.slice(601, 1318));
     const shuffled = menus2?.sort(() => Math .random() - 0.5 );
-    const selectedMenus = shuffled?.slice(1, 200);
+    const selectedMenus = shuffled?.slice(1, 20);
 
     const selectedKeyHandler = (key: string) => {
         // eslint-disable-next-line no-alert
@@ -41,7 +41,7 @@ const Visualization = function () {
                 </div> */}
                 
                 <div> 
-                    {/* <PopupWindow text="Pie Chart"></PopupWindow> */}
+                    {/*<PopupWindow text="Pie Chart"></PopupWindow> */}
                     <BubbleChart bubblesData={selectedMenus} width={1300} height={700} textFillColor="drakgrey" backgroundColor="#ffffff" minValue={1} maxValue={300} selectedCircle={selectedKeyHandler} />
                 </div>
                 

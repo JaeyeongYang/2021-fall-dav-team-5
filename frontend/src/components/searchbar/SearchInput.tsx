@@ -81,21 +81,23 @@ const SearchInput = (props: any) => {
     dispatch(loadMenus());
   };
 
-  const onKeyPress = (e: any) => {
-    if (e.key == "Enter") {
-      const term = {
-        name: e.target.value.trim(),
-        type:
-          mode == Mode.menu ? SearchTermType.menu : SearchTermType.ingredient,
-        isParsed: false,
-        excluded: mode != Mode.menu ? mode == Mode.ing_exc : undefined,
-      };
+  const submitTerm = (e: any) => {
+    e.preventDefault();
+    const term = {
+      name: e.target[0].value.trim(),
+      type: mode == Mode.menu ? SearchTermType.menu : SearchTermType.ingredient,
+      isParsed: false,
+      excluded: mode != Mode.menu ? mode == Mode.ing_exc : undefined,
+    };
 
-      if (terms?.filter((x) => isEqualSearchTerm(x, term)).length == 0) {
-        addTerm(term);
-        e.target.value = "";
-      }
-    } else if (e.key == "Backspace" && value == "") {
+    if (terms?.filter((x) => isEqualSearchTerm(x, term)).length == 0) {
+      addTerm(term);
+      e.target.value = "";
+    }
+  };
+
+  const onKeyPress = (e: any) => {
+    if (e.key == "Backspace" && value == "") {
       if (terms && terms?.length > 0) {
         removeTerm(terms[terms.length - 1]);
       }
@@ -104,42 +106,44 @@ const SearchInput = (props: any) => {
 
   return (
     <div className="search-input">
-      <InputGroup>
-        <Form.Control
-          placeholder="Ingredient or Menu..."
-          aria-label="Ingredient"
-          aria-describedby="basic-addon2"
-          onChange={(e) => setValue(e.target.value)}
-          onKeyDown={(e) => onKeyPress(e)}
-        />
-        <ToggleButtonGroup
-          name="toggle-three"
-          type="radio"
-          defaultValue={Mode.menu}
-          className="search-input-toggle-buttons"
-        >
-          {radios.map((x, idx) => (
-            <ToggleButton
-              key={idx}
-              id={`radio-${x.value}`}
-              name="radio"
-              variant={x.variant}
-              value={x.value}
-              checked={x.value == mode}
-              onChange={(e) => setMode(e.currentTarget.value)}
-            >
-              {x.label}
-            </ToggleButton>
-          ))}
-        </ToggleButtonGroup>
-        <Button
-          variant="secondary"
-          id="search-input-clear-button"
-          onClick={() => clearTerms()}
-        >
-          Delete All
-        </Button>
-      </InputGroup>
+      <Form onSubmit={(e) => submitTerm(e)}>
+        <InputGroup>
+          <Form.Control
+            placeholder="Ingredient or Menu..."
+            aria-label="Ingredient"
+            aria-describedby="basic-addon2"
+            onChange={(e) => setValue(e.target.value)}
+            onKeyDown={(e) => onKeyPress(e)}
+          />
+          <ToggleButtonGroup
+            name="toggle-three"
+            type="radio"
+            defaultValue={Mode.menu}
+            className="search-input-toggle-buttons"
+          >
+            {radios.map((x, idx) => (
+              <ToggleButton
+                key={idx}
+                id={`radio-${x.value}`}
+                name="radio"
+                variant={x.variant}
+                value={x.value}
+                checked={x.value == mode}
+                onChange={(e) => setMode(e.currentTarget.value)}
+              >
+                {x.label}
+              </ToggleButton>
+            ))}
+          </ToggleButtonGroup>
+          <Button
+            variant="secondary"
+            id="search-input-clear-button"
+            onClick={() => clearTerms()}
+          >
+            Delete All
+          </Button>
+        </InputGroup>
+      </Form>
       <div className="search-input-terms">
         {terms?.map((term, index) => {
           const m = termToMode(term);

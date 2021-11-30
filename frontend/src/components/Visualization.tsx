@@ -7,6 +7,7 @@ import { Menu, selectMenus } from "src/store/reducers/data";
 import ScatterPlot from "src/components/charts/ScatterPlot";
 import ScatterPlotMenu from "./ScatterPlotMenu";
 import "./Visualization.css";
+import { Button } from "react-bootstrap";
 
 const Visualization = function () {
   const menus: Menu[] = useAppSelector(selectMenus) ?? [];
@@ -27,7 +28,9 @@ const Visualization = function () {
 
   useEffect(() => {
     if (menusShuffled) {
-      if (index < 0 || index * PAGINATION > menusShuffled.length) {
+      if (index < 0) {
+        setIndex(Math.ceil(menusShuffled.length / PAGINATION) - 1);
+      } else if (index * PAGINATION > menusShuffled.length) {
         setIndex(0);
       } else {
         setMenusSelected(
@@ -43,6 +46,17 @@ const Visualization = function () {
   return (
     <div className="vis-div">
       <ScatterPlot data={menusSelected} width={800} height={600} />
+      <div>
+        <Button variant="dark" onClick={() => setIndex(index - 1)}>
+          ◀️
+        </Button>
+        <Button variant="outline" disabled>
+          {index + 1} / {Math.ceil(menusShuffled.length / PAGINATION)}
+        </Button>
+        <Button variant="dark" onClick={() => setIndex(index + 1)}>
+          ▶️
+        </Button>
+      </div>
       <div className="scatter-plot-menu-div">
         <ScatterPlotMenu></ScatterPlotMenu>
       </div>

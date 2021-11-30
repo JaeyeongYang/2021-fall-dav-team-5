@@ -5,14 +5,7 @@
 }
 
 .scatter-plot-menu-div {
-    position: absolute;
+    position: fixed;
     bottom: 20px;
-    width: 100%;
-}
-
-.color-selector-div {
-    position: absolute;
-    top: calc(50px + 10px + 18vh + 10px);
-    /* right: 10vw; */
     width: 100%;
 }

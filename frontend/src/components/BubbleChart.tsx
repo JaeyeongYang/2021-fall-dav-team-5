@@ -49,7 +49,7 @@ class BubbleChart extends React.Component<
   setForceData = (props: IBubbleChartProps) => {
     const d = [];
     for (let i = 0; i < props.bubblesData.length; i++) {
-      d.push({ size: 120 }); // props.bubblesData[i].size로 추후 변경
+      d.push({ size: 120 }); // props.bubblesData[i].size로 추후 변경      
     }
     return d;
   };
@@ -63,7 +63,7 @@ class BubbleChart extends React.Component<
   radiusScale = (value: d3.NumberValue) => {
     const fx = d3
       .scaleSqrt()
-      .range([1, 50])
+      .range([1, 50])      
       .domain([this.props.minValue, this.props.maxValue]);
     return fx(value);
   };

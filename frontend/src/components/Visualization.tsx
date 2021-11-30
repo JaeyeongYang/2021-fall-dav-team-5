@@ -7,13 +7,14 @@ import { Menu, selectMenus } from "src/store/reducers/data";
 import ScatterPlot from "src/components/charts/ScatterPlot";
 import ScatterPlotMenu from "./ScatterPlotMenu";
 import "./Visualization.css";
-import { Button } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 
 const Visualization = function () {
   const menus: Menu[] = useAppSelector(selectMenus) ?? [];
   const [menusShuffled, setMenusShuffled] = useState<Menu[]>([]);
   const [menusSelected, setMenusSelected] = useState<Menu[]>([]);
   const [index, setIndex] = useState<number>(0);
+  const [forced, setForced] = useState<boolean>(true);
 
   useEffect(() => {
     if (menus) {
@@ -43,10 +44,17 @@ const Visualization = function () {
     }
   }, [menusShuffled, index]);
 
-  return (
-    <div className="vis-div">
-      <ScatterPlot data={menusSelected} width={800} height={600} />
-      <div>
+  const Pagination = () => {
+    return (
+      <div
+        className="pagination"
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
         <Button variant="dark" onClick={() => setIndex(index - 1)}>
           ◀️
         </Button>
@@ -57,6 +65,45 @@ const Visualization = function () {
           ▶️
         </Button>
       </div>
+    );
+  };
+
+  const OptionBox = () => {
+    return (
+      <div
+        className="pagination"
+        style={{
+          display: "flex",
+          height: "2rem",
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Form>
+          <Form.Check
+            id="show-forced-chart"
+            label={"Avoid overlapping"}
+            checked={forced}
+            onChange={() => {
+              setForced(!forced);
+            }}
+          />
+        </Form>
+      </div>
+    );
+  };
+
+  return (
+    <div className="vis-div">
+      <ScatterPlot
+        data={menusSelected}
+        width={800}
+        height={600}
+        forced={forced}
+      />
+      <Pagination />
+      <OptionBox />
       <div className="scatter-plot-menu-div">
         <ScatterPlotMenu></ScatterPlotMenu>
       </div>

@@ -31,6 +31,7 @@ interface Props {
   height: number;
   radius?: number;
   radiusCollide?: number;
+  forced?: boolean;
   marginTop?: number;
   marginRight?: number;
   marginBottom?: number;
@@ -50,6 +51,7 @@ const ScatterPlot = ({
   height,
   radius = 5,
   radiusCollide = 2,
+  forced = true,
   xVar = "energy",
   yVar = "fat",
   marginTop = 60,
@@ -279,31 +281,33 @@ const ScatterPlot = ({
         return ret;
       });
 
-      const simulation = d3
-        .forceSimulation(_data)
-        .force(
-          "x",
-          d3.forceX((d: any) => {
-            if (isXDiscrete) return d.x;
-            else return xScale.invert(d.x) >= 0 ? d.x : xScale(0);
-          })
-        )
-        .force(
-          "y",
-          d3.forceY((d: any) => {
-            if (isYDiscrete) return d.y;
-            else return yScale.invert(d.y) >= 0 ? d.y : yScale(0);
-          })
-        )
-        .force(
-          "collide",
-          d3.forceCollide((d: any) => d.r + radiusCollide).iterations(4)
-        );
+      if (forced) {
+        const simulation = d3
+          .forceSimulation(_data)
+          .force(
+            "x",
+            d3.forceX((d: any) => {
+              if (isXDiscrete) return d.x;
+              else return xScale.invert(d.x) >= 0 ? d.x : xScale(0);
+            })
+          )
+          .force(
+            "y",
+            d3.forceY((d: any) => {
+              if (isYDiscrete) return d.y;
+              else return yScale.invert(d.y) >= 0 ? d.y : yScale(0);
+            })
+          )
+          .force(
+            "collide",
+            d3.forceCollide((d: any) => d.r + radiusCollide).iterations(4)
+          );
 
-      for (let i = 0; i < 100; i++) {
-        simulation.tick();
+        for (let i = 0; i < 100; i++) {
+          simulation.tick();
+        }
+        simulation.stop();
       }
-      simulation.stop();
 
       const bubbles = svg
         .append("g")
@@ -368,7 +372,7 @@ const ScatterPlot = ({
       //   // .attr("y", (d, i, D) => `${i - D.length / 2 + 0.85}em`)
       //   .text((d) => d);
     }
-  }, [data]);
+  }, [data, width, height, forced]);
 
   return (
     <svg ref={svgRef}>

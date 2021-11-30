@@ -3,21 +3,35 @@ import {
   Badge,
   Button,
   CloseButton,
+  Col,
+  Container,
   Form,
   InputGroup,
+  Row,
   ToggleButton,
   ToggleButtonGroup,
 } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "src/hooks";
-import { loadMenus, selectIngredients } from "src/store/reducers/data";
 import {
+  loadMenus,
+  selectIngredients,
+  selectPats,
+  selectWays,
+} from "src/store/reducers/data";
+import {
+  addPatFilter,
   addSearchTerm,
+  addWayFilter,
   clearSearchTerm,
   isEqualSearchTerm,
+  removePatFilter,
   removeSearchTerm,
+  removeWayFilter,
   SearchTerm,
   SearchTermType,
+  selectPatFilter,
   selectSearchTerms,
+  selectWayFilter,
 } from "src/store/reducers/filter";
 
 import "./SearchInput.css";
@@ -55,7 +69,11 @@ const SearchInput = (props: any) => {
 
   // TODO: implement autocompletion for ingredients
   const ingredients = useAppSelector(selectIngredients);
+  const ways = useAppSelector(selectWays);
+  const pats = useAppSelector(selectPats);
   const terms = useAppSelector(selectSearchTerms);
+  const wayFilter = useAppSelector(selectWayFilter);
+  const patFilter = useAppSelector(selectPatFilter);
   const dispatch = useAppDispatch();
 
   const radios = [
@@ -105,57 +123,107 @@ const SearchInput = (props: any) => {
   };
 
   return (
-    <div className="search-input">
-      <Form onSubmit={(e) => submitTerm(e)}>
-        <InputGroup>
-          <Form.Control
-            placeholder="Ingredient or Menu..."
-            aria-label="Ingredient"
-            aria-describedby="basic-addon2"
-            onChange={(e) => setValue(e.target.value)}
-            onKeyDown={(e) => onKeyPress(e)}
-          />
-          <ToggleButtonGroup
-            name="toggle-three"
-            type="radio"
-            defaultValue={Mode.menu}
-            className="search-input-toggle-buttons"
-          >
-            {radios.map((x, idx) => (
-              <ToggleButton
-                key={idx}
-                id={`radio-${x.value}`}
-                name="radio"
-                variant={x.variant}
-                value={x.value}
-                checked={x.value == mode}
-                onChange={(e) => setMode(e.currentTarget.value)}
+    <Container>
+      <Row>
+        <div className="search-input">
+          <Form onSubmit={(e) => submitTerm(e)}>
+            <InputGroup>
+              <Form.Control
+                placeholder="Ingredient or Menu..."
+                aria-label="Ingredient"
+                aria-describedby="basic-addon2"
+                onChange={(e) => setValue(e.target.value)}
+                onKeyDown={(e) => onKeyPress(e)}
+              />
+              <ToggleButtonGroup
+                name="toggle-three"
+                type="radio"
+                defaultValue={Mode.menu}
+                className="search-input-toggle-buttons"
               >
-                {x.label}
-              </ToggleButton>
-            ))}
-          </ToggleButtonGroup>
-          <Button
-            variant="secondary"
-            id="search-input-clear-button"
-            onClick={() => clearTerms()}
-          >
-            Delete All
-          </Button>
-        </InputGroup>
-      </Form>
-      <div className="search-input-terms">
-        {terms?.map((term, index) => {
-          const m = termToMode(term);
-          return (
-            <Badge bg={getBadgeBg(m)} key={index}>
-              {term.name}
-              <CloseButton onClick={() => removeTerm(term)} />
-            </Badge>
-          );
-        })}
-      </div>
-    </div>
+                {radios.map((x, idx) => (
+                  <ToggleButton
+                    key={idx}
+                    id={`radio-${x.value}`}
+                    name="radio"
+                    variant={x.variant}
+                    value={x.value}
+                    checked={x.value == mode}
+                    onChange={(e) => setMode(e.currentTarget.value)}
+                  >
+                    {x.label}
+                  </ToggleButton>
+                ))}
+              </ToggleButtonGroup>
+              <Button
+                variant="secondary"
+                id="search-input-clear-button"
+                onClick={() => clearTerms()}
+              >
+                Delete All
+              </Button>
+            </InputGroup>
+          </Form>
+          <div className="search-input-terms">
+            {terms?.map((term, index) => {
+              const m = termToMode(term);
+              return (
+                <Badge bg={getBadgeBg(m)} key={index}>
+                  {term.name}
+                  <CloseButton onClick={() => removeTerm(term)} />
+                </Badge>
+              );
+            })}
+          </div>
+        </div>
+      </Row>
+      <Row>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <Form.Label>조리방법</Form.Label>
+          {ways &&
+            ways.map((w, i) => {
+              return (
+                <Form.Check
+                  key={i}
+                  id={`way-${i}-${w[0]}`}
+                  label={`${w[0]} (${w[1]})`}
+                  checked={wayFilter?.some((x) => x == w[0])}
+                  onChange={(e) => {
+                    if (!wayFilter?.some((x) => x == w[0])) {
+                      dispatch(addWayFilter(w[0]));
+                    } else {
+                      dispatch(removeWayFilter(w[0]));
+                    }
+                  }}
+                />
+              );
+            })}
+        </div>
+      </Row>
+      <Row>
+        <div style={{ display: "flex", flexDirection: "row" }}>
+          <Form.Label>메뉴종류</Form.Label>
+          {pats &&
+            pats.map((p, i) => {
+              return (
+                <Form.Check
+                  key={i}
+                  id={`pat-${i}-${p[0]}`}
+                  label={`${p[0]} (${p[1]})`}
+                  checked={patFilter?.some((x) => x == p[0])}
+                  onChange={(e) => {
+                    if (!patFilter?.some((x) => x == p[0])) {
+                      dispatch(addPatFilter(p[0]));
+                    } else {
+                      dispatch(removePatFilter(p[0]));
+                    }
+                  }}
+                />
+              );
+            })}
+        </div>
+      </Row>
+    </Container>
   );
 };
 

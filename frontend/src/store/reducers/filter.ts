@@ -100,9 +100,6 @@ const slice = createSlice({
       if (index != -1) state.terms.splice(index, 1);
     },
     clearSearchTerm: (state) => _clearFilter(state, 'terms'),
-    addNameFilter: (state, action: PayloadAction<string>) => _addFilter(state, action, 'name'),
-    removeNameFilter: (state, action: PayloadAction<string>) => _removeFilter(state, action, 'name'),
-    clearNameFilter: (state) => _clearFilter(state, 'name'),
     addWayFilter: (state, action: PayloadAction<string>) => _addFilter(state, action, 'way'),
     removeWayFilter: (state, action: PayloadAction<string>) => _removeFilter(state, action, 'way'),
     clearWayFilter: (state) => _clearFilter(state, 'way'),
@@ -180,5 +177,13 @@ export const selectSearchTerms = createSelector(
   (state: RootState) => state.filter.terms,
   (terms) => terms
 );
+export const selectWayFilter = createSelector(
+  (state: RootState) => state.filter.way,
+  (way) => way
+)
+export const selectPatFilter = createSelector(
+  (state: RootState) => state.filter.pat,
+  (pat) => pat
+)
 
 export default reducer;

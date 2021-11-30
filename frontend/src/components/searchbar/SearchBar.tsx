@@ -6,13 +6,7 @@ import "./SearchBar.css";
 const SearchBar = function (props: any) {
   return (
     <section className="search-section">
-      <Container className="search-section-container">
-        <Row>
-          <Col>
-            <SearchInput />
-          </Col>
-        </Row>
-      </Container>
+      <SearchInput />
     </section>
   );
 };

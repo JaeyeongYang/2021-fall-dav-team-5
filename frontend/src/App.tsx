@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from "react";
-import "./App.css";
+import React, { useEffect } from "react";
+import axios from "axios";
 
-import { BACKEND_DOMAIN } from "./globals";
-import { useAppDispatch, useAppSelector } from "./hooks";
+import { BACKEND_DOMAIN } from "src/globals";
+import { useAppDispatch, useAppSelector } from "src/hooks";
+
 import {
   DataState,
-  Tag,
-  BubbleColors,
   doneLoadingMenuDetail,
   doneLoadingMenus,
   loadMenus,
@@ -16,15 +15,16 @@ import {
   setMenus,
   setPats,
   setWays,
-} from "./store/reducers/data";
-import Header from "./components/Header";
-import Body from "./components/Body";
+} from "src/store/reducers/data";
+import { FilterState } from "src/store/reducers/filter";
+import { showModal } from "src/store/reducers/UI";
+
+import parseFilter from "src/functions/parseFilter";
+
+import Header from "src/components/Header";
+import Body from "src/components/Body";
 
 import "./App.css";
-import axios from "axios";
-import { FilterState } from "./store/reducers/filter";
-import parseFilter from "./functions/parseFilter";
-import { showDetailView } from "./store/reducers/UI";
 
 function App() {
   // // Search.tsx
@@ -225,7 +225,7 @@ function App() {
         .then((res) => res.data)
         .then((data) => {
           dispatch(setMenuDetail(data));
-          dispatch(showDetailView());
+          dispatch(showModal());
           console.log(`Done loading menu #${menuID}`);
         })
         .catch(function (error) {

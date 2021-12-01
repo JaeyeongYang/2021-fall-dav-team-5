@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import { loadMenuDetail, Menu } from "src/store/reducers/data";
 import { useAppDispatch } from "src/hooks";
+import { showModal } from "src/store/reducers/UI";
 
 const varsDiscrete = ["way", "pat"];
 type VarDiscrete = typeof varsDiscrete[number];
@@ -52,8 +53,8 @@ const ScatterPlot = ({
   radius = 5,
   radiusCollide = 2,
   forced = true,
-  xVar = "energy",
-  yVar = "fat",
+  xVar = "carb",
+  yVar = "protein",
   marginTop = 60,
   marginRight = 60,
   marginBottom = 60,
@@ -81,7 +82,7 @@ const ScatterPlot = ({
   };
 
   const getDomain = (varName: VarName, _data: Menu[]) => {
-    if (varsDiscrete.some((x) => x == varName)) {
+    if (varsDiscrete.some((x) => x === varName)) {
       return Array.from(new Set(_data.map((d: any) => d[varName] as string)));
     } else {
       const ret = d3.extent(_data, (d: any) => d[varName]);
@@ -144,8 +145,8 @@ const ScatterPlot = ({
     svg.selectAll(".chart-component").remove();
 
     if (data && svgRef.current) {
-      const isXDiscrete = varsDiscrete.some((x) => x == xVar);
-      const isYDiscrete = varsDiscrete.some((x) => x == yVar);
+      const isXDiscrete = varsDiscrete.some((x) => x === xVar);
+      const isYDiscrete = varsDiscrete.some((x) => x === yVar);
 
       const xDomain = getDomain(xVar, data);
       const yDomain = getDomain(yVar, data);
@@ -210,7 +211,7 @@ const ScatterPlot = ({
           .selectAll("rect")
           .data(
             xDomain.map((x, i) => {
-              return { x, shaded: i % 2 == 0 };
+              return { x, shaded: i % 2 === 0 };
             })
           )
           .join("rect")
@@ -227,7 +228,7 @@ const ScatterPlot = ({
           .selectAll("rect")
           .data(
             yDomain.map((y, i) => {
-              return { y, shaded: i % 2 == 0 };
+              return { y, shaded: i % 2 === 0 };
             })
           )
           .join("rect")
@@ -245,7 +246,7 @@ const ScatterPlot = ({
           .data(
             xDomain.flatMap((x, i) => {
               return yDomain.map((y, j) => {
-                return { x, y, shaded: (i + j) % 2 == 0 };
+                return { x, y, shaded: (i + j) % 2 === 0 };
               });
             })
           )
@@ -330,6 +331,7 @@ const ScatterPlot = ({
         .on("click", (e, d) => {
           setTooltip({ display: false });
           dispatch(loadMenuDetail(d.menu.id));
+          dispatch(showModal);
         });
 
       bubbles

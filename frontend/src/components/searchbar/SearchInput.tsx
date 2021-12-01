@@ -3,7 +3,6 @@ import {
   Badge,
   Button,
   CloseButton,
-  Col,
   Container,
   Form,
   InputGroup,
@@ -43,7 +42,7 @@ enum Mode {
 }
 
 const termToMode = (term: SearchTerm) => {
-  return term.type == SearchTermType.menu
+  return term.type === SearchTermType.menu
     ? Mode.menu
     : term.excluded ?? false
     ? Mode.ing_exc
@@ -103,19 +102,20 @@ const SearchInput = (props: any) => {
     e.preventDefault();
     const term = {
       name: e.target[0].value.trim(),
-      type: mode == Mode.menu ? SearchTermType.menu : SearchTermType.ingredient,
+      type:
+        mode === Mode.menu ? SearchTermType.menu : SearchTermType.ingredient,
       isParsed: false,
-      excluded: mode != Mode.menu ? mode == Mode.ing_exc : undefined,
+      excluded: mode !== Mode.menu ? mode === Mode.ing_exc : undefined,
     };
 
-    if (terms?.filter((x) => isEqualSearchTerm(x, term)).length == 0) {
+    if (terms?.filter((x) => isEqualSearchTerm(x, term)).length === 0) {
       addTerm(term);
       e.target.value = "";
     }
   };
 
   const onKeyPress = (e: any) => {
-    if (e.key == "Backspace" && value == "") {
+    if (e.key === "Backspace" && value === "") {
       if (terms && terms?.length > 0) {
         removeTerm(terms[terms.length - 1]);
       }
@@ -148,7 +148,7 @@ const SearchInput = (props: any) => {
                     name="radio"
                     variant={x.variant}
                     value={x.value}
-                    checked={x.value == mode}
+                    checked={x.value === mode}
                     onChange={(e) => setMode(e.currentTarget.value)}
                   >
                     {x.label}
@@ -187,9 +187,9 @@ const SearchInput = (props: any) => {
                   key={i}
                   id={`way-${i}-${w[0]}`}
                   label={`${w[0]} (${w[1]})`}
-                  checked={wayFilter?.some((x) => x == w[0])}
+                  checked={wayFilter?.some((x) => x === w[0])}
                   onChange={(e) => {
-                    if (!wayFilter?.some((x) => x == w[0])) {
+                    if (!wayFilter?.some((x) => x === w[0])) {
                       dispatch(addWayFilter(w[0]));
                     } else {
                       dispatch(removeWayFilter(w[0]));
@@ -210,9 +210,9 @@ const SearchInput = (props: any) => {
                   key={i}
                   id={`pat-${i}-${p[0]}`}
                   label={`${p[0]} (${p[1]})`}
-                  checked={patFilter?.some((x) => x == p[0])}
+                  checked={patFilter?.some((x) => x === p[0])}
                   onChange={(e) => {
-                    if (!patFilter?.some((x) => x == p[0])) {
+                    if (!patFilter?.some((x) => x === p[0])) {
                       dispatch(addPatFilter(p[0]));
                     } else {
                       dispatch(removePatFilter(p[0]));

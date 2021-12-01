@@ -4,7 +4,7 @@ import {
   PayloadAction,
 } from "@reduxjs/toolkit";
 
-import { RootState, StoreDispatch, StoreGetState } from '../configureStore';
+import { RootState } from '../configureStore';
 
 export interface Menu {
   id: number;
@@ -60,7 +60,7 @@ export interface DataState {
 
 export interface Tag {
   ingredientOrMenu: string;
-  radioValue: string;    
+  radioValue: string;
 }
 
 export interface BubbleColors {
@@ -135,7 +135,7 @@ export const {
   setIngredients,
   setWays,
   setPats,
-  setHashtags,  
+  setHashtags,
 } = slice.actions;
 
 export const selectMenus = createSelector(

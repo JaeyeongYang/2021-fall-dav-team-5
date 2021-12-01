@@ -1,4 +1,3 @@
-import { sort } from "d3";
 import React, { useEffect, useState } from "react";
 
 import { PAGINATION } from "src/globals";

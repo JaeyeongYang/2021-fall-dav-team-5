@@ -19,12 +19,12 @@ export interface SearchTerm {
 
 export const isEqualSearchTerm = (x: SearchTerm, y: SearchTerm) => {
   return (
-    (x.name == y.name) &&
-    (x.type == y.type) &&
-    ((x.type == SearchTermType.ingredient)
+    (x.name === y.name) &&
+    (x.type === y.type) &&
+    ((x.type === SearchTermType.ingredient)
       ? (
-        ((x.isParsed ?? false) == (y.isParsed ?? false)) &&
-        ((x.excluded ?? false) == (y.excluded ?? false))
+        ((x.isParsed ?? false) === (y.isParsed ?? false)) &&
+        ((x.excluded ?? false) === (y.excluded ?? false))
       )
       : (true))
   )
@@ -63,7 +63,7 @@ export const getPreloadedFilterState = (): FilterState => {
 const _addFilter = (state: FilterState, action: PayloadAction<string>, key: string) => {
   // @ts-ignore
   if (state[key] === undefined) state[key] = [];
-  if (action.payload != '') {
+  if (action.payload !== '') {
     // @ts-ignore
     state[key].push(action.payload);
   }
@@ -75,7 +75,7 @@ const _removeFilter = (state: FilterState, action: PayloadAction<string>, key: s
   // @ts-ignore
   const index = state[key].indexOf(action.payload);
   // @ts-ignore
-  if (index != -1) state[key].splice(index, 1)
+  if (index !== -1) state[key].splice(index, 1)
 }
 
 const _clearFilter = (state: FilterState, key: string) => {
@@ -97,7 +97,7 @@ const slice = createSlice({
       const index = (
         state.terms.map((x) => isEqualSearchTerm(x, term)).indexOf(true)
       )
-      if (index != -1) state.terms.splice(index, 1);
+      if (index !== -1) state.terms.splice(index, 1);
     },
     clearSearchTerm: (state) => _clearFilter(state, 'terms'),
     addWayFilter: (state, action: PayloadAction<string>) => _addFilter(state, action, 'way'),

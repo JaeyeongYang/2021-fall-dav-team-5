@@ -41,12 +41,10 @@ const ModalComponent = function () {
       <Modal.Body>
         <Container>
           <Row className="modal-component-row">
-            <Col md="6" style={{ background: "yellowgreen" }}>
-              이미지 들어갈 곳
-              <Image src={menuDetail.img_small} rounded />
+            <Col md={{ span: 6, offset: 1 }}>
+              <Image src={menuDetail.img_small} rounded fluid/>
             </Col>
-            <Col md="6" style={{ background: "lightpink" }}>
-              파이 차트 들어갈 곳
+            <Col md={{ span: 5, offset: 0 }}>
               <PieSVG data = {menuDetail} width={300} height={300} innerRadius={50} outerRadius={125}></PieSVG>
             </Col>
           </Row>
@@ -56,6 +54,7 @@ const ModalComponent = function () {
               md="12"
               style={{ background: "lightblue", whiteSpace: "pre-wrap" }}
             >
+              <p>재료 소개</p>
               {menuDetail.ingredients}
             </Col>
           </Row>
@@ -65,15 +64,30 @@ const ModalComponent = function () {
               md="12"
               style={{ background: "lemonchiffon", whiteSpace: "pre-wrap" }}
             >
-              {menuDetail.recipes.map((recipe: Recipe, i: number) => {
-                return (
-                  <div key={i}>
-                    {recipe.img !== "" && <Image src={recipe.img} />}
-                    <p>{recipe.text}</p>
-                  </div>
-                );
-              })}
+            <p>만드는 법</p>
             </Col>
+            {menuDetail.recipes.map((recipe: Recipe, i: number) => {
+              return (
+                <div key={i}>
+                  <Row>
+                    <Col
+                      md="9"
+                      style={{ background: "lemonchiffon", whiteSpace: "pre-wrap" }}
+                    >
+                    {recipe.text.replace(/\n/g, "")}
+                    </Col>
+                    <Col
+                      md="3"
+                      style={{ background: "lemonchiffon", whiteSpace: "pre-wrap" }}
+                    >
+                    {recipe.img !== "" && <Image src={recipe.img}  fluid/>}
+                    </Col>
+                  </Row>
+                </div>
+              );
+            })}
+
+
           </Row>
         </Container>
       </Modal.Body>

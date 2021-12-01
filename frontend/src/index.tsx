@@ -8,6 +8,7 @@ import reportWebVitals from "./reportWebVitals";
 
 // Importing the Bootstrap CSS
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css";
 import "./index.css";
 
 const preloadedState = getPreloadedState();

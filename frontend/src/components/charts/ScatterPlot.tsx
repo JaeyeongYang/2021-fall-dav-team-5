@@ -3,12 +3,15 @@ import * as d3 from "d3";
 import { loadMenuDetail, Menu } from "src/store/reducers/data";
 import { useAppDispatch } from "src/hooks";
 import { showModal } from "src/store/reducers/UI";
-
-const varsDiscrete = ["way", "pat"];
-type VarDiscrete = typeof varsDiscrete[number];
-const varsContinuous = ["energy", "carb", "protein", "fat", "na"];
-type VarContinuous = typeof varsContinuous[number];
-type VarName = VarDiscrete | VarContinuous;
+import {
+  varsDiscrete,
+  VarDiscrete,
+  varsContinuous,
+  VarContinuous,
+  VarName,
+  wayDomain,
+  patDomain,
+} from "src/globals";
 
 const mapVarNameToLabel: { [key: VarName]: string } = {
   way: "조리방법",
@@ -53,8 +56,8 @@ const ScatterPlot = ({
   radius = 5,
   radiusCollide = 2,
   forced = true,
-  xVar = "carb",
-  yVar = "protein",
+  xVar = "way",
+  yVar = "pat",
   marginTop = 60,
   marginRight = 60,
   marginBottom = 60,
@@ -83,7 +86,10 @@ const ScatterPlot = ({
 
   const getDomain = (varName: VarName, _data: Menu[]) => {
     if (varsDiscrete.some((x) => x === varName)) {
-      return Array.from(new Set(_data.map((d: any) => d[varName] as string)));
+      if (varName == "way") return wayDomain;
+      else if (varName == "pat") return patDomain;
+      else
+        return Array.from(new Set(_data.map((d: any) => d[varName] as string)));
     } else {
       const ret = d3.extent(_data, (d: any) => d[varName]);
       return [

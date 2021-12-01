@@ -135,7 +135,7 @@ export const {
   setIngredients,
   setWays,
   setPats,
-  setHashtags,
+  setHashtags,  
 } = slice.actions;
 
 export const selectMenus = createSelector(

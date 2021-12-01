@@ -121,6 +121,36 @@ function App() {
   // const [menuCategory, setMenuCategory] = useState("Show All");
   // const [howToCook, setHowToCook] = useState("Show All");
 
+  // //ScatterPlotMenu.tsx
+  // const [xAxis, setXAxis] = useState('x-axis');
+  // const [yAxis, setYAxis] = useState('y-axis');
+
+  // const onAlignButtonClick = (e:any) => {
+  //   console.log('ScatterPlotMenu.tsx: Align Button Clicked')
+  // }
+
+  // const onResetButtonClick = (e:any) => {
+  //   console.log('ScatterPlotMenu.tsx: Reset Button Clicked')
+  // }
+
+  // // monitor changes
+  // // Search.tsx
+  // useEffect(()=>{
+  //   console.log('===== Search.tsx =====')
+  //   console.log('ingredientList:', ingredientList);
+  //   console.log('ingredientNotList:', ingredientNotList);
+  //   console.log('menuList:', menuList);
+  //   console.log('allList:', allList);
+  // }, [ingredientList, ingredientNotList, menuList, allList]);
+
+  // //ColorSelector.tsx % ColorFilter.tsx
+  // useEffect(()=>{
+  //   console.log('===== ColorSelector.tsx & ColorFilter.tsx =====')
+  //   console.log('bubbleColorValue (10: Menu Category, 11: How to Cook):', bubbleColorValue);
+  //   console.log('MenuCategory:', menuCategory);
+  //   console.log('howToCook:', howToCook);
+  // }, [bubbleColorValue, menuCategory, howToCook]);
+
   //////////////////
   const data: DataState = useAppSelector((state) => state.data);
   const filter: FilterState = useAppSelector((state) => state.filter);
@@ -210,6 +240,34 @@ function App() {
     <div className="App">
       <Header />
       <Body />
+      {/* <Body      
+        // Search.tsx (검색창)
+        searchOnKeyPress={searchOnKeyPress}
+        searchOnChange={searchOnChange}         
+        searchInitLists={searchInitLists}
+        getAllList={getAllList}
+        // ThreeToggleButton.tsx
+        getRadioValue={getRadioValue}
+        setThreeToggleValue={setThreeToggleValue}      
+        // Serach.tsx (태그들)
+        deleteIngredientOrMenu={deleteIngredientOrMenu}
+        // ColorSelector.tsx
+        bubbleColors={bubbleColors}
+        bubbleColorValue={bubbleColorValue}
+        setBubbleColorValue={setBubbleColorValue}
+        // ColorFilter.tsx
+        menuCategory={menuCategory}
+        howToCook={howToCook}
+        setMenuCategory={setMenuCategory}
+        setHowToCook={setHowToCook}
+        // ScatterPlotMenu.tsx
+        xAxis={xAxis}
+        yAxis={yAxis}
+        setXAxis={setXAxis}
+        setYAxis={setYAxis}
+        onAlignButtonClick={onAlignButtonClick}
+        onResetButtonClick={onResetButtonClick}      
+      ></Body> */}
     </div>
   );
 }

@@ -32,7 +32,7 @@ const ModalComponent = function () {
     "6. 그릇에 밥을 담고 준비된 재료를 담은 후 쪽파를 송송 썰어 올리고 참깨를 뿌린다. \n";
 
   /////// modal
-  const handleClose = () => dispatch(hideModal);
+  const handleClose = () => dispatch(hideModal());
 
   if (menuDetail === null) return <></>;
 

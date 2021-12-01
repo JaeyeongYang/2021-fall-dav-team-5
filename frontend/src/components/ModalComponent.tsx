@@ -1,12 +1,8 @@
-import React, { useState } from "react";
-import { Button, Modal, Container, Row, Col, Image } from "react-bootstrap";
+import React from "react";
+import { Modal, Container, Row, Col, Image } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "src/hooks";
 import { MenuDetail, Recipe, selectMenuDetail } from "src/store/reducers/data";
-import {
-  hideModal,
-  selectDisplayModal,
-  showModal,
-} from "src/store/reducers/UI";
+import { hideModal, selectDisplayModal } from "src/store/reducers/UI";
 
 const ModalComponent = function () {
   const menuDetail: MenuDetail | null =
@@ -14,24 +10,6 @@ const ModalComponent = function () {
   const displayModal: boolean = useAppSelector(selectDisplayModal) ?? false;
   const dispatch = useAppDispatch();
 
-  const example_ingredients: string =
-    "<재료 들어갈 곳> \r\n" +
-    "ex) \n" +
-    "밥:밥 210g(1공기) \n" +
-    "다시마육수:무 30g(3×3×2cm), 다시마 5g(3×2cm), 가쓰오부시 약간, 물 500ml(2½컵) \n" +
-    "숙주 품은 치킨: 닭가슴살 80g(1/2개), 숙주 80g(1/5봉지), 표고버섯 10g(1장),팽이버섯 10g(1/6봉지), 양파 20g(1/6개), 달걀 25g(1/2개), 저염간장 5g(1작은술), 맛술 5g(1작은술), 쪽파 약간, 참깨 약간 \n";
-
-  const example_recipe: string =
-    "<레서피 들어갈 곳> \n" +
-    "ex) \n" +
-    "1. 다시마를 물에 30분 정도 담가 우린 물에 무를 함께 넣고 끓여준다. 물이 끓기 시작하면 가쓰오부시를 넣어 3분 정도 우려낸 후 체에 거른다. \n" +
-    "2. 닭고기는 한입 크기로 썰어 달군 프라이팬에 넣고 닭고기가 하얗게 변하면 2~3분 더 노릇하게 굽는다. \n" +
-    "3. 양파와 표고버섯은 채 썬다. 마른 표고버섯일 경우에는 미지근한 물에 5~10분 정도 불려 사용한다. \n" +
-    "4. 구운 닭고기(2)에 끓인 육수(1), 채썬 양파와 표고버섯(3) 팽이버섯, 저염간장, 맛술을 넣고 끓여준다. \n" +
-    "5. 닭고기가 익으면 숙주를 넣어 끓이고 마지막에 달걀을 풀어 넣어 익힌다. \n" +
-    "6. 그릇에 밥을 담고 준비된 재료를 담은 후 쪽파를 송송 썰어 올리고 참깨를 뿌린다. \n";
-
-  /////// modal
   const handleClose = () => dispatch(hideModal());
 
   if (menuDetail === null) return <></>;

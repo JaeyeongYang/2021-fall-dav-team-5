@@ -16,6 +16,7 @@ import "./Visualization.css";
 import { Button, Dropdown, Form } from "react-bootstrap";
 import getDomain from "src/functions/getDomain";
 import RangeSlider from "react-bootstrap-range-slider";
+import BubbleChart from "./charts/BubbleChart";
 
 const Visualization = function () {
   const menus: Menu[] = useAppSelector(selectMenus) ?? [];
@@ -25,9 +26,11 @@ const Visualization = function () {
 
   // TODO: these states should be stored with redux later
   const [xVar, setXVar] = useState<VarName>("energy");
-  const [yVar, setYVar] = useState<VarName>("ingredients_count");
-  const [colorVar, setColorVar] = useState<VarName | null>(null);
-  const [radiusVar, setRadiusVar] = useState<VarContinuous | null>(null);
+  const [yVar, setYVar] = useState<VarName>("carb");
+  const [colorVar, setColorVar] = useState<VarName | null>("way");
+  const [radiusVar, setRadiusVar] = useState<VarContinuous | null>(
+    "ingredients_count"
+  );
   const [radiusMin, setRadiusMin] = useState<number>(2);
   const [radiusMax, setRadiusMax] = useState<number>(10);
   const [forced, setForced] = useState<boolean>(false);
@@ -301,6 +304,13 @@ const Visualization = function () {
   return (
     <div className="vis-div">
       <OptionBox />
+      <BubbleChart
+        data={menus.length > 0 ? menusSelected : []}
+        colorVar={colorVar}
+        radiusVar={radiusVar}
+        width={800}
+        height={600}
+      />
       <ScatterPlot
         data={menus.length > 0 ? menusSelected : []}
         xVar={xVar}

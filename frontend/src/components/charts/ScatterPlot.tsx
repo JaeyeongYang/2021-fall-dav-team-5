@@ -79,9 +79,10 @@ const ScatterPlot = ({
       .attr("width", width)
       .attr("height", height)
       .attr("viewbox", [0, 0, width, height].toString())
-      .attr("style", "max-width: 100%; height: auto; height: intrinsic;");
+      .attr("style", "max-width: 100%; height: auto; height: intrinsic;")
+      .selectAll(".graph");
 
-    svg.selectAll(".chart-component").remove();
+    svg.selectAll("g").remove();
 
     if (data && svgRef.current) {
       const isXDiscrete = varsDiscrete.some((x) => x === xVar);
@@ -292,9 +293,9 @@ const ScatterPlot = ({
           setTooltip({ display: false });
         })
         .on("click", (e, d) => {
-          setTooltip({ display: false });
           dispatch(loadMenuDetail(d.menu.id));
-          dispatch(showModal);
+          dispatch(showModal());
+          setTooltip({ display: false });
         });
 
       bubbles
@@ -353,6 +354,7 @@ const ScatterPlot = ({
 
   return (
     <svg ref={svgRef}>
+      <g className="graph" />
       <TooltipComponent tooltip={tooltip} />
     </svg>
   );

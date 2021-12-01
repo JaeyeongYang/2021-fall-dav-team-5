@@ -3,14 +3,14 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
-import { RootState, StoreDispatch, StoreGetState } from '../configureStore';
+import { RootState } from '../configureStore';
 
 export type UIState = {
-  fullscreenMap?: boolean;
+  displayModal?: boolean;
 };
 
 export const initialUIState: UIState = {
-  fullscreenMap: false,
+  displayModal: false,
 };
 
 export const getPreloadedUIState = (): UIState => {
@@ -23,19 +23,24 @@ const slice = createSlice({
   name: 'UI',
   initialState: initialUIState,
   reducers: {
-    isFullscreenMapToggled: (state) => {
-      state.fullscreenMap = !state.fullscreenMap;
+    showModal: (state) => {
+      state.displayModal = true;
+    },
+    hideModal: (state) => {
+      state.displayModal = false;
     },
   },
 });
 
 const { reducer } = slice;
 
-export const { isFullscreenMapToggled } = slice.actions;
+export const {
+  showModal,
+  hideModal,
+} = slice.actions;
 
-export const fullscreenMapSelector = createSelector(
-  (state: RootState) => state.UI.fullscreenMap,
-  (fullscreenMap) => fullscreenMap
+export const selectDisplayModal = createSelector(
+  (state: RootState) => state.UI.displayModal, (x) => x
 );
 
 export default reducer;

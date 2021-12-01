@@ -1,104 +1,103 @@
-import Search from "./Search";
-import Visualization from "./Visualization";
 import "./Body.css";
-import {  
-  Tag,
-  BubbleColors
-} from "../store/reducers/data";
-import ExampleComponent from "./ExampleComponent";
+
+import SearchBar from "src/components/searchbar/SearchBar";
+import Visualization from "./Visualization";
 import ModalComponent from "./ModalComponent";
 
-const Body = function ({    
-  searchOnKeyPress,
-  searchOnChange,
-  searchInitLists,
-  getAllList,
+// const Body = function ({
+//   searchOnKeyPress,
+//   searchOnChange,
+//   searchInitLists,
+//   getAllList,
 
-  getRadioValue,
-  setThreeToggleValue,
-  deleteIngredientOrMenu,
+//   getRadioValue,
+//   setThreeToggleValue,
+//   deleteIngredientOrMenu,
 
-  bubbleColors,
-  bubbleColorValue,
-  setBubbleColorValue,
+//   bubbleColors,
+//   bubbleColorValue,
+//   setBubbleColorValue,
 
-  menuCategory,
-  howToCook,
-  setMenuCategory,
-  setHowToCook,
-  
-  xAxis,
-  yAxis,
-  setXAxis,
-  setYAxis,
-  onAlignButtonClick,
-  onResetButtonClick
-}:{  
-  searchOnKeyPress: (e: any) => void,
-  searchOnChange: (e: any) => void,
-  searchInitLists: () => void,
-  getAllList: () => Tag[],
+//   menuCategory,
+//   howToCook,
+//   setMenuCategory,
+//   setHowToCook,
 
-  getRadioValue: () => string,
-  setThreeToggleValue: (s: string) => void,
-  deleteIngredientOrMenu: (e: any) => void,
+//   xAxis,
+//   yAxis,
+//   setXAxis,
+//   setYAxis,
+//   onAlignButtonClick,
+//   onResetButtonClick
+// }:{
+//   searchOnKeyPress: (e: any) => void,
+//   searchOnChange: (e: any) => void,
+//   searchInitLists: () => void,
+//   getAllList: () => Tag[],
 
-  bubbleColors: BubbleColors[],
-  bubbleColorValue: string,
-  setBubbleColorValue: React.Dispatch<React.SetStateAction<string>>,
+//   getRadioValue: () => string,
+//   setThreeToggleValue: (s: string) => void,
+//   deleteIngredientOrMenu: (e: any) => void,
 
-  menuCategory: string,
-  howToCook: string,
-  setMenuCategory: React.Dispatch<React.SetStateAction<string>>,
-  setHowToCook: React.Dispatch<React.SetStateAction<string>>,
-  
-  xAxis: string,
-  yAxis: string,
-  setXAxis: React.Dispatch<React.SetStateAction<string>>,
-  setYAxis: React.Dispatch<React.SetStateAction<string>>,
-  onAlignButtonClick: (e: any) => void,
-  onResetButtonClick: (e: any) => void
-}){
-    return (     
-        <div className="main">   
-          <Search
-            searchOnKeyPress={searchOnKeyPress}
-            searchOnChange={searchOnChange}         
-            searchInitLists={searchInitLists}
-            getAllList={getAllList}
+//   bubbleColors: BubbleColors[],
+//   bubbleColorValue: string,
+//   setBubbleColorValue: React.Dispatch<React.SetStateAction<string>>,
 
-            getRadioValue={getRadioValue}
-            setThreeToggleValue={setThreeToggleValue}
+//   menuCategory: string,
+//   howToCook: string,
+//   setMenuCategory: React.Dispatch<React.SetStateAction<string>>,
+//   setHowToCook: React.Dispatch<React.SetStateAction<string>>,
 
-            deleteIngredientOrMenu={deleteIngredientOrMenu}
+//   xAxis: string,
+//   yAxis: string,
+//   setXAxis: React.Dispatch<React.SetStateAction<string>>,
+//   setYAxis: React.Dispatch<React.SetStateAction<string>>,
+//   onAlignButtonClick: (e: any) => void,
+//   onResetButtonClick: (e: any) => void
+// }){
+//     return (
+//         <div className="main">
+//           <Search
+//             searchOnKeyPress={searchOnKeyPress}
+//             searchOnChange={searchOnChange}
+//             searchInitLists={searchInitLists}
+//             getAllList={getAllList}
 
-            bubbleColors={bubbleColors}
-            bubbleColorValue={bubbleColorValue}
-            setBubbleColorValue={setBubbleColorValue}
+//             getRadioValue={getRadioValue}
+//             setThreeToggleValue={setThreeToggleValue}
 
-            menuCategory={menuCategory}
-            howToCook={howToCook}
-            setMenuCategory={setMenuCategory}
-            setHowToCook={setHowToCook}          
-          ></Search>
-        
-          <ExampleComponent></ExampleComponent>
+//             deleteIngredientOrMenu={deleteIngredientOrMenu}
 
-          {/* 모달 있는 곳 */}
-          <ModalComponent></ModalComponent>
+//             bubbleColors={bubbleColors}
+//             bubbleColorValue={bubbleColorValue}
+//             setBubbleColorValue={setBubbleColorValue}
 
-          <Visualization            
-            xAxis={xAxis}
-            yAxis={yAxis}
-            setXAxis={setXAxis}
-            setYAxis={setYAxis}
-            onAlignButtonClick={onAlignButtonClick}
-            onResetButtonClick={onResetButtonClick}   
-          >
-          </Visualization>
-        </div>   
-      );
+//             menuCategory={menuCategory}
+//             howToCook={howToCook}
+//             setMenuCategory={setMenuCategory}
+//             setHowToCook={setHowToCook}
+//           ></Search>
 
-}
+//           <Visualization
+//             xAxis={xAxis}
+//             yAxis={yAxis}
+//             setXAxis={setXAxis}
+//             setYAxis={setYAxis}
+//             onAlignButtonClick={onAlignButtonClick}
+//             onResetButtonClick={onResetButtonClick}
+//           >
+//           </Visualization>
+//         </div>
+//       );
+
+const Body = function () {
+  return (
+    <div className="main">
+      <SearchBar />
+      <Visualization></Visualization>
+      <ModalComponent></ModalComponent>
+    </div>
+  );
+};
 
 export default Body;

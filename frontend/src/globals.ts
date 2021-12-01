@@ -1,6 +1,6 @@
 export const BACKEND_DOMAIN = 'http://127.0.0.1:8000';
 
-export const PAGINATION = 100;
+export const PAGINATION = 50;
 
 export const varsDiscrete = ["way", "pat"];
 export const varsContinuous = ["energy", "carb", "protein", "fat", "na", 'ingredients_count'];

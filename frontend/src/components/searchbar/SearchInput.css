@@ -1,0 +1,24 @@
+/* .search-input {} */
+
+.search-input {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-input > .input-group {
+  margin-bottom: 0.5rem;
+}
+
+.search-input .search-input-toggle-buttons {
+  margin-left: 0.5rem !important;
+  margin-right: 0.5rem !important;
+}
+
+.search-input-terms {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+.search-input-terms > .badge {
+  margin: 5px;
+}

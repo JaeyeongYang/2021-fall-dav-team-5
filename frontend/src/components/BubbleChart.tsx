@@ -7,8 +7,6 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import { Menu } from "src/store/reducers/data";
 import PopOver from "./PopupWindow";
 
-const uuid = require("react-uuid");
-
 interface ForceMenu {
   size: number;
 }
@@ -49,7 +47,7 @@ class BubbleChart extends React.Component<
   setForceData = (props: IBubbleChartProps) => {
     const d = [];
     for (let i = 0; i < props.bubblesData.length; i++) {
-      d.push({ size: 120 }); // props.bubblesData[i].size로 추후 변경      
+      d.push({ size: 120 }); // props.bubblesData[i].size로 추후 변경
     }
     return d;
   };
@@ -63,7 +61,7 @@ class BubbleChart extends React.Component<
   radiusScale = (value: d3.NumberValue) => {
     const fx = d3
       .scaleSqrt()
-      .range([1, 50])      
+      .range([1, 50])
       .domain([this.props.minValue, this.props.maxValue]);
     return fx(value);
   };
@@ -105,46 +103,52 @@ class BubbleChart extends React.Component<
   };
 
   renderBubbles = (data: []) => {
+    if (!(data && data.length > 0)) {
+      return <></>;
+    }
+
     return data.map((item: { v: number; x: number; y: number }, index) => {
       const { props } = this;
+      const d = props.bubblesData[index];
+
+      if (d === undefined) {
+        return <></>;
+      }
+
       const fontSize =
         this.radiusScale((item as unknown as ForceMenu).size) / 3;
-      const content =
-        props.bubblesData.length > index ? props.bubblesData[index].name : "";
-      const strokeColor =
-        props.bubblesData.length > index
-          ? "darkgrey"
-          : this.props.backgroundColor;
+      const content = props.bubblesData.length > index ? d.name : "";
+
       return (
-        <OverlayTrigger placement="top" overlay={PopOver(content)}>
-          <g
-            key={`g-${uuid()}`}
-            transform={`translate(${props.width / 2 + item.x - 70}, ${
-              props.height / 2 + item.y
-            })`}
+        // <OverlayTrigger placement="top" overlay={PopOver(content)}>
+        <g
+          key={index}
+          transform={`translate(${props.width / 2 + item.x - 70}, ${
+            props.height / 2 + item.y
+          })`}
+        >
+          <circle
+            style={{ cursor: "pointer" }}
+            id="circleSvg"
+            r={this.radiusScale((item as unknown as ForceMenu).size)}
+            fill={this.backgroundColor(d, "way")}
+            stroke={"#ffffffff"} //strokeColor
+            strokeWidth="2"
+          />
+          <text
+            dy="6"
+            className="bubbleText"
+            fill={this.props.textFillColor}
+            textAnchor="middle"
+            fontSize={`${fontSize}px`}
+            fontWeight="bold"
+            textLength="50"
+            lengthAdjust="spacingAndGlyphs" // 더 예쁘게 바꿀 수 있으면 좋겠음
           >
-            <circle
-              style={{ cursor: "pointer" }}
-              id="circleSvg"
-              r={this.radiusScale((item as unknown as ForceMenu).size)}
-              fill={this.backgroundColor(props.bubblesData[index], "way")}
-              stroke={"#ffffffff"} //strokeColor
-              strokeWidth="2"
-            />
-            <text
-              dy="6"
-              className="bubbleText"
-              fill={this.props.textFillColor}
-              textAnchor="middle"
-              fontSize={`${fontSize}px`}
-              fontWeight="bold"
-              textLength="50"
-              lengthAdjust="spacingAndGlyphs" // 더 예쁘게 바꿀 수 있으면 좋겠음
-            >
-              {content}
-            </text>
-          </g>
-        </OverlayTrigger>
+            {content}
+          </text>
+        </g>
+        // </OverlayTrigger>
       );
     });
   };

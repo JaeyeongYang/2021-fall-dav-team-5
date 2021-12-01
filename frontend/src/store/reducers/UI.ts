@@ -6,11 +6,11 @@ import {
 import { RootState, StoreDispatch, StoreGetState } from '../configureStore';
 
 export type UIState = {
-  fullscreenMap?: boolean;
+  displayDetailView?: boolean;
 };
 
 export const initialUIState: UIState = {
-  fullscreenMap: false,
+  displayDetailView: false,
 };
 
 export const getPreloadedUIState = (): UIState => {
@@ -23,19 +23,25 @@ const slice = createSlice({
   name: 'UI',
   initialState: initialUIState,
   reducers: {
-    isFullscreenMapToggled: (state) => {
-      state.fullscreenMap = !state.fullscreenMap;
+    showDetailView: (state) => {
+      state.displayDetailView = true;
+    },
+    hideDetailView: (state) => {
+      state.displayDetailView = true;
     },
   },
 });
 
 const { reducer } = slice;
 
-export const { isFullscreenMapToggled } = slice.actions;
+export const {
+  showDetailView,
+  hideDetailView,
+} = slice.actions;
 
-export const fullscreenMapSelector = createSelector(
-  (state: RootState) => state.UI.fullscreenMap,
-  (fullscreenMap) => fullscreenMap
+export const selectDisplayDetailView = createSelector(
+  (state: RootState) => state.UI.displayDetailView,
+  (displayDetailView) => displayDetailView
 );
 
 export default reducer;

@@ -25,7 +25,7 @@ const ModalComponent = function () {
   const visualizePie  = (menuDetail:MenuDetail|undefined) =>{
     
     if (typeof menuDetail !==undefined){
-      return <PieSVG data = {menuDetail} width={300} height={300} innerRadius={50} outerRadius={125}></PieSVG>
+      return <PieSVG data = {menuDetail!} width={300} height={300} innerRadius={50} outerRadius={125}></PieSVG>
     }
     else{
       return "Undefined menuDetail"
@@ -58,7 +58,7 @@ const ModalComponent = function () {
                         </Col>
                         <Col md="6" style={{background: 'lightpink'}}>
                           {
-                            visualizePie(menuDetail)
+                            // visualizePie(menuDetail)
                           }
                         </Col>
                     </Row>

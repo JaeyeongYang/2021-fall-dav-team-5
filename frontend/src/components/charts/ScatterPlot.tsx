@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import { loadMenuDetail, Menu } from "src/store/reducers/data";
 import { useAppDispatch } from "src/hooks";
+import { showModal } from "src/store/reducers/UI";
 
 const varsDiscrete = ["way", "pat"];
 type VarDiscrete = typeof varsDiscrete[number];
@@ -52,8 +53,8 @@ const ScatterPlot = ({
   radius = 5,
   radiusCollide = 2,
   forced = true,
-  xVar = "energy",
-  yVar = "fat",
+  xVar = "carb",
+  yVar = "protein",
   marginTop = 60,
   marginRight = 60,
   marginBottom = 60,
@@ -330,6 +331,7 @@ const ScatterPlot = ({
         .on("click", (e, d) => {
           setTooltip({ display: false });
           dispatch(loadMenuDetail(d.menu.id));
+          dispatch(showModal);
         });
 
       bubbles

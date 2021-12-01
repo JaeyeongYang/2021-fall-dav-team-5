@@ -6,11 +6,11 @@ import {
 import { RootState } from '../configureStore';
 
 export type UIState = {
-  displayDetailView?: boolean;
+  displayModal?: boolean;
 };
 
 export const initialUIState: UIState = {
-  displayDetailView: false,
+  displayModal: false,
 };
 
 export const getPreloadedUIState = (): UIState => {
@@ -23,11 +23,11 @@ const slice = createSlice({
   name: 'UI',
   initialState: initialUIState,
   reducers: {
-    showDetailView: (state) => {
-      state.displayDetailView = true;
+    showModal: (state) => {
+      state.displayModal = true;
     },
-    hideDetailView: (state) => {
-      state.displayDetailView = true;
+    hideModal: (state) => {
+      state.displayModal = false;
     },
   },
 });
@@ -35,13 +35,12 @@ const slice = createSlice({
 const { reducer } = slice;
 
 export const {
-  showDetailView,
-  hideDetailView,
+  showModal,
+  hideModal,
 } = slice.actions;
 
-export const selectDisplayDetailView = createSelector(
-  (state: RootState) => state.UI.displayDetailView,
-  (displayDetailView) => displayDetailView
+export const selectDisplayModal = createSelector(
+  (state: RootState) => state.UI.displayModal, (x) => x
 );
 
 export default reducer;

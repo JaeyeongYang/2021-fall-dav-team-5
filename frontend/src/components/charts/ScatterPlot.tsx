@@ -33,6 +33,11 @@ interface Props {
   data: Menu[];
   width: number;
   height: number;
+  xVar?: VarName;
+  yVar?: VarName;
+  colorVar?: VarName;
+  xDomain?: Array<string | number>;
+  yDomain?: Array<string | number>;
   radius?: number;
   radiusCollide?: number;
   forced?: boolean;
@@ -45,8 +50,6 @@ interface Props {
   insetRight?: number;
   insetBottom?: number;
   insetLeft?: number;
-  xVar?: VarName;
-  yVar?: VarName;
 }
 
 const ScatterPlot = ({
@@ -54,18 +57,21 @@ const ScatterPlot = ({
   width,
   height,
   radius = 5,
-  radiusCollide = 2,
+  radiusCollide = 1,
   forced = true,
   xVar = "way",
-  yVar = "pat",
+  yVar = "protein",
+  colorVar = "protein",
+  xDomain,
+  yDomain,
   marginTop = 60,
   marginRight = 60,
   marginBottom = 60,
   marginLeft = 60,
   inset = 0,
-  insetTop = inset, // inset the default y-range
-  insetRight = inset, // inset the default x-range
-  insetBottom = inset, // inset the default y-range
+  insetTop = inset,
+  insetRight = inset,
+  insetBottom = inset,
   insetLeft = inset,
 }: Props) => {
   const svgRef = useRef(null);
@@ -84,12 +90,22 @@ const ScatterPlot = ({
     }
   };
 
+  const getColorScale = (isDiscrete: boolean, domain: any) => {
+    if (isDiscrete) {
+      return d3.scaleOrdinal(domain, d3.schemeCategory10);
+    } else {
+      return d3.scaleSequential(d3.interpolateRdYlBu).domain(domain);
+    }
+  };
+
   const getDomain = (varName: VarName, _data: Menu[]) => {
     if (varsDiscrete.some((x) => x === varName)) {
       if (varName == "way") return wayDomain;
       else if (varName == "pat") return patDomain;
       else
-        return Array.from(new Set(_data.map((d: any) => d[varName] as string)));
+        return Array.from(
+          new d3.InternSet(_data.map((d: any) => d[varName] as string))
+        );
     } else {
       const ret = d3.extent(_data, (d: any) => d[varName]);
       return [
@@ -153,11 +169,18 @@ const ScatterPlot = ({
     if (data && svgRef.current) {
       const isXDiscrete = varsDiscrete.some((x) => x === xVar);
       const isYDiscrete = varsDiscrete.some((x) => x === yVar);
+      const isColorDiscrete = varsDiscrete.some((x) => x === colorVar);
 
-      const xDomain = getDomain(xVar, data);
-      const yDomain = getDomain(yVar, data);
+      if (xDomain === undefined) xDomain = getDomain(xVar, data);
+      if (yDomain === undefined) yDomain = getDomain(yVar, data);
+      const colorDomain = colorVar ? getDomain(colorVar, data) : null;
+
       const xScale: any = getScale(isXDiscrete, xDomain, xRange);
       const yScale: any = getScale(isYDiscrete, yDomain, yRange);
+      const colorScale: any = colorVar
+        ? getColorScale(isColorDiscrete, colorDomain)
+        : null;
+
       const xAxis = d3.axisBottom(xScale);
       const yAxis = d3.axisLeft(yScale);
 
@@ -221,12 +244,12 @@ const ScatterPlot = ({
             })
           )
           .join("rect")
-          .attr("x", (d) => xScale(d.x))
+          .attr("x", (d: any) => xScale(d.x))
           .attr("y", yScale(yDomain[1]))
           .attr("width", xScale.bandwidth())
           .attr("height", yScale(yDomain[0]) - yScale(yDomain[1]))
           .attr("opacity", 0.5)
-          .attr("fill", (d) => (d.shaded ? "gray" : "white"));
+          .attr("fill", (d: any) => (d.shaded ? "gray" : "white"));
       } else if (!isXDiscrete && isYDiscrete) {
         svg
           .append("g")
@@ -239,11 +262,11 @@ const ScatterPlot = ({
           )
           .join("rect")
           .attr("x", xScale(xDomain[0]))
-          .attr("y", (d) => yScale(d.y))
+          .attr("y", (d: any) => yScale(d.y))
           .attr("width", xScale(xDomain[1]) - xScale(xDomain[0]))
           .attr("height", yScale.bandwidth())
           .attr("opacity", 0.5)
-          .attr("fill", (d) => (d.shaded ? "gray" : "white"));
+          .attr("fill", (d: any) => (d.shaded ? "gray" : "white"));
       } else if (isXDiscrete && isYDiscrete) {
         svg
           .append("g")
@@ -251,24 +274,25 @@ const ScatterPlot = ({
           .selectAll("rect")
           .data(
             xDomain.flatMap((x, i) => {
-              return yDomain.map((y, j) => {
+              return yDomain?.map((y, j) => {
                 return { x, y, shaded: (i + j) % 2 === 0 };
               });
             })
           )
           .join("rect")
-          .attr("x", (d) => xScale(d.x))
-          .attr("y", (d) => yScale(d.y))
+          .attr("x", (d: any) => xScale(d.x))
+          .attr("y", (d: any) => yScale(d.y))
           .attr("width", xScale.bandwidth())
           .attr("height", yScale.bandwidth())
           .attr("opacity", 0.5)
-          .attr("fill", (d) => (d.shaded ? "gray" : "white"));
+          .attr("fill", (d: any) => (d.shaded ? "gray" : "white"));
       }
 
       const _data = data.map((d: any) => {
         let x = xScale(d[xVar]);
         let y = yScale(d[yVar]);
         let r = radius;
+        let c = colorVar && colorScale ? colorScale(d[colorVar]) : null;
 
         if (isXDiscrete) x = x + xScale.bandwidth() / 2;
         if (isYDiscrete) y = y + yScale.bandwidth() / 2;
@@ -277,11 +301,13 @@ const ScatterPlot = ({
           x: number;
           y: number;
           r: number;
+          c: string;
           menu: Menu;
         } = {
           x,
           y,
           r,
+          c,
           menu: d,
         };
 
@@ -342,7 +368,7 @@ const ScatterPlot = ({
 
       bubbles
         .append("circle")
-        .attr("fill", "white")
+        .attr("fill", (d) => (d.c ? d.c : "white"))
         .attr("stroke", "#333333")
         .attr("stroke-width", "2px")
         .attr("cx", (d: any) => d.x)

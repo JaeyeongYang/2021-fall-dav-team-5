@@ -28,9 +28,9 @@ const Pie = function(props:PieProps) {
     .innerRadius(props.innerRadius);
   const colors: string[] = ['red','green','blue'];
   const vis_data : PieDataProps[]=[
-      {name:"carb",value:props.data.carb},
-      {name: "protein", value: props.data.protein},
-      {name: "fat", value: props.data.fat}];
+      {name:"탄수화물",value:props.data.carb},
+      {name: "단백질", value: props.data.protein},
+      {name: "지방", value: props.data.fat}];
   const format = d3.format(".1f");
   const data = createPie(vis_data);
 
@@ -40,7 +40,7 @@ const Pie = function(props:PieProps) {
       const data = createPie(vis_data);
       const group = d3.select(ref.current);
       const groupWithData = group.selectAll("g.arc").data(data);
-      const legendgroupWithData = group.selectAll(".legend").data(data);
+      const legendgroupWithData = group.selectAll("g.legend").data(data);
 
       groupWithData.exit().remove();
       legendgroupWithData.exit().remove();
@@ -70,35 +70,6 @@ const Pie = function(props:PieProps) {
         .style("fill", "white")
         .style("font-size", 15)
         .text(d => d.value?format(d.value)+"g":'');
-
-      // const legendG = legendgroupWithData
-      //   .enter().append("g")
-      //   .attr("class", "legend")   
-      //   .attr("transform", function(d,i){
-      //     return "translate(" + (i * 15 + 20) + "," + (props.height - 110) + ")";
-      //   })
-      
-
-      const legendG = legendgroupWithData
-        .enter().append("g")
-        .attr("class", "legend")   
-        .attr("transform", function(d,i){
-          return "translate(" + (i * 15 + 20) + "," + (props.height - 30) + ")";
-        })
-
-      legendG.append("rect")
-        .attr("width", 10)
-        .attr("height", 10)
-        .attr("fill", (d, i) => colors[i]);
-      
-      legendG.append("text")
-        .text(function(d){
-          return d.value + "  " + d.data.name;
-        })
-        .style("font-size", 12)
-        .attr("y", 10)
-        .attr("x", 11);
-
     },
     [props.data]
   );
@@ -110,9 +81,20 @@ const Pie = function(props:PieProps) {
       ref={ref}
       transform={`translate(${props.outerRadius} ${props.outerRadius})`}
     />
-    
     <text transform={`translate(${props.outerRadius} ${props.outerRadius})`} text-anchor={"middle"} alignment-baseline={"middle"} font-weight={"bold"} font-size={15}>
       {props.data.energy}kcal
+    </text>
+    <rect transform={"translate(" + (10) + "," + (props.height - 30) + ")"} width={15} height={15} fill= {colors[0]} />
+    <rect transform={"translate(" + (90) + "," + (props.height - 30) + ")"} width={15} height={15} fill= {colors[1]} />
+    <rect transform={"translate(" + (170) + "," + (props.height - 30) + ")"} width={15} height={15} fill= {colors[2]} />
+    <text transform={"translate(" + (20) + "," + (props.height - 30) + ")"} x={12} y={12} font-size={13}>
+      {vis_data[0].name}
+    </text>
+    <text transform={"translate(" + (100) + "," + (props.height - 30) + ")"} x={12} y={12} font-size={13}>
+      {vis_data[1].name}
+    </text>
+    <text transform={"translate(" + (180) + "," + (props.height - 30) + ")"} x={12} y={12} font-size={13}>
+      {vis_data[2].name}
     </text>
     </svg>
   );

@@ -6,15 +6,13 @@ import PieSVG from "./PieSVG";
 import { Menu } from "src/store/reducers/data";
 
 const PopOver = function(menu: Menu){ //menuId로 변경해서 사용
+
   return (
     <Popover id="popover-basic">
     <Popover.Header as="h3">{menu.name}</Popover.Header>
     <Popover.Body>
-      {menu.name}<br/>
       <PieSVG data = {menu} width={300} height={300} innerRadius={50} outerRadius={125}></PieSVG><br/>
-      (나트륨 함량: {menu.na}) <br/>
-      재료: {menu.name}을/를 만드는 재료 리스트<br/>
-      만드는 법: {menu.name}을/를 만드는 방법<br/>
+      나트륨 함량: {menu.na}g <br/>
     </Popover.Body>
   </Popover>
   )

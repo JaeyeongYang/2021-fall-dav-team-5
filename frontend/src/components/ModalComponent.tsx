@@ -15,14 +15,23 @@ const ModalComponent = function () {
   /////// modal 
   const [show, setShow] = useState(false);
   const handleClose = () =>{
-    setShow(false)
     dispatch(clearMenuDetail());
+    setShow(false)
   };
   const handleShow = () => {
-    setShow(true)
     dispatch(loadMenuDetail(2));
+    setShow(true)
   };
-
+  const visualizePie  = (menuDetail:MenuDetail|undefined) =>{
+    
+    if (typeof menuDetail !==undefined){
+      return <PieSVG data = {menuDetail} width={300} height={300} innerRadius={50} outerRadius={125}></PieSVG>
+    }
+    else{
+      return "Undefined menuDetail"
+    }
+  }
+  
   const menuDetail = useAppSelector(selectMenuDetail);
   const dispatch = useAppDispatch();
 
@@ -45,11 +54,12 @@ const ModalComponent = function () {
                 <Container>
                     <Row className="modal-component-row">
                         <Col md="6" style={{background: 'yellowgreen'}}>
-                            이미지 들어갈 곳
                             <Image src={menuDetail?.img_small} rounded />
                         </Col>
                         <Col md="6" style={{background: 'lightpink'}}>
-                          {/* <PieSVG data = {menuDetail===undefined?menuDetail:""} width={300} height={300} innerRadius={50} outerRadius={125}></PieSVG> */}
+                          {
+                            visualizePie(menuDetail)
+                          }
                         </Col>
                     </Row>
 
@@ -60,14 +70,16 @@ const ModalComponent = function () {
                     </Row>
 
                     <Row>
-                      {
-                        menuDetail?.recipes.map((recipe: Recipe) => {
-                          <Col md="12" style={{background: 'lemonchiffon', whiteSpace: 'pre-wrap'}}>
-                            {JSON.stringify(recipe.text)}
-                            {JSON.stringify(menuDetail?.recipes[0])}
-                          </Col>
-                        })
-                      }
+                      <Col md="12" style={{background: 'lemonchiffon', whiteSpace: 'pre-wrap'}}>
+                        {menuDetail?.recipes[0].text}
+                        <Image src={menuDetail?.recipes[0].img} rounded />
+                        {
+                          
+                          menuDetail?.recipes.map((recipe: Recipe) => {
+                              {JSON.stringify(recipe.text)}
+                          })
+                        }
+                      </Col>
                     </Row>
                 </Container>
             </Modal.Body>

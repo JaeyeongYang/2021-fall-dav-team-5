@@ -28,7 +28,7 @@ const Visualization = function () {
   const [yVar, setYVar] = useState<VarName>("ingredients_count");
   const [colorVar, setColorVar] = useState<VarName | null>(null);
   const [radiusVar, setRadiusVar] = useState<VarContinuous | null>(null);
-  const [radiusMin, setRadiusMin] = useState<number>(1);
+  const [radiusMin, setRadiusMin] = useState<number>(2);
   const [radiusMax, setRadiusMax] = useState<number>(10);
   const [forced, setForced] = useState<boolean>(false);
   const [fixXDomain, setFixXDomain] = useState<boolean>(false);
@@ -233,6 +233,7 @@ const Visualization = function () {
             justifyContent: "center",
           }}
         >
+          <span style={{ marginRight: "1rem" }}>크기 범위:</span>
           <div style={{ marginRight: "1rem" }}>
             <RangeSlider
               value={radiusMin}
@@ -242,7 +243,6 @@ const Visualization = function () {
               min={2}
               max={10}
               disabled={radiusVar === null}
-              tooltip="on"
             />
           </div>
           <div style={{ marginRight: "1rem" }}>
@@ -254,7 +254,6 @@ const Visualization = function () {
               min={2}
               max={20}
               disabled={radiusVar === null}
-              tooltip="on"
             />
           </div>
         </div>

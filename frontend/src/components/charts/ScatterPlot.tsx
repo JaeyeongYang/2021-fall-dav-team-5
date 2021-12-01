@@ -5,23 +5,13 @@ import { useAppDispatch } from "src/hooks";
 import { showModal } from "src/store/reducers/UI";
 import {
   varsDiscrete,
-  VarDiscrete,
-  varsContinuous,
-  VarContinuous,
   VarName,
-  wayDomain,
-  patDomain,
+  mapVarNameToLabel,
+  VarContinuous,
 } from "src/globals";
-
-const mapVarNameToLabel: { [key: VarName]: string } = {
-  way: "조리방법",
-  pat: "메뉴종류",
-  energy: "열량 (kcal)",
-  carb: "탄수화물 (g)",
-  protein: "단백질 (g)",
-  fat: "지방 (g)",
-  na: "나트륨 (g)",
-};
+import getDomain from "src/functions/getDomain";
+import getScale from "src/functions/getScale";
+import getColorScale from "src/functions/getColorScale";
 
 interface Tooltip {
   display: boolean;
@@ -33,14 +23,17 @@ interface Props {
   data: Menu[];
   width: number;
   height: number;
-  xVar?: VarName;
-  yVar?: VarName;
-  colorVar?: VarName;
+  xVar: VarName;
+  yVar: VarName;
+  colorVar?: VarName | null;
   xDomain?: Array<string | number>;
   yDomain?: Array<string | number>;
+  radiusVar?: VarContinuous | null;
   radius?: number;
   radiusCollide?: number;
+  radiusRange?: [number, number];
   forced?: boolean;
+  borderColor?: string;
   marginTop?: number;
   marginRight?: number;
   marginBottom?: number;
@@ -52,18 +45,62 @@ interface Props {
   insetLeft?: number;
 }
 
+const TooltipComponent = ({ tooltip }: { tooltip: Tooltip }) => {
+  if (!tooltip.display || !tooltip.menu) return <></>;
+
+  const { x, y } = tooltip.pos as { x: number; y: number };
+  const menu = tooltip.menu;
+
+  const name_words = menu.name.split(" ");
+  let lines = [];
+  if (name_words.length >= 4) {
+    const index = Math.trunc(name_words.length / 2);
+    lines.push(name_words.slice(0, index).join(" "));
+    lines.push(name_words.slice(index).join(" "));
+  } else {
+    lines.push(menu.name);
+  }
+
+  const dy = lines.length > 1 ? 45 : 27;
+
+  const transform = `translate(${x}, ${y - dy})`;
+  const visible = tooltip.display ? "visible" : "hidden";
+
+  return (
+    <g transform={transform} visibility={visible}>
+      <text
+        filter="url(#label-background)"
+        textAnchor="middle"
+        fill="#ffffff"
+        fontSize="0.75rem"
+      >
+        {lines.map((line, i) => {
+          return (
+            <tspan key={i} textAnchor="middle" x="0" dy="1.2em">
+              {line}
+            </tspan>
+          );
+        })}
+      </text>
+    </g>
+  );
+};
+
 const ScatterPlot = ({
   data,
   width,
   height,
-  radius = 5,
-  radiusCollide = 1,
-  forced = true,
-  xVar = "way",
-  yVar = "protein",
-  colorVar = "protein",
+  xVar,
+  yVar,
+  colorVar,
   xDomain,
   yDomain,
+  radiusVar,
+  radius = 5,
+  radiusCollide = 1,
+  radiusRange = [2, radius * 2],
+  forced = true,
+  borderColor = "white",
   marginTop = 60,
   marginRight = 60,
   marginBottom = 60,
@@ -82,80 +119,6 @@ const ScatterPlot = ({
   const xRange = [marginLeft + insetLeft, width - marginRight - insetRight]; // [left, right]
   const yRange = [height - marginBottom - insetBottom, marginTop + insetTop]; // [bottom, top]
 
-  const getScale = (isDiscrete: boolean, domain: any, range: any) => {
-    if (isDiscrete) {
-      return d3.scaleBand(domain, range) as d3.AxisScale<d3.NumberValue>;
-    } else {
-      return d3.scaleLinear(domain, range) as d3.AxisScale<d3.NumberValue>;
-    }
-  };
-
-  const getColorScale = (isDiscrete: boolean, domain: any) => {
-    if (isDiscrete) {
-      return d3.scaleOrdinal(domain, d3.schemeCategory10);
-    } else {
-      return d3.scaleSequential(d3.interpolateRdYlBu).domain(domain);
-    }
-  };
-
-  const getDomain = (varName: VarName, _data: Menu[]) => {
-    if (varsDiscrete.some((x) => x === varName)) {
-      if (varName == "way") return wayDomain;
-      else if (varName == "pat") return patDomain;
-      else
-        return Array.from(
-          new d3.InternSet(_data.map((d: any) => d[varName] as string))
-        );
-    } else {
-      const ret = d3.extent(_data, (d: any) => d[varName]);
-      return [
-        ret[0] - 0.05 * (ret[1] - ret[0]),
-        ret[1] + 0.05 * (ret[1] - ret[0]),
-      ];
-    }
-  };
-
-  const Tooltip = () => {
-    if (!tooltip.display || !tooltip.menu) return <></>;
-
-    const { x, y } = tooltip.pos as { x: number; y: number };
-    const menu = tooltip.menu;
-
-    const name_words = menu.name.split(" ");
-    let lines = [];
-    if (name_words.length >= 4) {
-      const index = Math.trunc(name_words.length / 2);
-      lines.push(name_words.slice(0, index).join(" "));
-      lines.push(name_words.slice(index).join(" "));
-    } else {
-      lines.push(menu.name);
-    }
-
-    const dy = lines.length > 1 ? 45 : 27;
-
-    const transform = `translate(${x}, ${y - dy})`;
-    const visible = tooltip.display ? "visible" : "hidden";
-
-    return (
-      <g transform={transform} visibility={visible}>
-        <text
-          filter="url(#label-background)"
-          textAnchor="middle"
-          fill="#ffffff"
-          fontSize="0.75rem"
-        >
-          {lines.map((line, i) => {
-            return (
-              <tspan key={i} textAnchor="middle" x="0" dy="1.2em">
-                {line}
-              </tspan>
-            );
-          })}
-        </text>
-      </g>
-    );
-  };
-
   useEffect(() => {
     const svg = d3
       .select(svgRef.current)
@@ -171,14 +134,18 @@ const ScatterPlot = ({
       const isYDiscrete = varsDiscrete.some((x) => x === yVar);
       const isColorDiscrete = varsDiscrete.some((x) => x === colorVar);
 
-      if (xDomain === undefined) xDomain = getDomain(xVar, data);
-      if (yDomain === undefined) yDomain = getDomain(yVar, data);
+      xDomain = xDomain === undefined ? getDomain(xVar, data) : xDomain;
+      yDomain = yDomain === undefined ? getDomain(yVar, data) : yDomain;
       const colorDomain = colorVar ? getDomain(colorVar, data) : null;
+      const radiusDomain = radiusVar ? getDomain(radiusVar, data) : null;
 
       const xScale: any = getScale(isXDiscrete, xDomain, xRange);
       const yScale: any = getScale(isYDiscrete, yDomain, yRange);
       const colorScale: any = colorVar
         ? getColorScale(isColorDiscrete, colorDomain)
+        : null;
+      const radiusScale: any = radiusVar
+        ? getScale(false, radiusDomain, radiusRange)
         : null;
 
       const xAxis = d3.axisBottom(xScale);
@@ -189,8 +156,13 @@ const ScatterPlot = ({
         .attr("class", "chart-component")
         .attr("transform", `translate(0, ${height - marginBottom})`)
         .call(xAxis);
-      // xAxisGroup.select(".domain").remove();
+      xAxisGroup.select(".domain").remove();
       xAxisGroup.selectAll("line").attr("stroke", "#000000");
+      xAxisGroup
+        .selectAll(".tick line")
+        .clone()
+        .attr("y2", marginTop + marginBottom - height)
+        .attr("stroke-opacity", 0.1);
       xAxisGroup
         .selectAll("text")
         .attr("fill", "black")
@@ -211,8 +183,13 @@ const ScatterPlot = ({
         .attr("class", "chart-component")
         .attr("transform", `translate(${marginLeft}, 0)`)
         .call(yAxis);
-      // yAxisGroup.select(".domain").remove();
+      yAxisGroup.select(".domain").remove();
       yAxisGroup.selectAll("line").attr("stroke", "black");
+      yAxisGroup
+        .selectAll(".tick line")
+        .clone()
+        .attr("x2", width - marginLeft - marginRight)
+        .attr("stroke-opacity", 0.1);
       yAxisGroup
         .selectAll("text")
         .attr("color", "black")
@@ -248,7 +225,7 @@ const ScatterPlot = ({
           .attr("y", yScale(yDomain[1]))
           .attr("width", xScale.bandwidth())
           .attr("height", yScale(yDomain[0]) - yScale(yDomain[1]))
-          .attr("opacity", 0.5)
+          .attr("opacity", 0.3)
           .attr("fill", (d: any) => (d.shaded ? "gray" : "white"));
       } else if (!isXDiscrete && isYDiscrete) {
         svg
@@ -265,7 +242,7 @@ const ScatterPlot = ({
           .attr("y", (d: any) => yScale(d.y))
           .attr("width", xScale(xDomain[1]) - xScale(xDomain[0]))
           .attr("height", yScale.bandwidth())
-          .attr("opacity", 0.5)
+          .attr("opacity", 0.3)
           .attr("fill", (d: any) => (d.shaded ? "gray" : "white"));
       } else if (isXDiscrete && isYDiscrete) {
         svg
@@ -284,14 +261,14 @@ const ScatterPlot = ({
           .attr("y", (d: any) => yScale(d.y))
           .attr("width", xScale.bandwidth())
           .attr("height", yScale.bandwidth())
-          .attr("opacity", 0.5)
+          .attr("opacity", 0.3)
           .attr("fill", (d: any) => (d.shaded ? "gray" : "white"));
       }
 
       const _data = data.map((d: any) => {
         let x = xScale(d[xVar]);
         let y = yScale(d[yVar]);
-        let r = radius;
+        let r = radiusVar && radiusScale ? radiusScale(d[radiusVar]) : radius;
         let c = colorVar && colorScale ? colorScale(d[colorVar]) : null;
 
         if (isXDiscrete) x = x + xScale.bandwidth() / 2;
@@ -368,9 +345,9 @@ const ScatterPlot = ({
 
       bubbles
         .append("circle")
-        .attr("fill", (d) => (d.c ? d.c : "white"))
-        .attr("stroke", "#333333")
-        .attr("stroke-width", "2px")
+        .attr("fill", (d) => (d.c ? d.c : "black"))
+        .attr("stroke", colorVar ? "black" : borderColor)
+        .attr("stroke-width", 1)
         .attr("cx", (d: any) => d.x)
         .attr("cy", (d: any) => d.y)
         .attr("r", (d: any) => d.r);
@@ -406,7 +383,19 @@ const ScatterPlot = ({
       //   // .attr("y", (d, i, D) => `${i - D.length / 2 + 0.85}em`)
       //   .text((d) => d);
     }
-  }, [data, width, height, forced]);
+  }, [
+    data,
+    xVar,
+    yVar,
+    colorVar,
+    radiusVar,
+    radiusRange,
+    width,
+    height,
+    forced,
+    xDomain,
+    yDomain,
+  ]);
 
   return (
     <svg ref={svgRef}>
@@ -430,7 +419,7 @@ const ScatterPlot = ({
           <feComposite operator="over" in="SourceGraphic" />
         </filter>
       </defs>
-      <Tooltip />
+      <TooltipComponent tooltip={tooltip} />
     </svg>
   );
 };

@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 
 import { BACKEND_DOMAIN } from "./globals";
 import { useAppDispatch, useAppSelector } from "./hooks";
 import {
   DataState,
-  Tag,
-  BubbleColors,
   doneLoadingMenuDetail,
   doneLoadingMenus,
   loadMenus,

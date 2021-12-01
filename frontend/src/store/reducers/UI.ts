@@ -3,7 +3,7 @@ import {
   createSelector,
 } from '@reduxjs/toolkit';
 
-import { RootState, StoreDispatch, StoreGetState } from '../configureStore';
+import { RootState } from '../configureStore';
 
 export type UIState = {
   displayDetailView?: boolean;

@@ -24,11 +24,11 @@ export interface FilterQuery {
 const parseFilter = (state: FilterState) => {
   const { terms, way, pat, hashtag, ...rest } = state;
 
-  const name = terms?.filter((x) => x.type == SearchTermType.menu).map((x) => x.name)
-  const ing_set_inc = terms?.filter((x) => (x.type == SearchTermType.ingredient) && x.isParsed && !x.excluded).map((x) => x.name)
-  const ing_set_exc = terms?.filter((x) => (x.type == SearchTermType.ingredient) && x.isParsed && x.excluded).map((x) => x.name)
-  const ing_str_inc = terms?.filter((x) => (x.type == SearchTermType.ingredient) && !x.isParsed && !x.excluded).map((x) => x.name)
-  const ing_str_exc = terms?.filter((x) => (x.type == SearchTermType.ingredient) && !x.isParsed && x.excluded).map((x) => x.name)
+  const name = terms?.filter((x) => x.type === SearchTermType.menu).map((x) => x.name)
+  const ing_set_inc = terms?.filter((x) => (x.type === SearchTermType.ingredient) && x.isParsed && !x.excluded).map((x) => x.name)
+  const ing_set_exc = terms?.filter((x) => (x.type === SearchTermType.ingredient) && x.isParsed && x.excluded).map((x) => x.name)
+  const ing_str_inc = terms?.filter((x) => (x.type === SearchTermType.ingredient) && !x.isParsed && !x.excluded).map((x) => x.name)
+  const ing_str_exc = terms?.filter((x) => (x.type === SearchTermType.ingredient) && !x.isParsed && x.excluded).map((x) => x.name)
 
   let ret: FilterQuery = rest
 

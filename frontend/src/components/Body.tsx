@@ -2,8 +2,6 @@ import "./Body.css";
 
 import SearchBar from "src/components/searchbar/SearchBar";
 import Visualization from "./Visualization";
-import { Tag, BubbleColors } from "../store/reducers/data";
-import ExampleComponent from "./ExampleComponent";
 import ModalComponent from "./ModalComponent";
 
 // const Body = function ({

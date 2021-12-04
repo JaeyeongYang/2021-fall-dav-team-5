@@ -83,6 +83,9 @@ const ScatterPlot = ({
       .selectAll(".graph");
 
     svg.selectAll("g").remove();
+    svg.selectAll("circle").remove();
+    svg.selectAll("text").remove();
+    svg.selectAll("image").remove();
 
     if (data && svgRef.current) {
       const isXDiscrete = varsDiscrete.some((x) => x === xVar);
@@ -106,79 +109,118 @@ const ScatterPlot = ({
       const xAxis = d3.axisBottom(xScale);
       const yAxis = d3.axisLeft(yScale);
 
-      const cDomain = colorDomain ? [0].concat(colorDomain) : [];
+      // Color legend
+      if (colorVar !== undefined && colorVar !== null && colorVar !== "") {
+        const cDomain = colorDomain
+          ? isColorDiscrete
+            ? [0].concat(colorDomain)
+            : colorDomain
+          : [];
+        const legend = svg
+          .append("g")
+          .attr("class", "legends")
+          .data(cDomain)
+          .enter();
 
-      const legend = svg
-        .append("g")
-        .attr("class", "legends")
-        .data(cDomain)
-        .enter();
+        legend.selectAll("circle").remove();
+        legend.selectAll("text").remove();
 
-      legend.selectAll("circle").remove();
-      legend.selectAll("text").remove();
-
-      if (colorVar === "way" || colorVar === "pat") {
-        legend
-          .append("circle")
-          .attr("cx", 740)
-          .attr("cy", function (d, i) {
-            return 200 + i * 25;
-          })
-          .attr("r", 7)
-          .attr("fill", function (d) {
-            return colorScale(d);
-          });
-
-        legend
+        svg
           .append("text")
-          .attr("x", 760)
-          .attr("y", function (d, i) {
-            return 200 + i * 25;
-          })
-          .attr("fill", "black")
-          .text(function (d) {
-            return d;
-          })
-          .attr("text-anchor", "left")
-          .attr("alignment-baseline", "middle");
-      } else {
-        var tmp = Number(cDomain[1]);
-        var lDomain = [0, Math.round(cDomain[1])];
-        const range = cDomain[2] - cDomain[1];
+          .attr("class", "legend-title")
+          .style("font-weight", "bold")
+          .attr("x", 740)
+          .attr("y", 175)
+          .text(mapVarNameToLabel[colorVar as string]);
 
-        for (var i = 1; i < 6; i++) {
-          var tmp = Math.round(tmp + range / 5);
-          lDomain.push(tmp);
+        if (isColorDiscrete) {
+          legend
+            .append("circle")
+            .attr("cx", 740)
+            .attr("cy", function (d, i) {
+              return 175 + i * 25;
+            })
+            .attr("r", 7)
+            .attr("fill", function (d) {
+              return colorScale(d);
+            });
+
+          legend
+            .append("text")
+            .attr("x", 760)
+            .attr("y", function (d, i) {
+              return 175 + i * 25;
+            })
+            .attr("fill", "black")
+            .text(function (d) {
+              return d;
+            })
+            .attr("text-anchor", "left")
+            .attr("alignment-baseline", "middle");
+        } else {
+          var tmp = Number(cDomain[0]);
+          var lDomain = [Math.round(cDomain[0])];
+          const range = cDomain[1] - cDomain[0];
+
+          for (var i = 1; i < 6; i++) {
+            var tmp = Math.round(tmp + range / 5);
+            lDomain.push(tmp);
+          }
+
+          svg
+            .selectAll("legends")
+            .data(lDomain)
+            .enter()
+            .append("text")
+            .attr("x", 760)
+            .attr("y", function (d, i) {
+              return 200 + i * 25;
+            })
+            .attr("fill", "black")
+            .text(function (d) {
+              return d;
+            })
+            .attr("text-anchor", "left")
+            .attr("alignment-baseline", "middle");
+
+          const n = Math.min(
+            colorScale.domain().length,
+            colorScale.range().length
+          );
+
+          let x = colorScale
+            .copy()
+            .rangeRound(
+              d3.quantize(d3.interpolate(marginLeft, width - marginRight), n)
+            );
+
+          const ramp = (color: any, n = 256) => {
+            const canvas = document.createElement("canvas");
+            canvas.width = 1;
+            canvas.height = n;
+
+            const context = canvas.getContext("2d");
+            for (let i = 0; i < n; ++i) {
+              (context as any).fillStyle = color(i / (n - 1));
+              (context as any).fillRect(0, i, 1, 1);
+            }
+            return canvas;
+          };
+
+          svg
+            .append("image")
+            .attr("x", 740)
+            .attr("y", 200)
+            .attr("width", 10)
+            .attr("height", 125)
+            .attr("preserveAspectRatio", "none")
+            .attr(
+              "xlink:href",
+              ramp(
+                colorScale.copy().domain(d3.quantize(d3.interpolate(0, 1), n))
+              ).toDataURL()
+            );
         }
-
-        svg
-          .append("legends")
-          .data(lDomain)
-          .enter()
-          .append("circle")
-          .attr("cx", 700)
-          .attr("cy", function (d, i) {
-            return 50 + i * 25;
-          })
-          .attr("r", 7)
-          .attr("fill", function (d) {
-            return colorScale(d);
-          });
-        svg
-          .selectAll("legends")
-          .data(lDomain)
-          .enter()
-          .append("text")
-          .attr("x", 720)
-          .attr("y", function (d, i) {
-            return 50 + i * 25;
-          })
-          .attr("fill", "black")
-          .text(function (d) {
-            return d;
-          })
-          .attr("text-anchor", "left")
-          .attr("alignment-baseline", "middle");
       }
 
       const xAxisGroup = svg

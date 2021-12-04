@@ -13,8 +13,11 @@ export const getDomain = (varName: VarName, data: Menu[]) => {
   } else {
     const ret = d3.extent(data, (d: any) => d[varName]);
     return [
-      ret[0] - 0.05 * (ret[1] - ret[0]),
-      ret[1] + 0.05 * (ret[1] - ret[0]),
+      ret[0],
+      ret[1]
+
+      // ret[0] - 0.05 * (ret[1] - ret[0]),
+      // ret[1] + 0.05 * (ret[1] - ret[0]),
     ];
   }
 };

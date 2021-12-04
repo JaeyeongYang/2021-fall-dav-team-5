@@ -1,19 +1,52 @@
 import React, { useEffect, useState } from "react";
 
-import { PAGINATION } from "src/globals";
+import {
+  mapVarNameToLabel,
+  PAGINATION,
+  VarContinuous,
+  VarName,
+  varsContinuous,
+  varsName,
+} from "src/globals";
 import { useAppSelector } from "src/hooks";
 import { Menu, selectMenus } from "src/store/reducers/data";
+import { selectPlot } from "src/store/reducers/filter";
 import ScatterPlot from "src/components/charts/ScatterPlot";
 import ScatterPlotMenu from "./ScatterPlotMenu";
 import "./Visualization.css";
-import { Button, Form } from "react-bootstrap";
+import { Button, Dropdown, Form, Container, Row, Col } from "react-bootstrap";
+import getDomain from "src/functions/getDomain";
+import RangeSlider from "react-bootstrap-range-slider";
+import BubbleChart from "./charts/BubbleChart";
+import SearchBar from "./searchbar_vertical/SearchBar";
 
 const Visualization = function () {
   const menus: Menu[] = useAppSelector(selectMenus) ?? [];
   const [menusShuffled, setMenusShuffled] = useState<Menu[]>([]);
   const [menusSelected, setMenusSelected] = useState<Menu[]>([]);
-  const [index, setIndex] = useState<number>(0);
-  const [forced, setForced] = useState<boolean>(true);
+  const [index, setIndex] = useState<number>(0);  
+
+  /////
+  const plot: string = useAppSelector(selectPlot) ?? 'bubble';
+
+
+  // TODO: these states should be stored with redux later
+  const [xVar, setXVar] = useState<VarName>("energy");
+  const [yVar, setYVar] = useState<VarName>("carb");
+  const [colorVar, setColorVar] = useState<VarName | null>("way");
+  const [radiusVar, setRadiusVar] = useState<VarContinuous | null>(
+    "ingredients_count"
+  );
+  const [radiusMin, setRadiusMin] = useState<number>(2);
+  const [radiusMax, setRadiusMax] = useState<number>(10);
+  const [forced, setForced] = useState<boolean>(false);
+  const [fixXDomain, setFixXDomain] = useState<boolean>(false);
+  const [fixYDomain, setFixYDomain] = useState<boolean>(false);
+
+  const xDomain =
+    fixXDomain && menus ? getDomain(xVar, menusShuffled) : undefined;
+  const yDomain =
+    fixYDomain && menus ? getDomain(yVar, menusShuffled) : undefined;
 
   // const Visualization = function ({
   //     children,
@@ -68,7 +101,7 @@ const Visualization = function () {
   //             </div>
   //         )
   useEffect(() => {
-    if (menus) {
+    if (menus && menus.length > 0) {
       const _menu: Menu[] = [...menus];
       const _index = 0;
       _menu.sort(() => Math.random() - 0.5);
@@ -79,7 +112,7 @@ const Visualization = function () {
   }, [menus]);
 
   useEffect(() => {
-    if (menusShuffled) {
+    if (menusShuffled && menusShuffled.length > 0) {
       if (index < 0) {
         setIndex(Math.ceil(menusShuffled.length / PAGINATION) - 1);
       } else if (index * PAGINATION > menusShuffled.length) {
@@ -121,18 +154,131 @@ const Visualization = function () {
 
   const OptionBox = () => {
     return (
-      <div
-        className="pagination"
-        style={{
-          display: "flex",
-          height: "2rem",
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Form>
-          <Form.Check
+      <>
+        <div
+          style={{
+            display: "flex",
+            minHeight: "3rem",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Dropdown style={{ marginRight: "1rem" }}>
+            <Dropdown.Toggle disabled={plot == "bubble" ? true : false}>X축: {mapVarNameToLabel[xVar]}</Dropdown.Toggle>
+            <Dropdown.Menu>
+              {varsName.map((v, i) => {
+                return (
+                  <Dropdown.Item key={i} as="button" onClick={() => setXVar(v)}>
+                    {mapVarNameToLabel[v]}
+                  </Dropdown.Item>
+                );
+              })}
+            </Dropdown.Menu>
+          </Dropdown>
+          
+          <Dropdown style={{ marginRight: "1rem" }}>
+            <Dropdown.Toggle disabled={plot == "bubble" ? true : false}>Y축: {mapVarNameToLabel[yVar]}</Dropdown.Toggle>
+            <Dropdown.Menu>
+              {varsName.map((v, i) => {
+                return (
+                  <Dropdown.Item key={i} as="button" onClick={() => setYVar(v)}>
+                    {mapVarNameToLabel[v]}
+                  </Dropdown.Item>
+                );
+              })}
+            </Dropdown.Menu>
+          </Dropdown>
+          <Dropdown style={{ marginRight: "1rem" }}>
+            <Dropdown.Toggle>
+              색깔: {colorVar ? mapVarNameToLabel[colorVar] : "-"}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item as="button" onClick={() => setColorVar(null)}>
+                -
+              </Dropdown.Item>
+              <Dropdown.Divider />
+              {varsName.map((v, i) => {
+                return (
+                  <Dropdown.Item
+                    key={i}
+                    as="button"
+                    onClick={() => setColorVar(v)}
+                  >
+                    {mapVarNameToLabel[v]}
+                  </Dropdown.Item>
+                );
+              })}
+            </Dropdown.Menu>
+          </Dropdown>
+          <Dropdown style={{ marginRight: "1rem" }}>
+            <Dropdown.Toggle>
+              크기: {radiusVar ? mapVarNameToLabel[radiusVar] : "-"}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item as="button" onClick={() => setRadiusVar(null)}>
+                -
+              </Dropdown.Item>
+              <Dropdown.Divider />
+              {varsContinuous.map((v, i) => {
+                return (
+                  <Dropdown.Item
+                    key={i}
+                    as="button"
+                    onClick={() => setRadiusVar(v)}
+                  >
+                    {mapVarNameToLabel[v]}
+                  </Dropdown.Item>
+                );
+              })}
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            minHeight: "3rem",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <span style={{ marginRight: "1rem" }}>크기 범위:</span>
+          <div style={{ marginRight: "1rem" }}>
+            <RangeSlider
+              disabled={(plot == "bubble" ? true : false) || (radiusVar === null) }
+              value={radiusMin}
+              onChange={(e: any) => {
+                setRadiusMin(e.target.value);
+              }}
+              min={2}
+              max={10}              
+            />
+          </div>
+          <div style={{ marginRight: "1rem" }}>
+            <RangeSlider
+              disabled={(plot == "bubble" ? true : false) || (radiusVar === null) }
+              value={radiusMax}
+              onChange={(e: any) => {
+                setRadiusMax(e.target.value);
+              }}
+              min={2}
+              max={20}              
+            />
+          </div>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            minHeight: "3rem",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Form.Check 
+            disabled={plot == "bubble" ? true : false}
+            inline
             id="show-forced-chart"
             label={"Avoid overlapping"}
             checked={forced}
@@ -140,32 +286,100 @@ const Visualization = function () {
               setForced(!forced);
             }}
           />
-        </Form>
-      </div>
+          <Form.Check
+            disabled={plot == "bubble" ? true : false}
+            inline
+            id="fix-x-domain"
+            label={"Fix the domain of X axis"}
+            checked={fixXDomain}
+            onChange={() => {
+              setFixXDomain(!fixXDomain);
+            }}
+          />
+          <Form.Check
+            disabled={plot == "bubble" ? true : false}
+            inline
+            id="fix-y-domain"
+            label={"Fix the domain of Y axis"}
+            checked={fixYDomain}
+            onChange={() => {
+              setFixYDomain(!fixYDomain);
+            }}
+          />
+        </div>
+      </>
     );
   };
 
-  return (
-    <div className="vis-div">
-      <ScatterPlot
-        data={menusSelected}
-        width={800}
-        height={600}
-        forced={forced}
-      />
-      <Pagination />
-      <OptionBox />
-      {/* <div className="scatter-plot-menu-div">
-        <ScatterPlotMenu
-          xAxis={xAxis}
-          yAxis={yAxis}
-          setXAxis={setXAxis}
-          setYAxis={setYAxis}
-          onAlignButtonClick={onAlignButtonClick}
-          onResetButtonClick={onResetButtonClick}
-        ></ScatterPlotMenu>
-      </div> */}
-    </div>
+  let render;  
+  if (plot == "bubble") {
+    render = <BubbleChart
+                data={menus.length > 0 ? menusSelected : []}
+                colorVar={colorVar}
+                radiusVar={radiusVar}
+                width={800}
+                height={600}
+              />        
+  } else {
+    render = <ScatterPlot
+                data={menus.length > 0 ? menusSelected : []}
+                xVar={xVar}
+                yVar={yVar}
+                colorVar={colorVar}
+                radiusVar={radiusVar}
+                radiusRange={[radiusMin, radiusMax]}
+                xDomain={xDomain}
+                yDomain={yDomain}
+                width={800}
+                height={600}
+                forced={forced}
+              />
+  }
+
+
+  return (    
+    <Container className="vis-div">
+      <Row>
+        <Col md="8">
+          <OptionBox />
+          {render}      
+          {/* <BubbleChart
+            data={menus.length > 0 ? menusSelected : []}
+            colorVar={colorVar}
+            radiusVar={radiusVar}
+            width={800}
+            height={600}
+          />
+          <ScatterPlot
+            data={menus.length > 0 ? menusSelected : []}
+            xVar={xVar}
+            yVar={yVar}
+            colorVar={colorVar}
+            radiusVar={radiusVar}
+            radiusRange={[radiusMin, radiusMax]}
+            xDomain={xDomain}
+            yDomain={yDomain}
+            width={800}
+            height={600}
+            forced={forced}
+          /> */}
+          <Pagination />
+          {/* <div className="scatter-plot-menu-div">
+            <ScatterPlotMenu
+              xAxis={xAxis}
+              yAxis={yAxis}
+              setXAxis={setXAxis}
+              setYAxis={setYAxis}
+              onAlignButtonClick={onAlignButtonClick}
+              onResetButtonClick={onResetButtonClick}
+            ></ScatterPlotMenu>
+          </div> */}
+        </Col>
+        <Col md="4">
+          <SearchBar />
+        </Col>
+      </Row>
+    </Container>    
   );
 };
 

@@ -1,12 +1,20 @@
 import React from "react";
-import { Modal, Container, Row, Col, Image } from "react-bootstrap";
+import {
+  Modal,
+  Container,
+  Row,
+  Col,
+  Image,
+  Table,
+  Button,
+} from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "src/hooks";
 import {
   clearMenuDetail,
   loadMenuDetail,
   selectMenuDetail,
   MenuDetail,
-  Recipe
+  Recipe,
 } from "src/store/reducers/data";
 import PieSVG from "./PieSVG";
 import {
@@ -14,8 +22,6 @@ import {
   selectDisplayModal,
   showModal,
 } from "src/store/reducers/UI";
-import { MenuDetail, Recipe, selectMenuDetail } from "src/store/reducers/data";
-import { hideModal, selectDisplayModal } from "src/store/reducers/UI";
 
 const ModalComponent = function () {
   const menuDetail: MenuDetail | null =
@@ -42,67 +48,57 @@ const ModalComponent = function () {
       <Modal.Body>
         <Container>
           <Row className="modal-component-row">
-            <Col md={{ span: 6, offset: 1 }}>
-              <Image src={menuDetail.img_small} rounded fluid/>
+            <Col md="3">
+              <Image src={menuDetail.img_small} style={{ width: "100%" }} />
             </Col>
-            <Col md={{ span: 5, offset: 0 }}>
-              <PieSVG data = {menuDetail} width={300} height={300} innerRadius={50} outerRadius={125}></PieSVG>
+            <Col md="6">
+              <Table>
+                <thead>
+                  <tr>
+                    <th>재료</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{menuDetail.ingredients}</td>
+                  </tr>
+                </tbody>
+              </Table>
             </Col>
-          </Row>
-
-          <Row >
-            <Col
-              md="12"
-              style={{ background: "#42A5F5", whiteSpace: "pre-wrap",border:'1px solid black' }}
-              className="text-center"
-            >
-              재료
-            </Col>
-            <Col
-              md="12"
-              style={{ background: "#90CAF9", whiteSpace: "pre-wrap",border:'1px solid black' }}
-            >
-              {menuDetail.ingredients}
-            </Col>
-          </Row>
-
-          <Row>
-            <Col
-              md="12"
-            >
-              <p/>
+            <Col md="3">
+              <PieSVG data={menuDetail}></PieSVG>
             </Col>
           </Row>
           <Row>
-            <Col
-              md="12"
-              style={{ background: "#9CCC65", whiteSpace: "pre-wrap" ,border:'1px solid black' }}
-              className="text-center"
-            >
-            만드는 법
+            <Col md="12">
+              <Table striped>
+                <thead>
+                  <tr>
+                    <th>만드는 법</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {menuDetail.recipes.map((recipe: Recipe, i: number) => {
+                    return (
+                      <tr key={i}>
+                        <td>{recipe.text.replace(/\n/g, "")}</td>
+                        <td>
+                          {recipe.img !== "" && (
+                            <Image
+                              src={recipe.img}
+                              fluid
+                              thumbnail
+                              style={{ maxWidth: "200px" }}
+                            />
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
             </Col>
-            {menuDetail.recipes.map((recipe: Recipe, i: number) => {
-              return (
-                <div key={i}>
-                  <Row>
-                    <Col
-                      md="9"
-                      style={{ background: "#C5E1A5", whiteSpace: "pre-wrap",border:'1px solid black'  }}
-                    >
-                    {recipe.text.replace(/\n/g, "")}
-                    </Col>
-                    <Col
-                      md="3"
-                      style={{ background: "#C5E1A5", whiteSpace: "pre-wrap" ,border:'1px solid black' }}
-                    >
-                    {recipe.img !== "" && <Image src={recipe.img}  fluid/>}
-                    </Col>
-                  </Row>
-                </div>
-              );
-            })}
-
-
           </Row>
         </Container>
       </Modal.Body>

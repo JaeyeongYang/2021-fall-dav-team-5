@@ -2,17 +2,17 @@ import Button from "react-bootstrap/Button";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Popover from "react-bootstrap/Popover";
 import "./SearchHeader.css";
+import PieSVG from "./PieSVG";
+import { Menu } from "src/store/reducers/data";
 
-const PopOver = function(menuName: string){ //menuId로 변경해서 사용
+const PopOver = function(menu: Menu){ //menuId로 변경해서 사용
+
   return (
     <Popover id="popover-basic">
-    <Popover.Header as="h3">{menuName}</Popover.Header>
+    <Popover.Header as="h3">{menu.name}</Popover.Header>
     <Popover.Body>
-      {menuName}
-      (나트륨 함량: ) 
-      Pie chart 
-      재료: {menuName}을/를 만드는 재료 리스트
-      만드는 법: {menuName}을/를 만드는 방법
+      <PieSVG data = {menu} width={300} height={300} innerRadius={50} outerRadius={125}></PieSVG><br/>
+      나트륨 함량: {menu.na}g <br/>
     </Popover.Body>
   </Popover>
   )
@@ -20,16 +20,21 @@ const PopOver = function(menuName: string){ //menuId로 변경해서 사용
 
 
 export default PopOver;
+// const PopOver = function(menuId: number){ //menuId로 변경해서 사용
+//   const dispatch = useAppDispatch();
 
-// const PopupWindow = function (props: any) {
+//   const menu = dispatch(loadMenuDetail(menuId));
+//   // const menuDetail = useAppSelector(selectMenuDetail);
 //   return (
-//     <>   
-//     <OverlayTrigger trigger="hover" placement="top" overlay={PopOver}>
-//       <Button variant="success" id="btn">{props.text}</Button>
-
-//     </OverlayTrigger>
-//     </>
-//   );
-// };
-
-// export default PopupWindow;
+//     <Popover id="popover-basic">
+//     <Popover.Header as="h3">{menu.name}</Popover.Header>
+//     <Popover.Body>
+//       {menu.name}<br/>
+//       <PieSVG data = {menu} width={200} height={200} innerRadius={30} outerRadius={100}></PieSVG><br/>
+//       (나트륨 함량: {menu.na}) <br/>
+//       재료: {menu.name}을/를 만드는 재료 리스트<br/>
+//       만드는 법: {menu.name}을/를 만드는 방법<br/>
+//     </Popover.Body>
+//   </Popover>
+//   )
+// }

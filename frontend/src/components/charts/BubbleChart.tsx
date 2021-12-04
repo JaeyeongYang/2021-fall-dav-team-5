@@ -8,6 +8,7 @@ import getDomain from "src/functions/getDomain";
 import getScale from "src/functions/getScale";
 import getColorScale from "src/functions/getColorScale";
 import TooltipComponent, { Tooltip } from "./TooltipComponent";
+import { displayPartsToString } from "typescript";
 
 interface Props {
   data: Menu[];
@@ -139,11 +140,13 @@ const BubbleChart = ({
         .attr("class", "scatterplot-point")
         .attr("transform", (d) => `translate(${d.x}, ${d.y})`)
         .on("mouseover", (e, d) => {
-          setTooltip({
-            display: true,
-            menu: d.menu,
-            pos: { x: d.x, y: d.y },
-          });
+          if (!tooltip.display) {
+            setTooltip({
+              display: true,
+              menu: d.menu,
+              pos: { x: d.x, y: d.y },
+            });
+          }
         })
         .on("mouseout", (e: any) => {
           setTooltip({ display: false });

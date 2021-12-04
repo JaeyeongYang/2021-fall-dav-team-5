@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Badge,
   Button,
@@ -16,7 +16,7 @@ import {
   loadMenus,
   selectIngredients,
   selectPats,
-  selectWays,  
+  selectWays,
 } from "src/store/reducers/data";
 import {
   addPatFilter,
@@ -34,7 +34,32 @@ import {
   selectWayFilter,
   setPlot,
   selectPlot,
+  setEnergyMinFilter,
+  setEnergyMaxFilter,
+  setProteinMinFilter,
+  setProteinMaxFilter,
+  setCarbMinFilter,
+  setCarbMaxFilter,
+  clearWayFilter,
+  clearPatFilter,
+  clearProteinMinFilter,
+  clearProteinMaxFilter,
+  clearCarbMinFilter,
+  clearCarbMaxFilter,
+  clearFatMinFilter,
+  clearFatMaxFilter,
+  clearNaMinFilter,
+  clearNaMaxFilter,
+  clearEnergyMinFilter,
+  clearEnergyMaxFilter,
+  clearHashtagFilter,
+  selectFilterTerms,
+  setFatMinFilter,
+  setFatMaxFilter,
+  setNaMinFilter,
+  setNaMaxFilter,
 } from "src/store/reducers/filter";
+import FilterNumberInput from "./FilterTextInput";
 
 import "./SearchInput.css";
 
@@ -73,9 +98,9 @@ enum Show {
 const SearchInput = (props: any) => {
   const [mode, setMode] = useState<string>(Mode.menu);
   const [value, setValue] = useState<string>("");
+  const inputRef = useRef(null);
 
-  const plot: string = useAppSelector(selectPlot) ?? 'bubble';
-
+  const plot: string = useAppSelector(selectPlot) ?? "bubble";
 
   // TODO: implement autocompletion for ingredients
   const ingredients = useAppSelector(selectIngredients);
@@ -85,8 +110,9 @@ const SearchInput = (props: any) => {
   const wayFilter = useAppSelector(selectWayFilter);
   const patFilter = useAppSelector(selectPatFilter);
   const dispatch = useAppDispatch();
+  const filterTerms = useAppSelector(selectFilterTerms);
 
-  /////  
+  /////
 
   const radios = [
     { value: Mode.menu, label: "Menu", variant: "outline-success" },
@@ -96,8 +122,8 @@ const SearchInput = (props: any) => {
 
   const radios_visual = [
     { value: Show.bubble, label: "Bubble Plot", variant: "outline-primary" },
-    { value: Show.scatter, label: "Scatter Plot", variant: "outline-primary" }    
-  ]
+    { value: Show.scatter, label: "Scatter Plot", variant: "outline-primary" },
+  ];
 
   useEffect(() => {
     console.log("Current mode:", mode);
@@ -112,7 +138,21 @@ const SearchInput = (props: any) => {
     dispatch(loadMenus());
   };
   const clearTerms = () => {
+    setValue("");
     dispatch(clearSearchTerm());
+    dispatch(clearWayFilter());
+    dispatch(clearPatFilter());
+    dispatch(clearEnergyMinFilter());
+    dispatch(clearEnergyMaxFilter());
+    dispatch(clearCarbMinFilter());
+    dispatch(clearCarbMaxFilter());
+    dispatch(clearProteinMinFilter());
+    dispatch(clearProteinMaxFilter());
+    dispatch(clearFatMinFilter());
+    dispatch(clearFatMaxFilter());
+    dispatch(clearNaMinFilter());
+    dispatch(clearNaMaxFilter());
+    dispatch(clearHashtagFilter());
     dispatch(loadMenus());
   };
 
@@ -128,7 +168,7 @@ const SearchInput = (props: any) => {
 
     if (terms?.filter((x) => isEqualSearchTerm(x, term)).length === 0) {
       addTerm(term);
-      e.target.value = "";
+      setValue("");
     }
   };
 
@@ -140,56 +180,111 @@ const SearchInput = (props: any) => {
     }
   };
 
-  const onShowButtonClick = (e: any) => {    
-    dispatch(setPlot(e.currentTarget.value))
+  const onShowButtonClick = (e: any) => {
+    dispatch(setPlot(e.currentTarget.value));
+  };
+
+  const FilterRow = ({
+    label,
+    minValue,
+    setMinReducer,
+    maxValue,
+    setMaxReducer,
+  }: any) => {
+    return (
+      <Row style={{ marginTop: "0.5rem" }}>
+        <Col md="4">
+          <FilterNumberInput
+            stateValue={minValue}
+            setStateValue={(v) => dispatch(setMinReducer(v))}
+            placeholder="Min"
+          />
+        </Col>
+        <Col md="4" style={{ padding: ".375rem .75rem" }}>
+          ≤ {label} ≤
+        </Col>
+        <Col md="4">
+          <FilterNumberInput
+            stateValue={maxValue}
+            setStateValue={(v) => dispatch(setMaxReducer(v))}
+            placeholder="Max"
+          />
+        </Col>
+      </Row>
+    );
   };
 
   return (
-    <Container style={{display: "flex", flexDirection: "column", height:"100%"}}>
+    <Container
+      style={{ display: "flex", flexDirection: "column", height: "100%" }}
+    >
+      <Row
+        style={{
+          marginLeft: "0.25rem",
+          marginRight: "0.25rem",
+          marginBottom: "1rem",
+          width: "100%",
+          display: "flex",
+          flexFlow: "column",
+        }}
+      >
+        <ToggleButtonGroup
+          name="toggle-two"
+          type="radio"
+          defaultValue={Show.bubble}
+          className="bubble-scatter-toggle-buttons"
+        >
+          {radios_visual.map((x, idx) => (
+            <ToggleButton
+              key={1000 + idx}
+              id={`radio-visual-${x.value}`}
+              name="radio-visual"
+              variant={x.variant}
+              value={x.value}
+              checked={x.value === plot}
+              onChange={(e) => onShowButtonClick(e)}
+            >
+              {x.label}
+            </ToggleButton>
+          ))}
+        </ToggleButtonGroup>
+      </Row>
       <Row>
         <div className="search-input">
           <Form onSubmit={(e) => submitTerm(e)}>
-            <InputGroup>              
-              <Row style={{margin:"0.25rem", width: "100%"}}>                                                         
+            <InputGroup>
+              <Row style={{ margin: "0.25rem", width: "100%" }}>
                 <Form.Control
+                  value={value}
                   placeholder="Ingredient or Menu..."
                   aria-label="Ingredient"
                   aria-describedby="basic-addon2"
                   onChange={(e) => setValue(e.target.value)}
                   onKeyDown={(e) => onKeyPress(e)}
-                />                                                
+                />
               </Row>
-              <Row style={{margin: "0.25rem", width: "100%"}}>                                                
-                <ToggleButtonGroup                    
-                    name="toggle-three"
-                    type="radio"
-                    defaultValue={Mode.menu}
-                    className="search-input-toggle-buttons"
-                  >
-                    {radios.map((x, idx) => (
-                      <ToggleButton
-                        key={idx}
-                        id={`radio-${x.value}`}
-                        name="radio"
-                        variant={x.variant}
-                        value={x.value}
-                        checked={x.value === mode}
-                        onChange={(e) => setMode(e.currentTarget.value)}
-                      >
-                        {x.label}
-                      </ToggleButton>
-                    ))}
-                </ToggleButtonGroup>                
+              <Row style={{ margin: "0.25rem", width: "100%" }}>
+                <ToggleButtonGroup
+                  name="toggle-three"
+                  type="radio"
+                  defaultValue={Mode.menu}
+                  className="search-input-toggle-buttons"
+                >
+                  {radios.map((x, idx) => (
+                    <ToggleButton
+                      key={idx}
+                      id={`radio-${x.value}`}
+                      name="radio"
+                      variant={x.variant}
+                      value={x.value}
+                      checked={x.value === mode}
+                      onChange={(e) => setMode(e.currentTarget.value)}
+                    >
+                      {x.label}
+                    </ToggleButton>
+                  ))}
+                </ToggleButtonGroup>
               </Row>
-              <Row style={{margin:"0.25rem", width: "100%"}}>
-                <Button
-                    variant="secondary"
-                    id="search-input-clear-button"
-                    onClick={() => clearTerms()}
-                  >
-                    Delete All
-                </Button>                
-              </Row>                                       
             </InputGroup>
           </Form>
           <div className="search-input-terms">
@@ -205,14 +300,19 @@ const SearchInput = (props: any) => {
           </div>
         </div>
       </Row>
-      <Row style={{marginTop: "1rem"}}>        
-        <Col md="6" style={{ display: "block", flexDirection: "row", textAlign: "left"}}>
-          <Form.Label style={{paddingLeft: "1.5rem"}}><b>조리방법</b></Form.Label>
+      <Row style={{ marginTop: "1rem" }}>
+        <Col
+          md="6"
+          style={{ display: "block", flexDirection: "row", textAlign: "left" }}
+        >
+          <Form.Label style={{ paddingLeft: "1.5rem" }}>
+            <b>조리방법</b>
+          </Form.Label>
           {ways &&
             ways.map((w, i) => {
-              return (                
+              return (
                 <Form.Check
-                  style={{ textAlign: "left", marginTop: "0.5rem"}}
+                  style={{ textAlign: "left", marginTop: "0.5rem" }}
                   key={i}
                   id={`way-${i}-${w[0]}`}
                   label={`${w[0]} (${w[1]})`}
@@ -224,17 +324,22 @@ const SearchInput = (props: any) => {
                       dispatch(removeWayFilter(w[0]));
                     }
                   }}
-                />                
+                />
               );
             })}
         </Col>
-        <Col md="6" style={{ display: "block", flexDirection: "row", textAlign: "left"}}>
-          <Form.Label style={{paddingLeft: "1.5rem"}}><b>메뉴종류</b></Form.Label>
+        <Col
+          md="6"
+          style={{ display: "block", flexDirection: "row", textAlign: "left" }}
+        >
+          <Form.Label style={{ paddingLeft: "1.5rem" }}>
+            <b>메뉴종류</b>
+          </Form.Label>
           {pats &&
             pats.map((p, i) => {
-              return (                
+              return (
                 <Form.Check
-                  style={{ textAlign: "left", marginTop: "0.5rem"}}  
+                  style={{ textAlign: "left", marginTop: "0.5rem" }}
                   key={i}
                   id={`pat-${i}-${p[0]}`}
                   label={`${p[0]} (${p[1]})`}
@@ -246,154 +351,62 @@ const SearchInput = (props: any) => {
                       dispatch(removePatFilter(p[0]));
                     }
                   }}
-                />                
+                />
               );
             })}
         </Col>
       </Row>
 
-      <Row style={{marginTop: "2rem", marginBottom: "2rem"}}>
-        <Row><b>영양범위</b></Row>
-        
-        <Row style={{marginTop: "0.5rem"}}>
-          <Col md="4">          
-            <Form.Control
-              placeholder="Min"           
-              aria-describedby="basic-addon2"
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={(e) => onKeyPress(e)}
-            />
-          </Col>
-          <Col md="4" style={{padding: ".375rem .75rem"}}>                     
-           ≤ 칼로리 ≤           
-          </Col>
-          <Col md="4">          
-            <Form.Control
-              placeholder="Max"              
-              aria-describedby="basic-addon2"
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={(e) => onKeyPress(e)}
-            />
-          </Col>
+      <div style={{ marginTop: "2rem", marginBottom: "2rem" }}>
+        <Row>
+          <b>영양범위</b>
         </Row>
 
-        <Row style={{marginTop: "0.5rem"}}>
-          <Col md="4">          
-            <Form.Control
-              placeholder="Min"           
-              aria-describedby="basic-addon2"
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={(e) => onKeyPress(e)}
-            />
-          </Col>
-          <Col md="4" style={{padding: ".375rem .75rem"}}>                     
-           ≤ 탄수화물 ≤           
-          </Col>
-          <Col md="4">          
-            <Form.Control
-              placeholder="Max"              
-              aria-describedby="basic-addon2"
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={(e) => onKeyPress(e)}
-            />
-          </Col>
-        </Row>
-
-        <Row style={{marginTop: "0.5rem"}}>
-          <Col md="4">          
-            <Form.Control
-              placeholder="Min"           
-              aria-describedby="basic-addon2"
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={(e) => onKeyPress(e)}
-            />
-          </Col>
-          <Col md="4" style={{padding: ".375rem .75rem"}}>                     
-           ≤ 단백질 ≤           
-          </Col>
-          <Col md="4">          
-            <Form.Control
-              placeholder="Max"              
-              aria-describedby="basic-addon2"
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={(e) => onKeyPress(e)}
-            />
-          </Col>
-        </Row>
-
-        <Row style={{marginTop: "0.5rem"}}>
-          <Col md="4">          
-            <Form.Control
-              placeholder="Min"           
-              aria-describedby="basic-addon2"
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={(e) => onKeyPress(e)}
-            />
-          </Col>
-          <Col md="4" style={{padding: ".375rem .75rem"}}>                     
-           ≤ 지방 ≤           
-          </Col>
-          <Col md="4">          
-            <Form.Control
-              placeholder="Max"              
-              aria-describedby="basic-addon2"
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={(e) => onKeyPress(e)}
-            />
-          </Col>
-        </Row>
-
-        <Row style={{marginTop: "0.5rem"}}>
-          <Col md="4">          
-            <Form.Control
-              placeholder="Min"           
-              aria-describedby="basic-addon2"
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={(e) => onKeyPress(e)}
-            />
-          </Col>
-          <Col md="4" style={{padding: ".375rem .75rem"}}>                     
-           ≤ 나트륨 ≤           
-          </Col>
-          <Col md="4">          
-            <Form.Control
-              placeholder="Max"              
-              aria-describedby="basic-addon2"
-              onChange={(e) => setValue(e.target.value)}
-              onKeyDown={(e) => onKeyPress(e)}
-            />
-          </Col>
-        </Row>
+        <FilterRow
+          label={"칼로리"}
+          minValue={filterTerms.energy_min}
+          maxValue={filterTerms.energy_max}
+          setMinReducer={setEnergyMinFilter}
+          setMaxReducer={setEnergyMaxFilter}
+        />
+        <FilterRow
+          label={"탄수화물"}
+          minValue={filterTerms.carb_min}
+          maxValue={filterTerms.carb_max}
+          setMinReducer={setCarbMinFilter}
+          setMaxReducer={setCarbMaxFilter}
+        />
+        <FilterRow
+          label={"단백질"}
+          minValue={filterTerms.protein_min}
+          maxValue={filterTerms.protein_max}
+          setMinReducer={setProteinMinFilter}
+          setMaxReducer={setProteinMaxFilter}
+        />
+        <FilterRow
+          label={"지방"}
+          minValue={filterTerms.fat_min}
+          maxValue={filterTerms.fat_max}
+          setMinReducer={setFatMinFilter}
+          setMaxReducer={setFatMaxFilter}
+        />
+        <FilterRow
+          label={"나트륨"}
+          minValue={filterTerms.na_min}
+          maxValue={filterTerms.na_max}
+          setMinReducer={setNaMinFilter}
+          setMaxReducer={setNaMaxFilter}
+        />
+      </div>
+      <Row style={{ margin: "0.25rem", width: "100%" }}>
+        <Button
+          variant="secondary"
+          id="search-input-clear-button"
+          onClick={() => clearTerms()}
+        >
+          Clear all filters
+        </Button>
       </Row>
-      
-      <div style={{marginTop: "auto", 
-        marginLeft: "0.25rem", 
-        marginRight: "0.25rem", 
-        width: "100%",
-        display: "flex",
-        flexFlow: "column"}}>                
-        <ToggleButtonGroup                    
-            name="toggle-two"
-            type="radio"
-            defaultValue={Show.bubble}
-            className="bubble-scatter-toggle-buttons"
-          >
-            {radios_visual.map((x, idx) => (
-              <ToggleButton
-                key={1000+idx}
-                id={`radio-visual-${x.value}`}
-                name="radio-visual"
-                variant={x.variant}
-                value={x.value}
-                checked={x.value === plot}
-                onChange={(e) => onShowButtonClick(e)}
-              >
-                {x.label}
-              </ToggleButton>
-            ))}
-        </ToggleButtonGroup>
-      </div>    
-
     </Container>
   );
 };

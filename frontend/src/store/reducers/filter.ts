@@ -132,9 +132,9 @@ const slice = createSlice({
     clearNaMaxFilter: (state) => { delete state['na_max']; },
     addHashtagFilter: (state, action: PayloadAction<string>) => _addFilter(state, action, 'hashtag'),
     removeHashtagFilter: (state, action: PayloadAction<string>) => _removeFilter(state, action, 'hashtag'),
-    clearHashtagFilter: (state) => _clearFilter(state, 'hashtag'),      
+    clearHashtagFilter: (state) => _clearFilter(state, 'hashtag'),
     /////
-    setPlot: (state, action: PayloadAction<string>) => { state.plot = action.payload },    
+    setPlot: (state, action: PayloadAction<string>) => { state.plot = action.payload },
   },
 });
 
@@ -178,7 +178,7 @@ export const {
 } = slice.actions;
 
 // getters are here
-export const selectMenus = createSelector(
+export const selectFilterTerms = createSelector(
   (state: RootState) => state.filter,
   (filter) => filter
 );

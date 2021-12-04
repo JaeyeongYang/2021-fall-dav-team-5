@@ -1,102 +1,123 @@
-import React, { useRef, useEffect, useState }  from "react";
+import React, { useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 import { Menu, MenuDetail } from "src/store/reducers/data";
 
-
 interface PieProps {
-  data: Menu | MenuDetail;
-  width:number;
-  height:number;
-  innerRadius:number;
-  outerRadius:number;
+  data: Menu | MenuDetail | null | undefined;
+  width?: number | string;
+  height?: number | string;
+  innerRadius?: number;
+  outerRadius?: number;
+  fontSize?: number;
 }
+
 interface PieDataProps {
   name: string;
   value: number;
 }
 
-
-const Pie = function(props:PieProps) {
+const Pie = function ({
+  data,
+  width = "100%",
+  height = "100%",
+  outerRadius = 50,
+  innerRadius = 20,
+  fontSize = 7,
+}: PieProps) {
   const ref = useRef(null);
-  const createPie = d3
-    .pie<PieDataProps>()
-    .value(d => d.value)
-    .sort(null);  
-  const createArc = d3
-    .arc<d3.PieArcDatum<PieDataProps>>() 
-    .outerRadius(props.outerRadius)
-    .innerRadius(props.innerRadius);
-  const colors: string[] = ['red','green','blue'];
-  const vis_data : PieDataProps[]=[
-      {name:"탄수화물",value:props.data.carb},
-      {name: "단백질", value: props.data.protein},
-      {name: "지방", value: props.data.fat}];
-  const format = d3.format(".1f");
-  const data = createPie(vis_data);
 
+  useEffect(() => {
+    if (data !== null && data !== undefined) {
+      const colorScale: any = d3.scaleOrdinal(
+        ["탄수화물", "단백질", "지방"],
+        d3.schemeCategory10
+      );
 
-  useEffect(
-    () => {
-      const data = createPie(vis_data);
-      const group = d3.select(ref.current);
-      const groupWithData = group.selectAll("g.arc").data(data);
-      const legendgroupWithData = group.selectAll("g.legend").data(data);
+      const createPie = d3
+        .pie<PieDataProps>()
+        .value((d) => d.value)
+        .sort(null);
 
-      groupWithData.exit().remove();
-      legendgroupWithData.exit().remove();
+      const createArc = d3
+        .arc<d3.PieArcDatum<PieDataProps>>()
+        .outerRadius(outerRadius)
+        .innerRadius(innerRadius);
 
-      const groupWithUpdate = groupWithData
-        .enter()
-        .append("g")
-        .attr("class", "arc"); 
+      const _data = createPie([
+        { name: "탄수화물", value: (data as Menu | MenuDetail).carb },
+        { name: "단백질", value: (data as Menu | MenuDetail).protein },
+        { name: "지방", value: (data as Menu | MenuDetail).fat },
+      ]);
 
-      const path = groupWithUpdate
+      const svg = d3.select(ref.current);
+      svg.selectAll(".nutrition").remove();
+
+      const nutrition = svg
+        .selectAll("g")
+        .data(_data)
+        .join("g")
+        .attr("class", "nutrition");
+
+      nutrition
         .append("path")
-        .merge(groupWithData.select("path.arc"));
-
-      path
         .attr("class", "arc")
         .attr("d", createArc)
-        .attr("fill", (d, i) => colors[i]);
+        .attr("fill", (d) => colorScale(d.data.name));
 
-      const text = groupWithUpdate
+      nutrition
         .append("text")
-        .merge(groupWithData.select("text"));
-
-      text
+        .attr("class", "label")
         .attr("text-anchor", "middle")
         .attr("alignment-baseline", "middle")
-        .attr("transform", d => `translate(${createArc.centroid(d)})`)
+        .attr("transform", (d) => {
+          const pos = createArc.centroid(d);
+          return `translate(${pos[0]}, ${pos[1] - (fontSize / 2) * 1.5})`;
+        })
         .style("fill", "white")
-        .style("font-size", 15)
-        .text(d => d.value?format(d.value)+"g":'');
-    },
-    [props.data]
-  );
+        .style("font-weight", "bold")
+        .style("font-size", fontSize)
+        .text((d) => (d.value ? `${d.data.name}` : ""));
 
+      nutrition
+        .append("text")
+        .attr("class", "value")
+        .attr("text-anchor", "middle")
+        .attr("alignment-baseline", "middle")
+        .attr("transform", (d) => {
+          const pos = createArc.centroid(d);
+          return `translate(${pos[0]}, ${pos[1] + (fontSize / 2) * 1.5})`;
+        })
+        .style("fill", "white")
+        .style("font-size", fontSize)
+        .text((d) => (d.value ? `${d.value}g` : ""));
+    }
+  }, [data, width, height, fontSize]);
+
+  if (data === null || data === undefined) {
+    return <></>;
+  }
 
   return (
-    <svg width={props.width} height={props.height}>
-    <g
-      ref={ref}
-      transform={`translate(${props.outerRadius} ${props.outerRadius})`}
-    />
-    <text transform={`translate(${props.outerRadius} ${props.outerRadius})`} text-anchor={"middle"} alignment-baseline={"middle"} font-weight={"bold"} font-size={16}>
-      {props.data.energy}kcal
-    </text>
-    <rect transform={"translate(" + (10) + "," + (props.height - 30) + ")"} width={15} height={15} fill= {colors[0]} />
-    <rect transform={"translate(" + (90) + "," + (props.height - 30) + ")"} width={15} height={15} fill= {colors[1]} />
-    <rect transform={"translate(" + (170) + "," + (props.height - 30) + ")"} width={15} height={15} fill= {colors[2]} />
-    <text transform={"translate(" + (20) + "," + (props.height - 30) + ")"} x={12} y={12} font-size={13}>
-      {vis_data[0].name}
-    </text>
-    <text transform={"translate(" + (100) + "," + (props.height - 30) + ")"} x={12} y={12} font-size={13}>
-      {vis_data[1].name}
-    </text>
-    <text transform={"translate(" + (180) + "," + (props.height - 30) + ")"} x={12} y={12} font-size={13}>
-      {vis_data[2].name}
-    </text>
-    </svg>
+    <div>
+      <svg
+        width={width}
+        height={height}
+        preserveAspectRatio="none"
+        viewBox="0 0 100 100"
+      >
+        <g ref={ref} x="50%" y="50%" transform="translate(50, 50)" />
+        <text
+          x="50%"
+          y="50%"
+          textAnchor={"middle"}
+          alignmentBaseline={"middle"}
+          fontWeight={"bold"}
+          fontSize={7}
+        >
+          {data.energy}kcal
+        </text>
+      </svg>
+    </div>
   );
 };
 

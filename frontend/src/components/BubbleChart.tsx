@@ -70,7 +70,7 @@ class BubbleChart extends React.Component<
     this.simulation = d3
       .forceSimulation()
       .nodes(data as SimulationNodeDatum[])
-      .velocityDecay(0.2)
+      .velocityDecay(0.05)
       .force("x", d3.forceX().strength(0.04)) // 보이는 방법
       .force("y", d3.forceY().strength(0.04))
       .force(

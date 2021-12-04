@@ -81,7 +81,7 @@ const Pie = function(props:PieProps) {
       ref={ref}
       transform={`translate(${props.outerRadius} ${props.outerRadius})`}
     />
-    <text transform={`translate(${props.outerRadius} ${props.outerRadius})`} text-anchor={"middle"} alignment-baseline={"middle"} font-weight={"bold"} font-size={15}>
+    <text transform={`translate(${props.outerRadius} ${props.outerRadius})`} text-anchor={"middle"} alignment-baseline={"middle"} font-weight={"bold"} font-size={16}>
       {props.data.energy}kcal
     </text>
     <rect transform={"translate(" + (10) + "," + (props.height - 30) + ")"} width={15} height={15} fill= {colors[0]} />

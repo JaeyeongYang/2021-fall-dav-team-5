@@ -49,12 +49,18 @@ const ModalComponent = function () {
             </Col>
           </Row>
 
-          <Row>
+          <Row >
             <Col
               md="12"
-              style={{ background: "lightblue", whiteSpace: "pre-wrap" }}
+              style={{ background: "#42A5F5", whiteSpace: "pre-wrap",border:'1px solid black' }}
+              className="text-center"
             >
-              <p>재료 소개</p>
+              재료
+            </Col>
+            <Col
+              md="12"
+              style={{ background: "#90CAF9", whiteSpace: "pre-wrap",border:'1px solid black' }}
+            >
               {menuDetail.ingredients}
             </Col>
           </Row>
@@ -62,9 +68,17 @@ const ModalComponent = function () {
           <Row>
             <Col
               md="12"
-              style={{ background: "lemonchiffon", whiteSpace: "pre-wrap" }}
             >
-            <p>만드는 법</p>
+              <p/>
+            </Col>
+          </Row>
+          <Row>
+            <Col
+              md="12"
+              style={{ background: "#9CCC65", whiteSpace: "pre-wrap" ,border:'1px solid black' }}
+              className="text-center"
+            >
+            만드는 법
             </Col>
             {menuDetail.recipes.map((recipe: Recipe, i: number) => {
               return (
@@ -72,13 +86,13 @@ const ModalComponent = function () {
                   <Row>
                     <Col
                       md="9"
-                      style={{ background: "lemonchiffon", whiteSpace: "pre-wrap" }}
+                      style={{ background: "#C5E1A5", whiteSpace: "pre-wrap",border:'1px solid black'  }}
                     >
                     {recipe.text.replace(/\n/g, "")}
                     </Col>
                     <Col
                       md="3"
-                      style={{ background: "lemonchiffon", whiteSpace: "pre-wrap" }}
+                      style={{ background: "#C5E1A5", whiteSpace: "pre-wrap" ,border:'1px solid black' }}
                     >
                     {recipe.img !== "" && <Image src={recipe.img}  fluid/>}
                     </Col>

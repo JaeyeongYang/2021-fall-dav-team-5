@@ -56,7 +56,7 @@ const ScatterPlot = ({
   forced = true,
   borderColor = "white",
   marginTop = 60,
-  marginRight = 60,
+  marginRight = 200,
   marginBottom = 60,
   marginLeft = 60,
   inset = 0,
@@ -78,7 +78,7 @@ const ScatterPlot = ({
       .select(svgRef.current)
       .attr("width", width)
       .attr("height", height)
-      .attr("viewbox", [0, 0, width, height].toString())
+      .attr("viewbox", "0 0 100 100")
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;")
       .selectAll(".graph");
 
@@ -106,45 +106,49 @@ const ScatterPlot = ({
       const xAxis = d3.axisBottom(xScale);
       const yAxis = d3.axisLeft(yScale);
 
-      const cDomain = colorDomain ? [0].concat(colorDomain) : []
+      const cDomain = colorDomain ? [0].concat(colorDomain) : [];
 
-      svg.selectAll("legends").remove();
-      svg.selectAll("circle").remove();
-      svg.selectAll("text").remove();
+      const legend = svg
+        .append("g")
+        .attr("class", "legends")
+        .data(cDomain)
+        .enter();
+
+      legend.selectAll("circle").remove();
+      legend.selectAll("text").remove();
 
       if (colorVar === "way" || colorVar === "pat") {
-
-        svg
-          .append("legends")
-          .data(cDomain)
-          .enter()
+        legend
           .append("circle")
-            .attr("cx", 700)
-            .attr("cy", function(d, i){return 50 + i*25})
-            .attr("r", 7)
-            .attr("fill", function(d){return colorScale(d)})
+          .attr("cx", 740)
+          .attr("cy", function (d, i) {
+            return 200 + i * 25;
+          })
+          .attr("r", 7)
+          .attr("fill", function (d) {
+            return colorScale(d);
+          });
 
-        svg
-          .selectAll("legends")
-          .data(cDomain)
-          .enter()
+        legend
           .append("text")
-            .attr("x", 720)
-            .attr("y", function(d, i){return 50 + i*25})
-            .attr("fill", "black")
-            .text(function(d){return d})
-            .attr("text-anchor", "left")
-            .attr("alignment-baseline", "middle")
-
+          .attr("x", 760)
+          .attr("y", function (d, i) {
+            return 200 + i * 25;
+          })
+          .attr("fill", "black")
+          .text(function (d) {
+            return d;
+          })
+          .attr("text-anchor", "left")
+          .attr("alignment-baseline", "middle");
       } else {
+        var tmp = Number(cDomain[1]);
+        var lDomain = [0, Math.round(cDomain[1])];
+        const range = cDomain[2] - cDomain[1];
 
-        var tmp = Number(cDomain[1])
-        var lDomain = [0, Math.round(cDomain[1])]
-        const range = cDomain[2] - cDomain[1]
-
-        for (var i = 1; i < 6; i++){
-          var tmp = Math.round(tmp + range/5)
-          lDomain.push(tmp)
+        for (var i = 1; i < 6; i++) {
+          var tmp = Math.round(tmp + range / 5);
+          lDomain.push(tmp);
         }
 
         svg
@@ -152,28 +156,30 @@ const ScatterPlot = ({
           .data(lDomain)
           .enter()
           .append("circle")
-            .attr("cx", 700)  
-            .attr("cy", function(d, i){return 50 + i*25})
-            .attr("r", 7)
-            .attr("fill", function(d){return colorScale(d)})
+          .attr("cx", 700)
+          .attr("cy", function (d, i) {
+            return 50 + i * 25;
+          })
+          .attr("r", 7)
+          .attr("fill", function (d) {
+            return colorScale(d);
+          });
         svg
           .selectAll("legends")
           .data(lDomain)
           .enter()
           .append("text")
-            .attr("x", 720)
-            .attr("y", function(d, i){return 50 + i*25})
-            .attr("fill", "black")
-            .text(function(d){return d})
-            .attr("text-anchor", "left")
-            .attr("alignment-baseline", "middle")
-            
+          .attr("x", 720)
+          .attr("y", function (d, i) {
+            return 50 + i * 25;
+          })
+          .attr("fill", "black")
+          .text(function (d) {
+            return d;
+          })
+          .attr("text-anchor", "left")
+          .attr("alignment-baseline", "middle");
       }
-
-
-
-
-  
 
       const xAxisGroup = svg
         .append("g")
@@ -315,33 +321,33 @@ const ScatterPlot = ({
         return ret;
       });
 
-      if (forced) {
-        const simulation = d3
-          .forceSimulation(_data)
-          .force(
-            "x",
-            d3.forceX((d: any) => {
-              if (isXDiscrete) return d.x;
-              else return xScale.invert(d.x) >= 0 ? d.x : xScale(0);
-            })
-          )
-          .force(
-            "y",
-            d3.forceY((d: any) => {
-              if (isYDiscrete) return d.y;
-              else return yScale.invert(d.y) >= 0 ? d.y : yScale(0);
-            })
-          )
-          .force(
-            "collide",
-            d3.forceCollide((d: any) => d.r + radiusCollide).iterations(4)
-          );
+      // if (forced) {
+      //   const simulation = d3
+      //     .forceSimulation(_data)
+      //     .force(
+      //       "x",
+      //       d3.forceX((d: any) => {
+      //         if (isXDiscrete) return d.x;
+      //         else return xScale.invert(d.x) >= 0 ? d.x : xScale(0);
+      //       })
+      //     )
+      //     .force(
+      //       "y",
+      //       d3.forceY((d: any) => {
+      //         if (isYDiscrete) return d.y;
+      //         else return yScale.invert(d.y) >= 0 ? d.y : yScale(0);
+      //       })
+      //     )
+      //     .force(
+      //       "collide",
+      //       d3.forceCollide((d: any) => d.r + radiusCollide).iterations(4)
+      //     );
 
-        for (let i = 0; i < 100; i++) {
-          simulation.tick();
-        }
-        simulation.stop();
-      }
+      //   for (let i = 0; i < 100; i++) {
+      //     simulation.tick();
+      //   }
+      //   simulation.stop();
+      // }
 
       const bubbles = svg
         .append("g")
@@ -375,37 +381,6 @@ const ScatterPlot = ({
         .attr("cx", (d: any) => d.x)
         .attr("cy", (d: any) => d.y)
         .attr("r", (d: any) => d.r);
-
-      // bubbles
-      //   .append("text")
-      //   .attr("font-size", "0.5rem")
-      //   .attr("stroke-linejoin", "round")
-      //   .attr("stroke-linecap", "round")
-      //   .attr("filter", "url(#label-background")
-      //   .attr("fill", "white")
-      //   .attr("transform", (d: any) => {
-      //     const dy = d.menu.name.split(" ").length >= 4 ? 24 : 12;
-      //     return `translate(${d.x}, ${d.y - dy})`;
-      //   })
-      //   .selectAll("tspan")
-      //   .data((d: any) => {
-      //     const name_words = d.menu.name.split(" ");
-      //     let lines = [];
-      //     if (name_words.length >= 4) {
-      //       const index = Math.trunc(name_words.length / 2);
-      //       lines.push(name_words.slice(0, index).join(" "));
-      //       lines.push(name_words.slice(index).join(" "));
-      //     } else {
-      //       lines.push(d.menu.name);
-      //     }
-      //     return lines;
-      //   })
-      //   .join("tspan")
-      //   .attr("text-anchor", "middle")
-      //   .attr("x", 0)
-      //   .attr("dy", "1.2em")
-      //   // .attr("y", (d, i, D) => `${i - D.length / 2 + 0.85}em`)
-      //   .text((d) => d);
     }
   }, [
     data,

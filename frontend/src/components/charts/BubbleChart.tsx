@@ -3,7 +3,12 @@ import * as d3 from "d3";
 import { loadMenuDetail, Menu } from "src/store/reducers/data";
 import { useAppDispatch } from "src/hooks";
 import { showModal } from "src/store/reducers/UI";
-import { varsDiscrete, VarName, VarContinuous } from "src/globals";
+import {
+  varsDiscrete,
+  VarName,
+  VarContinuous,
+  mapVarNameToLabel,
+} from "src/globals";
 import getDomain from "src/functions/getDomain";
 import getScale from "src/functions/getScale";
 import getColorScale from "src/functions/getColorScale";
@@ -41,12 +46,12 @@ const BubbleChart = ({
   radiusVar,
   radius = 30,
   radiusCollide = 5,
-  radiusRange = [radius / 4, radius * 2],
+  radiusRange = [radius / 5, radius * 1.5],
   fillColor = "white",
   fillOpacity = 0.5,
   borderColor = "black",
   marginTop = 60,
-  marginRight = 60,
+  marginRight = 200,
   marginBottom = 60,
   marginLeft = 60,
   inset = 0,
@@ -68,11 +73,14 @@ const BubbleChart = ({
       .select(svgRef.current)
       .attr("width", width)
       .attr("height", height)
-      .attr("viewbox", [0, 0, width, height].toString())
+      .attr("viewbox", "0 0 100 100")
       .attr("style", "max-width: 100%; height: auto; height: intrinsic;")
       .selectAll(".graph");
 
     svg.selectAll("g").remove();
+    svg.selectAll("circle").remove();
+    svg.selectAll("text").remove();
+    svg.selectAll("image").remove();
 
     if (data && svgRef.current) {
       const isColorDiscrete = varsDiscrete.some((x) => x === colorVar);
@@ -130,68 +138,118 @@ const BubbleChart = ({
       }
       simulation.stop();
 
-      const cDomain = colorDomain ? [0].concat(colorDomain) : []
+      // Color legend
+      if (colorVar !== undefined && colorVar !== null && colorVar !== "") {
+        const cDomain = colorDomain
+          ? isColorDiscrete
+            ? [0].concat(colorDomain)
+            : colorDomain
+          : [];
+        const legend = svg
+          .append("g")
+          .attr("class", "legends")
+          .data(cDomain)
+          .enter();
 
-      svg.selectAll("legends").remove();
-      svg.selectAll("circle").remove();
-      svg.selectAll("text").remove();
-
-      if (colorVar === "way" || colorVar === "pat") {
+        legend.selectAll("circle").remove();
+        legend.selectAll("text").remove();
 
         svg
-          .append("legends")
-          .data(cDomain)
-          .enter()
-          .append("circle")
-            .attr("cx", 700)
-            .attr("cy", function(d, i){return 50 + i*25})
-            .attr("r", 7)
-            .attr("fill", function(d){return colorScale(d)})
-
-        svg
-          .selectAll("legends")
-          .data(cDomain)
-          .enter()
           .append("text")
-            .attr("x", 720)
-            .attr("y", function(d, i){return 50 + i*25})
+          .attr("class", "legend-title")
+          .style("font-weight", "bold")
+          .attr("x", 740)
+          .attr("y", 175)
+          .text(mapVarNameToLabel[colorVar as string]);
+
+        if (isColorDiscrete) {
+          legend
+            .append("circle")
+            .attr("cx", 740)
+            .attr("cy", function (d, i) {
+              return 175 + i * 25;
+            })
+            .attr("r", 7)
+            .attr("fill", function (d) {
+              return colorScale(d);
+            });
+
+          legend
+            .append("text")
+            .attr("x", 760)
+            .attr("y", function (d, i) {
+              return 175 + i * 25;
+            })
             .attr("fill", "black")
-            .text(function(d){return d})
+            .text(function (d) {
+              return d;
+            })
             .attr("text-anchor", "left")
-            .attr("alignment-baseline", "middle")
+            .attr("alignment-baseline", "middle");
+        } else {
+          var tmp = Number(cDomain[0]);
+          var lDomain = [Math.round(cDomain[0])];
+          const range = cDomain[1] - cDomain[0];
 
-      } else {
+          for (var i = 1; i < 6; i++) {
+            var tmp = Math.round(tmp + range / 5);
+            lDomain.push(tmp);
+          }
 
-        var tmp = Number(cDomain[1])
-        var lDomain = [0, Math.round(cDomain[1])]
-        const range = cDomain[2] - cDomain[1]
+          svg
+            .selectAll("legends")
+            .data(lDomain)
+            .enter()
+            .append("text")
+            .attr("x", 760)
+            .attr("y", function (d, i) {
+              return 200 + i * 25;
+            })
+            .attr("fill", "black")
+            .text(function (d) {
+              return d;
+            })
+            .attr("text-anchor", "left")
+            .attr("alignment-baseline", "middle");
 
-        for (var i = 1; i < 6; i++){
-          var tmp = Math.round(tmp + range/5)
-          lDomain.push(tmp)
+          const n = Math.min(
+            colorScale.domain().length,
+            colorScale.range().length
+          );
+
+          let x = colorScale
+            .copy()
+            .rangeRound(
+              d3.quantize(d3.interpolate(marginLeft, width - marginRight), n)
+            );
+
+          const ramp = (color: any, n = 256) => {
+            const canvas = document.createElement("canvas");
+            canvas.width = 1;
+            canvas.height = n;
+
+            const context = canvas.getContext("2d");
+            for (let i = 0; i < n; ++i) {
+              (context as any).fillStyle = color(i / (n - 1));
+              (context as any).fillRect(0, i, 1, 1);
+            }
+            return canvas;
+          };
+
+          svg
+            .append("image")
+            .attr("x", 740)
+            .attr("y", 200)
+            .attr("width", 10)
+            .attr("height", 125)
+            .attr("preserveAspectRatio", "none")
+            .attr(
+              "xlink:href",
+              ramp(
+                colorScale.copy().domain(d3.quantize(d3.interpolate(0, 1), n))
+              ).toDataURL()
+            );
         }
-
-        svg
-          .append("legends")
-          .data(lDomain)
-          .enter()
-          .append("circle")
-            .attr("cx", 700)  
-            .attr("cy", function(d, i){return 50 + i*25})
-            .attr("r", 7)
-            .attr("fill", function(d){return colorScale(d)})
-        svg
-          .selectAll("legends")
-          .data(lDomain)
-          .enter()
-          .append("text")
-            .attr("x", 720)
-            .attr("y", function(d, i){return 50 + i*25})
-            .attr("fill", "black")
-            .text(function(d){return d})
-            .attr("text-anchor", "left")
-            .attr("alignment-baseline", "middle")
-            
       }
 
       const bubbles = svg
@@ -270,37 +328,6 @@ const BubbleChart = ({
         .attr("x", 0)
         .attr("y", (d, i, D) => `${1.25 * (i - D.length / 2) + 1}em`)
         .text((d) => d);
-
-      // bubbles
-      //   .append("text")
-      //   .attr("font-size", "0.5rem")
-      //   .attr("stroke-linejoin", "round")
-      //   .attr("stroke-linecap", "round")
-      //   .attr("filter", "url(#label-background")
-      //   .attr("fill", "white")
-      //   .attr("transform", (d: any) => {
-      //     const dy = d.menu.name.split(" ").length >= 4 ? 24 : 12;
-      //     return `translate(${d.x}, ${d.y - dy})`;
-      //   })
-      //   .selectAll("tspan")
-      //   .data((d: any) => {
-      //     const name_words = d.menu.name.split(" ");
-      //     let lines = [];
-      //     if (name_words.length >= 4) {
-      //       const index = Math.trunc(name_words.length / 2);
-      //       lines.push(name_words.slice(0, index).join(" "));
-      //       lines.push(name_words.slice(index).join(" "));
-      //     } else {
-      //       lines.push(d.menu.name);
-      //     }
-      //     return lines;
-      //   })
-      //   .join("tspan")
-      //   .attr("text-anchor", "middle")
-      //   .attr("x", 0)
-      //   .attr("dy", "1.2em")
-      //   // .attr("y", (d, i, D) => `${i - D.length / 2 + 0.85}em`)
-      //   .text((d) => d);
     }
   }, [data, colorVar, radiusVar, radiusRange, width, height]);
 

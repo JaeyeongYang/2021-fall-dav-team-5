@@ -24,11 +24,10 @@ const Visualization = function () {
   const menus: Menu[] = useAppSelector(selectMenus) ?? [];
   const [menusShuffled, setMenusShuffled] = useState<Menu[]>([]);
   const [menusSelected, setMenusSelected] = useState<Menu[]>([]);
-  const [index, setIndex] = useState<number>(0);  
+  const [index, setIndex] = useState<number>(0);
 
   /////
-  const plot: string = useAppSelector(selectPlot) ?? 'bubble';
-
+  const plot: string = useAppSelector(selectPlot) ?? "bubble";
 
   // TODO: these states should be stored with redux later
   const [xVar, setXVar] = useState<VarName>("energy");
@@ -165,7 +164,9 @@ const Visualization = function () {
           }}
         >
           <Dropdown style={{ marginRight: "1rem" }}>
-            <Dropdown.Toggle disabled={plot == "bubble" ? true : false}>X축: {mapVarNameToLabel[xVar]}</Dropdown.Toggle>
+            <Dropdown.Toggle disabled={plot == "bubble" ? true : false}>
+              X축: {mapVarNameToLabel[xVar]}
+            </Dropdown.Toggle>
             <Dropdown.Menu>
               {varsName.map((v, i) => {
                 return (
@@ -176,9 +177,11 @@ const Visualization = function () {
               })}
             </Dropdown.Menu>
           </Dropdown>
-          
+
           <Dropdown style={{ marginRight: "1rem" }}>
-            <Dropdown.Toggle disabled={plot == "bubble" ? true : false}>Y축: {mapVarNameToLabel[yVar]}</Dropdown.Toggle>
+            <Dropdown.Toggle disabled={plot == "bubble" ? true : false}>
+              Y축: {mapVarNameToLabel[yVar]}
+            </Dropdown.Toggle>
             <Dropdown.Menu>
               {varsName.map((v, i) => {
                 return (
@@ -246,24 +249,24 @@ const Visualization = function () {
           <span style={{ marginRight: "1rem" }}>크기 범위:</span>
           <div style={{ marginRight: "1rem" }}>
             <RangeSlider
-              disabled={(plot == "bubble" ? true : false) || (radiusVar === null) }
+              disabled={(plot == "bubble" ? true : false) || radiusVar === null}
               value={radiusMin}
               onChange={(e: any) => {
                 setRadiusMin(e.target.value);
               }}
               min={2}
-              max={10}              
+              max={10}
             />
           </div>
           <div style={{ marginRight: "1rem" }}>
             <RangeSlider
-              disabled={(plot == "bubble" ? true : false) || (radiusVar === null) }
+              disabled={(plot == "bubble" ? true : false) || radiusVar === null}
               value={radiusMax}
               onChange={(e: any) => {
                 setRadiusMax(e.target.value);
               }}
               min={2}
-              max={20}              
+              max={20}
             />
           </div>
         </div>
@@ -276,7 +279,7 @@ const Visualization = function () {
             justifyContent: "center",
           }}
         >
-          <Form.Check 
+          {/* <Form.Check 
             disabled={plot == "bubble" ? true : false}
             inline
             id="show-forced-chart"
@@ -285,7 +288,7 @@ const Visualization = function () {
             onChange={() => {
               setForced(!forced);
             }}
-          />
+          /> */}
           <Form.Check
             disabled={plot == "bubble" ? true : false}
             inline
@@ -311,38 +314,41 @@ const Visualization = function () {
     );
   };
 
-  let render;  
+  let render;
   if (plot == "bubble") {
-    render = <BubbleChart
-                data={menus.length > 0 ? menusSelected : []}
-                colorVar={colorVar}
-                radiusVar={radiusVar}
-                width={800}
-                height={600}
-              />        
+    render = (
+      <BubbleChart
+        data={menus.length > 0 ? menusSelected : []}
+        colorVar={colorVar}
+        radiusVar={radiusVar}
+        width={900}
+        height={600}
+      />
+    );
   } else {
-    render = <ScatterPlot
-                data={menus.length > 0 ? menusSelected : []}
-                xVar={xVar}
-                yVar={yVar}
-                colorVar={colorVar}
-                radiusVar={radiusVar}
-                radiusRange={[radiusMin, radiusMax]}
-                xDomain={xDomain}
-                yDomain={yDomain}
-                width={800}
-                height={600}
-                forced={forced}
-              />
+    render = (
+      <ScatterPlot
+        data={menus.length > 0 ? menusSelected : []}
+        xVar={xVar}
+        yVar={yVar}
+        colorVar={colorVar}
+        radiusVar={radiusVar}
+        radiusRange={[radiusMin, radiusMax]}
+        xDomain={xDomain}
+        yDomain={yDomain}
+        width={900}
+        height={600}
+        forced={forced}
+      />
+    );
   }
 
-
-  return (    
+  return (
     <Container className="vis-div">
       <Row>
         <Col md="8">
           <OptionBox />
-          {render}      
+          {render}
           {/* <BubbleChart
             data={menus.length > 0 ? menusSelected : []}
             colorVar={colorVar}
@@ -379,7 +385,7 @@ const Visualization = function () {
           <SearchBar />
         </Col>
       </Row>
-    </Container>    
+    </Container>
   );
 };
 

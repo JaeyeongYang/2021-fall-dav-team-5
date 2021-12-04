@@ -106,6 +106,75 @@ const ScatterPlot = ({
       const xAxis = d3.axisBottom(xScale);
       const yAxis = d3.axisLeft(yScale);
 
+      const cDomain = colorDomain ? [0].concat(colorDomain) : []
+
+      svg.selectAll("legends").remove();
+      svg.selectAll("circle").remove();
+      svg.selectAll("text").remove();
+
+      if (colorVar === "way" || colorVar === "pat") {
+
+        svg
+          .append("legends")
+          .data(cDomain)
+          .enter()
+          .append("circle")
+            .attr("cx", 700)
+            .attr("cy", function(d, i){return 50 + i*25})
+            .attr("r", 7)
+            .attr("fill", function(d){return colorScale(d)})
+
+        svg
+          .selectAll("legends")
+          .data(cDomain)
+          .enter()
+          .append("text")
+            .attr("x", 720)
+            .attr("y", function(d, i){return 50 + i*25})
+            .attr("fill", "black")
+            .text(function(d){return d})
+            .attr("text-anchor", "left")
+            .attr("alignment-baseline", "middle")
+
+      } else {
+
+        var tmp = Number(cDomain[1])
+        var lDomain = [0, Math.round(cDomain[1])]
+        const range = cDomain[2] - cDomain[1]
+
+        for (var i = 1; i < 6; i++){
+          var tmp = Math.round(tmp + range/5)
+          lDomain.push(tmp)
+        }
+
+        svg
+          .append("legends")
+          .data(lDomain)
+          .enter()
+          .append("circle")
+            .attr("cx", 700)  
+            .attr("cy", function(d, i){return 50 + i*25})
+            .attr("r", 7)
+            .attr("fill", function(d){return colorScale(d)})
+        svg
+          .selectAll("legends")
+          .data(lDomain)
+          .enter()
+          .append("text")
+            .attr("x", 720)
+            .attr("y", function(d, i){return 50 + i*25})
+            .attr("fill", "black")
+            .text(function(d){return d})
+            .attr("text-anchor", "left")
+            .attr("alignment-baseline", "middle")
+            
+      }
+
+
+
+
+  
+
       const xAxisGroup = svg
         .append("g")
         .attr("class", "chart-component")

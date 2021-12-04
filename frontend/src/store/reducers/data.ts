@@ -119,6 +119,9 @@ const slice = createSlice({
     setHashtags: (state, action: PayloadAction<ValueCountTuple[]>) => {
       state.hashtags = action.payload;
     },
+    setPlot: (state, action: PayloadAction<ValueCountTuple[]>) => {
+      state.pats = action.payload;
+    },
   },
 });
 

@@ -93,7 +93,7 @@ import ModalComponent from "./ModalComponent";
 const Body = function () {
   return (
     <div className="main">
-      <SearchBar />
+      {/* <SearchBar /> */}
       <Visualization></Visualization>
       <ModalComponent></ModalComponent>
     </div>

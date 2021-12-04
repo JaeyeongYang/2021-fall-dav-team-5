@@ -1,9 +1,7 @@
-import React, { useState } from "react";
-import { Button, Modal, Container, Row, Col, Image } from "react-bootstrap";
+import React from "react";
+import { Modal, Container, Row, Col, Image } from "react-bootstrap";
 import { useAppDispatch, useAppSelector } from "src/hooks";
 import {
-  clearMenuDetail,
-  loadMenuDetail,
   selectMenuDetail,
   MenuDetail,
   Recipe
@@ -12,7 +10,6 @@ import PieSVG from "./PieSVG";
 import {
   hideModal,
   selectDisplayModal,
-  showModal,
 } from "src/store/reducers/UI";
 
 const ModalComponent = function () {
@@ -21,8 +18,7 @@ const ModalComponent = function () {
   const displayModal: boolean = useAppSelector(selectDisplayModal) ?? false;
   const dispatch = useAppDispatch();
 
-  /////// modal
-  const handleClose = () => dispatch(hideModal);
+  const handleClose = () => dispatch(hideModal());
 
   if (menuDetail === null) return <></>;
 

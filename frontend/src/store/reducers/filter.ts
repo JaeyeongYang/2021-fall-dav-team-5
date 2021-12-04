@@ -45,6 +45,8 @@ export interface FilterState {
   na_min?: number;
   na_max?: number;
   hashtag?: string[];
+  ///////
+  plot?: string;
 }
 
 export const initialFilterState: FilterState = {
@@ -52,6 +54,7 @@ export const initialFilterState: FilterState = {
   way: [],
   pat: [],
   hashtag: [],
+  plot: 'bubble'
 };
 
 export const getPreloadedFilterState = (): FilterState => {
@@ -99,6 +102,7 @@ const slice = createSlice({
       )
       if (index !== -1) state.terms.splice(index, 1);
     },
+    // setters go inside here
     clearSearchTerm: (state) => _clearFilter(state, 'terms'),
     addWayFilter: (state, action: PayloadAction<string>) => _addFilter(state, action, 'way'),
     removeWayFilter: (state, action: PayloadAction<string>) => _removeFilter(state, action, 'way'),
@@ -128,7 +132,9 @@ const slice = createSlice({
     clearNaMaxFilter: (state) => { delete state['na_max']; },
     addHashtagFilter: (state, action: PayloadAction<string>) => _addFilter(state, action, 'hashtag'),
     removeHashtagFilter: (state, action: PayloadAction<string>) => _removeFilter(state, action, 'hashtag'),
-    clearHashtagFilter: (state) => _clearFilter(state, 'hashtag'),
+    clearHashtagFilter: (state) => _clearFilter(state, 'hashtag'),      
+    /////
+    setPlot: (state, action: PayloadAction<string>) => { state.plot = action.payload },    
   },
 });
 
@@ -167,8 +173,11 @@ export const {
   addHashtagFilter,
   removeHashtagFilter,
   clearHashtagFilter,
+  /////
+  setPlot,
 } = slice.actions;
 
+// getters are here
 export const selectMenus = createSelector(
   (state: RootState) => state.filter,
   (filter) => filter
@@ -180,10 +189,16 @@ export const selectSearchTerms = createSelector(
 export const selectWayFilter = createSelector(
   (state: RootState) => state.filter.way,
   (way) => way
-)
+);
 export const selectPatFilter = createSelector(
   (state: RootState) => state.filter.pat,
   (pat) => pat
-)
+);
+
+/////
+export const selectPlot = createSelector(
+  (state: RootState) => state.filter.plot,
+  (plot) => plot
+);
 
 export default reducer;

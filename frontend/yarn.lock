@@ -2178,15 +2178,9 @@
     "@types/istanbul-lib-report" "*"
 
 "@types/jest@*":
-<<<<<<< HEAD
-  "integrity" "sha512-4dRxkS/AFX0c5XW6IPMNOydLn2tEhNhJV7DnYK+0bjoJZ+QTmfucBlihX7aoEsh/ocYtkLC73UbnBXBXIxsULA=="
-  "resolved" "https://registry.npmjs.org/@types/jest/-/jest-27.0.2.tgz"
-  "version" "27.0.2"
-=======
   version "27.0.3"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-27.0.3.tgz#0cf9dfe9009e467f70a342f0f94ead19842a783a"
   integrity sha512-cmmwv9t7gBYt7hNKH5Spu7Kuu/DotGa+Ff+JGRKZ4db5eh8PnKS4LuebJ3YLUoyOyIHraTGyULn23YtEAm0VSg==
->>>>>>> f279e4d68c6b5a4126ce3eceeb580fb98f2267f4
   dependencies:
     "jest-diff" "^27.0.0"
     "pretty-format" "^27.0.0"
@@ -9856,6 +9850,14 @@ react-app-polyfill@^2.0.0:
     raf "^3.4.1"
     regenerator-runtime "^0.13.7"
     whatwg-fetch "^3.4.1"
+
+react-bootstrap-range-slider@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/react-bootstrap-range-slider/-/react-bootstrap-range-slider-3.0.3.tgz#6b99a2fac775030814d30fb9003e5ce88db95137"
+  integrity sha512-D2L0yDltDQCC0Yq40vHgVL2hHYVa+cLHv2OqgzuFUEB/IdqzHbz22yGjuj5jS12VIRB1CX+KxzeH+7nBojg+Sg==
+  dependencies:
+    classnames "^2.3.1"
+    prop-types "^15.7.2"
 
 react-bootstrap-tagsinput@^0.5.0:
   version "0.5.0"

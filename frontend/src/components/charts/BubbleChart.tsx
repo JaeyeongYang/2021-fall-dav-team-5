@@ -61,8 +61,8 @@ const BubbleChart = ({
   insetLeft = inset,
 }: Props) => {
   const svgRef = useRef(null);
-  const [tooltip, setTooltip] = useState<Tooltip>({ display: false });
-
+  const [tooltip, setTooltip] = useState<Tooltip>({ display: false });  
+  
   const dispatch = useAppDispatch();
 
   const xRange = [marginLeft + insetLeft, width - marginRight - insetRight]; // [left, right]
@@ -151,9 +151,9 @@ const BubbleChart = ({
           .data(cDomain)
           .enter();
 
-        legend.selectAll("circle").remove();
-        legend.selectAll("text").remove();
-
+        legend.selectAll("circle").remove();        
+        legend.selectAll(".legend-text").remove(); 
+        
         svg
           .append("text")
           .attr("class", "legend-title")
@@ -176,6 +176,7 @@ const BubbleChart = ({
 
           legend
             .append("text")
+            .attr('class', 'legend-text')
             .attr("x", 760)
             .attr("y", function (d, i) {
               return 175 + i * 25;
@@ -186,7 +187,8 @@ const BubbleChart = ({
             })
             .attr("text-anchor", "left")
             .attr("alignment-baseline", "middle");
-        } else {
+        } 
+        else {
           var tmp = Number(cDomain[0]);
           var lDomain = [Math.round(cDomain[0])];
           const range = cDomain[1] - cDomain[0];
@@ -206,6 +208,7 @@ const BubbleChart = ({
               return 200 + i * 25;
             })
             .attr("fill", "black")
+            .attr('class', 'legend-text')
             .text(function (d) {
               return d;
             })
@@ -250,33 +253,37 @@ const BubbleChart = ({
               ).toDataURL()
             );
         }
-      }
-
+      } // if (colorVar !== undefined && colorVar !== null && colorVar !== "")
+                  
       const bubbles = svg
         .append("g")
         .attr("class", "chart-component")
         .selectAll("g")
         .data(_data)
         .join("g")
-        .style("cursor", "pointer")
-        .attr("class", "scatterplot-point")
+        .style("cursor", "pointer")        
+        .attr("class", "scatterplot-point")        
         .attr("transform", (d) => `translate(${d.x}, ${d.y})`)
-        .on("mouseover", (e, d) => {
+        .on("mouseover", (e, d) => {          
           if (!tooltip.display) {
             setTooltip({
               display: true,
               menu: d.menu,
               pos: { x: d.x, y: d.y },
-            });
-          }
+            });            
+            console.log('in');            
+          }          
         })
-        .on("mouseout", (e: any) => {
-          setTooltip({ display: false });
+        .on("mouseout", (e, d) => {                           
+          console.log('out');
+          setTooltip({
+            display: false,            
+          });          
         })
         .on("click", (e, d) => {
           dispatch(loadMenuDetail(d.menu.id));
           dispatch(showModal());
-          setTooltip({ display: false });
+          setTooltip({ display: false });          
         });
 
       bubbles
@@ -285,7 +292,7 @@ const BubbleChart = ({
         .attr("fill-opacity", fillOpacity)
         .attr("stroke", colorVar ? "black" : borderColor)
         .attr("stroke-width", 1)
-        .attr("r", (d: any) => d.r);
+        .attr("r", (d: any) => d.r);        
 
       const uid = `O-${Math.random().toString(16).slice(2)}`;
 
@@ -322,14 +329,25 @@ const BubbleChart = ({
             lines.push(d.menu.name);
           }
           return lines;
-        })
+        })        
         .join("tspan")
         .attr("text-anchor", "middle")
         .attr("x", 0)
         .attr("y", (d, i, D) => `${1.25 * (i - D.length / 2) + 1}em`)
         .text((d) => d);
-    }
-  }, [data, colorVar, radiusVar, radiusRange, width, height]);
+            
+    } // if (data && svgRef.current)
+    
+    console.log('tooltip:', tooltip.display, tooltip.menu);    
+  }, [
+    data, 
+    colorVar, 
+    radiusVar, 
+    radiusRange, 
+    width, 
+    height, 
+    tooltip,
+  ]);
 
   return (
     <svg ref={svgRef}>

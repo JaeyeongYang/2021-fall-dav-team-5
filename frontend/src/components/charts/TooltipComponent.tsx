@@ -6,19 +6,19 @@ export interface Tooltip {
   pos?: { x: number; y: number };
 }
 
-export const TooltipComponent = ({ tooltip }: { tooltip: Tooltip }) => {
-  if (!tooltip.display || !tooltip.menu) return <></>;
+export const TooltipComponent = ({ tooltip }: { tooltip: Tooltip }) => {    
+  if (!tooltip.display || !tooltip.menu) return <></>;  
 
   const { x, y } = tooltip.pos as { x: number; y: number };
   const menu = tooltip.menu;
-
+  
   const name_words = menu.name.split(" ");
   let lines = [];
   if (name_words.length >= 4) {
-    const index = Math.trunc(name_words.length / 2);
+    const index = Math.trunc(name_words.length / 2);        
     lines.push(name_words.slice(0, index).join(" "));
     lines.push(name_words.slice(index).join(" "));
-  } else {
+  } else {    
     lines.push(menu.name);
   }
 
@@ -53,9 +53,10 @@ export const TooltipComponent = ({ tooltip }: { tooltip: Tooltip }) => {
         filter="url(#label-background)"
         textAnchor="middle"
         fill="#ffffff"
-        fontSize="0.75rem"
+        fontSize="0.75rem"        
       >
         {lines.map((line, i) => {
+          console.log('line: ', line)          
           return (
             <tspan key={i} textAnchor="middle" x="0" dy="1.2em">
               {line}

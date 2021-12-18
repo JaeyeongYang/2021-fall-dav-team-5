@@ -123,7 +123,7 @@ const ScatterPlot = ({
           .enter();
 
         legend.selectAll("circle").remove();
-        legend.selectAll("text").remove();
+        legend.selectAll(".legend-text").remove(); 
 
         svg
           .append("text")
@@ -147,11 +147,13 @@ const ScatterPlot = ({
 
           legend
             .append("text")
+            .attr('class', 'legend-text')
             .attr("x", 760)
             .attr("y", function (d, i) {
               return 175 + i * 25;
             })
             .attr("fill", "black")
+            .attr('class', 'legend-text')
             .text(function (d) {
               return d;
             })
@@ -221,7 +223,7 @@ const ScatterPlot = ({
               ).toDataURL()
             );
         }
-      }
+      } // if (colorVar !== undefined && colorVar !== null && colorVar !== "")
 
       const xAxisGroup = svg
         .append("g")

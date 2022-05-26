@@ -1,6 +1,6 @@
 # FDYF: Find Dishes from Your Fridge
 
-Team project for <Data Analysis and Visualization> (2021 Fall) in Data Science Graduate School, Seoul National University
+Team project for "Data Analysis and Visualization" course (2021 Fall) in Data Science Graduate School, Seoul National University
 
 * Backend API (`/backend`):
   * Python + Django + DjangoRestFramework
